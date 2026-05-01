@@ -1,0 +1,159 @@
+version: 0.2.0
+mode: analysis_only
+default_action_ceiling: watchlist
+
+action_classes:
+  - no_trade
+  - research_needed
+  - watchlist
+  - paper_trade_candidate
+  - order_ticket_candidate
+
+hard_veto_roles:
+  - data_quality_officer
+  - portfolio_risk_manager
+  - compliance_conflicts_officer
+  - model_validator
+
+personas:
+  - id: regime_cartographer
+    label: Regime Cartographer
+    purpose: Identify market regime and regime mismatch risk.
+    axes: [regime, macro, horizon]
+    allowed_tools: [regime_classifier, volatility_state, correlation_state]
+    veto_power: false
+
+  - id: quant_researcher
+    label: Quant Researcher
+    purpose: Test signal definition, base rates, robustness, and overfitting risk.
+    axes: [statistics, validation, signal_quality]
+    allowed_tools: [backtest, walk_forward, factor_exposure, base_rate_query]
+    veto_power: false
+
+  - id: fundamental_analyst
+    label: Fundamental Analyst
+    purpose: Review valuation, earnings quality, business quality, and catalysts.
+    axes: [fundamental, catalyst, valuation]
+    allowed_tools: [filing_search, earnings_calendar, valuation_snapshot]
+    veto_power: false
+
+  - id: technical_microstructure_analyst
+    label: Technical And Microstructure Analyst
+    purpose: Review trend, levels, volume, liquidity, spread, and execution fragility.
+    axes: [technical, liquidity, execution]
+    allowed_tools: [trend_check, volume_profile, spread_depth_check]
+    veto_power: false
+
+  - id: macro_cross_asset_analyst
+    label: Macro And Cross-Asset Analyst
+    purpose: Review policy, rates, FX, commodities, credit, and factor rotations.
+    axes: [macro, cross_asset, factor]
+    allowed_tools: [macro_calendar, rates_snapshot, cross_asset_correlation]
+    veto_power: false
+
+  - id: sentiment_news_analyst
+    label: Sentiment And News Analyst
+    purpose: Review news provenance, event risk, crowding, and narrative manipulation.
+    axes: [sentiment, event, provenance]
+    allowed_tools: [news_search, source_rank, sentiment_summary]
+    veto_power: false
+
+  - id: data_quality_officer
+    label: Data Quality Officer
+    purpose: Check freshness, symbol mapping, missing fields, vendor conflicts, and license constraints.
+    axes: [data_quality, provenance, licensing]
+    allowed_tools: [data_freshness, symbol_map_check, vendor_reconciliation]
+    veto_power: true
+
+  - id: portfolio_risk_manager
+    label: Portfolio Risk Manager
+    purpose: Check exposure, drawdown, volatility, liquidity, concentration, and sizing.
+    axes: [portfolio, risk, sizing]
+    allowed_tools: [risk_limits, exposure_check, drawdown_check, position_sizing]
+    veto_power: true
+
+  - id: execution_specialist
+    label: Execution Specialist
+    purpose: Review order type, cost, slippage, market impact, borrow, and venue constraints.
+    axes: [execution, liquidity, broker_constraints]
+    allowed_tools: [transaction_cost_model, borrow_check, broker_constraint_check]
+    veto_power: false
+
+  - id: compliance_conflicts_officer
+    label: Compliance And Conflicts Officer
+    purpose: Check restricted lists, conflicts, mandate constraints, recordkeeping, and prohibited behavior.
+    axes: [compliance, conflicts, mandate]
+    allowed_tools: [restricted_list_check, mandate_check, conflicts_check]
+    veto_power: true
+
+  - id: model_validator
+    label: Model Validator
+    purpose: Review model status, assumptions, drift, validation, and reproducibility.
+    axes: [model_risk, validation, monitoring]
+    allowed_tools: [model_registry, drift_monitor, replay_check]
+    veto_power: true
+
+  - id: red_team_skeptic
+    label: Red Team Skeptic
+    purpose: Argue the strongest case that the thesis is wrong, unsafe, overfit, or unsupported.
+    axes: [adversarial, invalidation, unknowns]
+    allowed_tools: [assumption_audit, counterexample_search, stress_scenarios]
+    veto_power: false
+
+protocol:
+  rounds:
+    - id: intake
+      output: normalized_question
+    - id: evidence_build
+      output: frozen_evidence_snapshot
+    - id: independent_analysis
+      output: persona_claim_packets
+    - id: cross_examination
+      output: critiques_and_revisions
+    - id: synthesis
+      output: trade_thesis_dossier
+    - id: decision_gate
+      output: decision_packet
+    - id: lifecycle_assignment
+      output: thesis_lifecycle
+    - id: audit_persist
+      output: audit_bundle
+
+confidence_policy:
+  aggregation: constrained_confidence
+  never_average_persona_confidence: true
+  cap_to_zero_on_hard_veto: true
+  downgrade_on_unresolved_dissent: true
+
+lifecycle_policy:
+  state_machine:
+    - draft
+    - active
+    - stale
+    - invalidated
+    - upgraded
+    - closed
+    - archived
+  stale_blocks_escalation: true
+  invalidated_blocks_escalation: true
+  trigger_severities:
+    - observe
+    - recheck
+    - downgrade
+    - invalidate
+    - escalate
+  freshness_inputs:
+    - evidence_age
+    - price_drift
+    - volatility_change
+    - liquidity_change
+    - spread_change
+    - material_news
+    - scheduled_event
+    - portfolio_exposure_change
+    - regime_transition
+    - correlation_break
+  revalidation_strategy:
+    minor_change: affected_axes_only
+    hard_trigger: full_gate_review
+    regime_transition: portfolio_wide_review

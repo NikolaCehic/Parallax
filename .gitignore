@@ -1,0 +1,6 @@
+node_modules/
+audits/*.json
+audits/*.md
+coverage/
+.DS_Store
+*.log

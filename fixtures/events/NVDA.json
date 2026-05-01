@@ -1,0 +1,8 @@
+[
+  {
+    "date": "2026-05-22T20:00:00Z",
+    "type": "earnings",
+    "materiality": "medium",
+    "description": "Fixture future earnings event for lifecycle testing."
+  }
+]
