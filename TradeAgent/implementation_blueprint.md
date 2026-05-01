@@ -4,6 +4,11 @@
 
 Build the first version as an analysis-only harness. It should produce Trade Thesis Dossiers and never place live orders.
 
+Language split:
+
+- TypeScript: orchestration, schemas, CLI/API, council, lifecycle, governance, paper trading, and execution gates.
+- Python: deterministic analytics, statistics, backtests, and future quant research modules.
+
 ## Suggested Repository Shape
 
 ```text

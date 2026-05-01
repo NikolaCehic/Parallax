@@ -4,6 +4,11 @@ Version: 0.1.0
 Status: Draft implementation specification  
 Scope: analysis-first trading thesis council with lifecycle monitoring  
 
+Implementation language split:
+
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, and sandbox execution controls.
+- Python owns deterministic quant-style analytics.
+
 ## 1. Product Definition
 
 Parallax is a governed trading-analysis harness that turns market questions and trade ideas into auditable Trade Thesis Dossiers.
@@ -123,6 +128,10 @@ Responsibilities:
 - run backtests, walk-forward tests, stress tests, and cost estimates when supported;
 - produce versioned tool outputs;
 - reject unsupported calculations rather than inventing values.
+
+Implementation requirement:
+
+- analytics must run through Python modules/workers, with TypeScript treating outputs as versioned tool results.
 
 MVP analytics:
 

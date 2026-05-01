@@ -6,8 +6,10 @@ import { dossierToMarkdown } from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import { ApprovalStore, SandboxBroker, KillSwitch } from "../execution/sandbox.js";
 
-function parseArgs(argv) {
-  const args = {};
+type CliArgs = Record<string, string | boolean>;
+
+function parseArgs(argv: string[]): CliArgs {
+  const args: CliArgs = {};
   for (let index = 0; index < argv.length; index += 1) {
     const item = argv[index];
     if (item.startsWith("--")) {
@@ -47,12 +49,12 @@ async function main() {
   if (command === "analyze") {
     if (!args.symbol || !args.thesis) throw new Error("analyze requires --symbol and --thesis");
     const dossier = await analyzeThesis({
-      symbol: args.symbol,
-      horizon: args.horizon ?? "swing",
-      thesis: args.thesis,
-      actionCeiling: args.ceiling ?? "watchlist",
+      symbol: String(args.symbol),
+      horizon: String(args.horizon ?? "swing"),
+      thesis: String(args.thesis),
+      actionCeiling: String(args.ceiling ?? "watchlist"),
       audit: true,
-      now: args.now
+      now: args.now ? String(args.now) : undefined
     });
     const auditPath = path.join("audits", `${dossier.id}.json`);
     const markdownPath = path.join("audits", `${dossier.id}.md`);
@@ -71,17 +73,17 @@ async function main() {
 
   if (command === "replay") {
     if (!args.audit) throw new Error("replay requires --audit");
-    const bundle = await readAuditBundle(args.audit);
+    const bundle = await readAuditBundle(String(args.audit));
     console.log(JSON.stringify(replayAuditBundle(bundle), null, 2));
     return;
   }
 
   if (command === "monitor") {
     if (!args.audit) throw new Error("monitor requires --audit");
-    const bundle = await readAuditBundle(args.audit);
-    const lastPrice = args.price ? Number(args.price) : bundle.dossier.tool_outputs.find((output) => output.tool_name === "return_summary").result.latest_close;
+    const bundle = await readAuditBundle(String(args.audit));
+    const lastPrice = args.price ? Number(args.price) : bundle.dossier.tool_outputs.find((output: any) => output.tool_name === "return_summary").result.latest_close;
     const updated = evaluateLifecycle(bundle.dossier.lifecycle, {
-      now: args.now ?? new Date().toISOString(),
+      now: String(args.now ?? new Date().toISOString()),
       last_price: lastPrice,
       annualized_volatility_20: args.vol ? Number(args.vol) : 0.3,
       material_event_arrives: args.event === "true"
@@ -92,7 +94,7 @@ async function main() {
 
   if (command === "paper") {
     if (!args.audit) throw new Error("paper requires --audit");
-    const bundle = await readAuditBundle(args.audit);
+    const bundle = await readAuditBundle(String(args.audit));
     const ticket = createPaperTicket(bundle.dossier);
     const filled = simulatePaperFill(ticket);
     console.log(JSON.stringify({ ticket, filled }, null, 2));
@@ -101,10 +103,10 @@ async function main() {
 
   if (command === "sandbox-submit") {
     if (!args.audit) throw new Error("sandbox-submit requires --audit");
-    const bundle = await readAuditBundle(args.audit);
+    const bundle = await readAuditBundle(String(args.audit));
     const ticket = createPaperTicket(bundle.dossier);
     const approvals = new ApprovalStore();
-    approvals.approve(ticket, { approver: args.approver ?? "human" });
+    approvals.approve(ticket, { approver: String(args.approver ?? "human") });
     const broker = new SandboxBroker({ approvalStore: approvals, killSwitch: new KillSwitch() });
     console.log(JSON.stringify(broker.submit({ dossier: bundle.dossier, ticket }), null, 2));
     return;

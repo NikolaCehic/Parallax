@@ -3,7 +3,7 @@
 Command:
 
 ```bash
-node src/cli/parallax.js analyze \
+npm run analyze -- \
   --symbol NVDA \
   --horizon swing \
   --thesis "post-earnings continuation with controlled risk" \

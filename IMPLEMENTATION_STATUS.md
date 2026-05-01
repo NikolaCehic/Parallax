@@ -2,7 +2,11 @@
 
 Status date: 2026-05-01
 
-Parallax has been implemented as a zero-dependency Node.js prototype that covers the functional intent of all documented phases, with live execution intentionally limited to sandbox-only approval workflows.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of all documented phases, with live execution intentionally limited to sandbox-only approval workflows.
+
+TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, and sandbox execution controls.
+
+Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
 ## Phase Completion Map
 
@@ -18,8 +22,9 @@ Parallax has been implemented as a zero-dependency Node.js prototype that covers
 
 ## What Is Actually Working
 
-- `npm test` runs 10 tests.
+- `npm test` builds TypeScript and runs 10 tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
+- Every analysis calls the Python analytics worker.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.

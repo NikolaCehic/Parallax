@@ -1,6 +1,9 @@
 import { makeId, isoNow } from "../core/ids.js";
 
 export class KillSwitch {
+  enabled: boolean;
+  reason: string;
+
   constructor() {
     this.enabled = false;
     this.reason = "";
@@ -18,11 +21,13 @@ export class KillSwitch {
 }
 
 export class ApprovalStore {
+  approvals: Map<string, any>;
+
   constructor() {
     this.approvals = new Map();
   }
 
-  approve(ticket, { approver, now = isoNow(), expiresAt } = {}) {
+  approve(ticket: any, { approver, now = isoNow(), expiresAt }: any = {}) {
     const approval = {
       id: makeId("approval", { ticket: ticket.id, approver, now }),
       ticket_id: ticket.id,
@@ -34,12 +39,12 @@ export class ApprovalStore {
     return approval;
   }
 
-  get(ticketId) {
+  get(ticketId: string) {
     return this.approvals.get(ticketId);
   }
 }
 
-export function preTradeControls({ dossier, ticket, now = isoNow() }) {
+export function preTradeControls({ dossier, ticket, now = isoNow() }: any) {
   const problems = [];
   if (dossier.lifecycle.state !== "active") problems.push(`Thesis state is ${dossier.lifecycle.state}.`);
   if (dossier.decision_packet.vetoes.length > 0) problems.push("Decision packet has active vetoes.");
@@ -55,13 +60,17 @@ export function preTradeControls({ dossier, ticket, now = isoNow() }) {
 }
 
 export class SandboxBroker {
+  killSwitch: KillSwitch;
+  approvalStore: ApprovalStore;
+  submitted: any[];
+
   constructor({ killSwitch = new KillSwitch(), approvalStore = new ApprovalStore() } = {}) {
     this.killSwitch = killSwitch;
     this.approvalStore = approvalStore;
     this.submitted = [];
   }
 
-  submit({ dossier, ticket, now = isoNow() }) {
+  submit({ dossier, ticket, now = isoNow() }: any) {
     if (this.killSwitch.enabled) {
       throw new Error(`Kill switch active: ${this.killSwitch.reason}`);
     }

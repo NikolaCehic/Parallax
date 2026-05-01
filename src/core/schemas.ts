@@ -21,6 +21,8 @@ export const THESIS_STATES = [
 export const TRIGGER_KINDS = ["observe", "recheck", "downgrade", "invalidate", "escalate"];
 
 export class ValidationError extends Error {
+  path: string;
+
   constructor(message, path = "$") {
     super(`${path}: ${message}`);
     this.name = "ValidationError";

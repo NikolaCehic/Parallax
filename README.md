@@ -14,6 +14,8 @@ Parallax answers:
 
 The current implementation includes:
 
+- TypeScript orchestration, contracts, CLI, council, lifecycle, governance, and execution gates;
+- Python deterministic analytics worker for quant-style calculations;
 - evidence snapshots with provenance and freshness;
 - deterministic analytics for returns, volatility, drawdown, liquidity, costs, exposure, events, and data quality;
 - 12 persona council roles;
@@ -28,14 +30,17 @@ The current implementation includes:
 ## Quick Start
 
 ```bash
+npm install
 npm test
 npm run demo
 ```
 
+Parallax uses Python for analytics. By default it tries `PARALLAX_PYTHON`, then the bundled Codex Python runtime if present, then `python3`.
+
 Run a custom analysis:
 
 ```bash
-node src/cli/parallax.js analyze \
+npm run analyze -- \
   --symbol NVDA \
   --horizon swing \
   --thesis "post-earnings continuation with controlled risk" \
@@ -46,13 +51,13 @@ node src/cli/parallax.js analyze \
 Replay an audit bundle:
 
 ```bash
-node src/cli/parallax.js replay --audit audits/dos_1554fa9a5dd2.json
+node dist/src/cli/parallax.js replay --audit audits/dos_1554fa9a5dd2.json
 ```
 
 Evaluate lifecycle triggers:
 
 ```bash
-node src/cli/parallax.js monitor \
+node dist/src/cli/parallax.js monitor \
   --audit audits/dos_1554fa9a5dd2.json \
   --price 111 \
   --now 2026-05-01T15:00:00Z
@@ -64,7 +69,7 @@ node src/cli/parallax.js monitor \
 User Request
   -> Intake
   -> Evidence Snapshot
-  -> Deterministic Analytics
+  -> Python Deterministic Analytics
   -> Independent Council
   -> Cross-Examination
   -> Synthesis

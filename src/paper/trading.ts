@@ -13,11 +13,11 @@ function costModel(dossier) {
   return dossier.tool_outputs.find((output) => output.tool_name === "transaction_cost_model").result;
 }
 
-export function createPaperTicket(dossier, {
+export function createPaperTicket(dossier: any, {
   side = "buy",
   riskBudgetPct,
   now = isoNow()
-} = {}) {
+}: any = {}) {
   if (dossier.lifecycle.state !== "active") {
     throw new Error(`Cannot create paper ticket from ${dossier.lifecycle.state} thesis.`);
   }
@@ -57,7 +57,7 @@ export function createPaperTicket(dossier, {
   };
 }
 
-export function simulatePaperFill(ticket, { marketPrice, now = isoNow() } = {}) {
+export function simulatePaperFill(ticket: any, { marketPrice, now = isoNow() }: any = {}) {
   const direction = ticket.side === "buy" ? 1 : -1;
   const totalBps = ticket.fill_model.estimated_spread_bps + ticket.fill_model.estimated_slippage_bps;
   const fillPrice = (marketPrice ?? ticket.reference_price) * (1 + direction * totalBps / 10000);
@@ -70,7 +70,7 @@ export function simulatePaperFill(ticket, { marketPrice, now = isoNow() } = {}) 
   };
 }
 
-export function closePaperTrade(filledTicket, { exitPrice, now = isoNow(), reason = "manual_close" }) {
+export function closePaperTrade(filledTicket: any, { exitPrice, now = isoNow(), reason = "manual_close" }: any) {
   if (filledTicket.status !== "filled") throw new Error("Paper trade must be filled before close.");
   const direction = filledTicket.side === "buy" ? 1 : -1;
   const pnl = (exitPrice - filledTicket.fill_price) * filledTicket.quantity * direction;
@@ -85,7 +85,7 @@ export function closePaperTrade(filledTicket, { exitPrice, now = isoNow(), reaso
   };
 }
 
-export function attributePaperOutcome(dossier, closedTrade) {
+export function attributePaperOutcome(dossier: any, closedTrade: any) {
   const thesisWorked = closedTrade.realized_pnl > 0;
   const invalidated = dossier.lifecycle.state === "invalidated";
   return {
