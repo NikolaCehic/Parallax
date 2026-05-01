@@ -1,13 +1,9 @@
 import { spawnSync } from "node:child_process";
-import { existsSync } from "node:fs";
 import path from "node:path";
 import { makeId, stableHash, isoNow } from "../core/ids.js";
 
-const BUNDLED_CODEX_PYTHON = "/Users/nikolacehic/.cache/codex-runtimes/codex-primary-runtime/dependencies/python/bin/python3";
-
 function defaultPythonExecutable() {
   if (process.env.PARALLAX_PYTHON) return process.env.PARALLAX_PYTHON;
-  if (existsSync(BUNDLED_CODEX_PYTHON)) return BUNDLED_CODEX_PYTHON;
   return "python3";
 }
 

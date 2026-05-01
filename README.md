@@ -35,7 +35,7 @@ npm test
 npm run demo
 ```
 
-Parallax uses Python for analytics. By default it tries `PARALLAX_PYTHON`, then the bundled Codex Python runtime if present, then `python3`.
+Parallax uses Python for analytics. By default it runs `python3`; set `PARALLAX_PYTHON` only when you want to point it at a specific interpreter.
 
 Run a custom analysis:
 
