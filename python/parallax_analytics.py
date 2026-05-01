@@ -12,6 +12,7 @@ import json
 import math
 import statistics
 import sys
+from datetime import datetime, timezone
 from typing import Any
 
 
@@ -74,6 +75,10 @@ def get_item(snapshot: dict[str, Any], kind: str, symbol: str | None = None) -> 
         if item["kind"] == kind and (symbol is None or item.get("symbol") == symbol):
             return item
     raise KeyError(f"Missing evidence item: {kind}/{symbol}")
+
+
+def parse_iso(value: str) -> datetime:
+    return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
 def tool(tool_name: str, inputs: list[dict[str, Any]], result: dict[str, Any], status: str = "passed") -> dict[str, Any]:
@@ -200,7 +205,12 @@ def run(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
         )
     )
 
-    upcoming_events = event_evidence["payload"]
+    snapshot_time = parse_iso(snapshot["created_at"])
+    upcoming_events = [
+        event
+        for event in event_evidence["payload"]
+        if parse_iso(event["date"]) >= snapshot_time
+    ]
     material_count = len([event for event in upcoming_events if event.get("materiality") == "high"])
     outputs.append(
         tool(

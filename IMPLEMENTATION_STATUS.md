@@ -22,7 +22,7 @@ Python owns deterministic quant-style analytics through `python/parallax_analyti
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 10 tests.
+- `npm test` builds TypeScript and runs 20 tests, including 10 full E2E synthetic scenarios.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Stale data vetoes escalation.
@@ -31,6 +31,25 @@ Python owns deterministic quant-style analytics through `python/parallax_analyti
 - Audit replay verifies bundle integrity.
 - Paper tickets cannot be created from watchlist-only dossiers.
 - Sandbox submission requires approval and respects the kill switch.
+- E2E tests generate arbitrary temporary market, event, and portfolio datasets.
+
+## E2E Proof Suite
+
+The E2E suite is documented in [E2E_TESTING.md](E2E_TESTING.md).
+
+It covers:
+
+- clean paper-candidate promotion;
+- stale data veto;
+- restricted symbol veto;
+- concentration veto;
+- high-volatility dissent;
+- future and past event handling;
+- lifecycle invalidation/recheck/expiry;
+- paper trade attribution;
+- sandbox approval, expiry, kill switch, and risk-control enforcement.
+
+The suite exposed and fixed two issues: past events were previously counted as future event risk, and boolean lifecycle trigger expressions were not evaluated correctly.
 
 ## Intentional Limits
 

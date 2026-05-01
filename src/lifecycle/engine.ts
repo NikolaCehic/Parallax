@@ -106,8 +106,13 @@ function evaluateExpression(condition, marketState) {
   if (!match) return false;
   const [, field, operator, raw] = match;
   const left = field === "now" ? new Date(marketState.now).getTime() : marketState[field];
-  const parsedRight = raw.includes("T") ? new Date(raw).getTime() : Number(raw);
-  const right = Number.isNaN(parsedRight) ? raw.replace(/^"|"$/g, "") : parsedRight;
+  let right;
+  if (raw === "true") right = true;
+  else if (raw === "false") right = false;
+  else {
+    const parsedRight = raw.includes("T") ? new Date(raw).getTime() : Number(raw);
+    right = Number.isNaN(parsedRight) ? raw.replace(/^"|"$/g, "") : parsedRight;
+  }
   switch (operator) {
     case "<": return left < right;
     case ">": return left > right;

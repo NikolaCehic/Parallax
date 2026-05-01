@@ -93,6 +93,7 @@ The default ceiling is `watchlist`. Paper and sandbox execution paths must be ex
 
 - [TradeAgent/SPEC.md](TradeAgent/SPEC.md): canonical specification.
 - [TradeAgent/PHASED_IMPLEMENTATION_PLAN.md](TradeAgent/PHASED_IMPLEMENTATION_PLAN.md): phased roadmap.
+- [E2E_TESTING.md](E2E_TESTING.md): synthetic end-to-end proof suite.
 - [IMPLEMENTATION_STATUS.md](IMPLEMENTATION_STATUS.md): current build status against each phase.
 - [TradeAgent/best_solution.md](TradeAgent/best_solution.md): converged architecture notes.
 
