@@ -40,12 +40,35 @@ Parallax uses Python for analytics. By default it runs `python3`; set `PARALLAX_
 Run a custom analysis:
 
 ```bash
-npm run analyze -- \
+npm run analyze --silent -- \
   --symbol NVDA \
   --horizon swing \
   --thesis "post-earnings continuation with controlled risk" \
   --ceiling watchlist \
   --now 2026-05-01T14:30:00Z
+```
+
+By default the CLI prints a human-readable report with:
+
+- input summary;
+- numbered pipeline steps;
+- decision and confidence;
+- key analytics;
+- council result;
+- strongest bull and bear cases;
+- vetoes and required checks;
+- lifecycle triggers;
+- generated artifact paths;
+- next commands.
+
+Use JSON mode for scripts:
+
+```bash
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --horizon swing \
+  --thesis "post-earnings continuation with controlled risk" \
+  --json
 ```
 
 Replay an audit bundle:
@@ -62,6 +85,8 @@ node dist/src/cli/parallax.js monitor \
   --price 111 \
   --now 2026-05-01T15:00:00Z
 ```
+
+Every command supports `--json` when machine-readable output is needed.
 
 ## Architecture
 

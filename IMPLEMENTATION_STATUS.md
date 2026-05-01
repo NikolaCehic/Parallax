@@ -22,7 +22,7 @@ Python owns deterministic quant-style analytics through `python/parallax_analyti
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 20 tests, including 10 full E2E synthetic scenarios.
+- `npm test` builds TypeScript and runs 23 tests, including 10 full E2E synthetic scenarios and CLI human-output coverage.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Stale data vetoes escalation.
@@ -32,6 +32,7 @@ Python owns deterministic quant-style analytics through `python/parallax_analyti
 - Paper tickets cannot be created from watchlist-only dossiers.
 - Sandbox submission requires approval and respects the kill switch.
 - E2E tests generate arbitrary temporary market, event, and portfolio datasets.
+- CLI defaults to step-by-step human-readable reports while preserving `--json` mode for scripts.
 
 ## E2E Proof Suite
 

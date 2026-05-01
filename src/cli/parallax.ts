@@ -2,7 +2,14 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle } from "../index.js";
-import { dossierToMarkdown } from "../render.js";
+import {
+  dossierToHumanReport,
+  dossierToMarkdown,
+  monitorToHumanReport,
+  paperToHumanReport,
+  replayToHumanReport,
+  sandboxToHumanReport
+} from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import { ApprovalStore, SandboxBroker, KillSwitch } from "../execution/sandbox.js";
 
@@ -34,7 +41,22 @@ Commands:
   monitor --audit audits/dos_x.json --price 1050 --now 2026-05-01T15:00:00Z
   paper --audit audits/dos_x.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
+
+Common flags:
+  --json                 Print machine-readable JSON instead of human-readable output.
+  --format json|human    Same as --json, but explicit.
+  --data-dir fixtures    Directory containing market/events/portfolio fixture data.
+  --audit-dir audits     Directory where analyze writes audit artifacts.
 `;
+}
+
+function wantsJson(args: CliArgs) {
+  return args.json === true || args.format === "json";
+}
+
+function printResult(args: CliArgs, human: string, json: any) {
+  if (wantsJson(args)) console.log(JSON.stringify(json, null, 2));
+  else console.log(human);
 }
 
 async function main() {
@@ -52,14 +74,16 @@ async function main() {
       symbol: String(args.symbol),
       horizon: String(args.horizon ?? "swing"),
       thesis: String(args.thesis),
+      dataDir: String(args["data-dir"] ?? "fixtures"),
       actionCeiling: String(args.ceiling ?? "watchlist"),
       audit: true,
-      now: args.now ? String(args.now) : undefined
+      now: args.now ? String(args.now) : undefined,
+      auditDir: String(args["audit-dir"] ?? "audits")
     });
-    const auditPath = path.join("audits", `${dossier.id}.json`);
-    const markdownPath = path.join("audits", `${dossier.id}.md`);
+    const auditPath = path.join(String(args["audit-dir"] ?? "audits"), `${dossier.id}.json`);
+    const markdownPath = path.join(String(args["audit-dir"] ?? "audits"), `${dossier.id}.md`);
     await writeFile(markdownPath, dossierToMarkdown(dossier));
-    console.log(JSON.stringify({
+    const result = {
       dossier_id: dossier.id,
       action_class: dossier.decision_packet.action_class,
       thesis_state: dossier.lifecycle.state,
@@ -67,14 +91,16 @@ async function main() {
       freshness_score: dossier.lifecycle.freshness_score,
       audit_path: auditPath,
       markdown_path: markdownPath
-    }, null, 2));
+    };
+    printResult(args, dossierToHumanReport(dossier, { auditPath, markdownPath }), result);
     return;
   }
 
   if (command === "replay") {
     if (!args.audit) throw new Error("replay requires --audit");
     const bundle = await readAuditBundle(String(args.audit));
-    console.log(JSON.stringify(replayAuditBundle(bundle), null, 2));
+    const replay = replayAuditBundle(bundle);
+    printResult(args, replayToHumanReport(replay), replay);
     return;
   }
 
@@ -88,7 +114,7 @@ async function main() {
       annualized_volatility_20: args.vol ? Number(args.vol) : 0.3,
       material_event_arrives: args.event === "true"
     });
-    console.log(JSON.stringify(updated, null, 2));
+    printResult(args, monitorToHumanReport(updated), updated);
     return;
   }
 
@@ -97,7 +123,8 @@ async function main() {
     const bundle = await readAuditBundle(String(args.audit));
     const ticket = createPaperTicket(bundle.dossier);
     const filled = simulatePaperFill(ticket);
-    console.log(JSON.stringify({ ticket, filled }, null, 2));
+    const result = { ticket, filled };
+    printResult(args, paperToHumanReport(result), result);
     return;
   }
 
@@ -108,7 +135,8 @@ async function main() {
     const approvals = new ApprovalStore();
     approvals.approve(ticket, { approver: String(args.approver ?? "human") });
     const broker = new SandboxBroker({ approvalStore: approvals, killSwitch: new KillSwitch() });
-    console.log(JSON.stringify(broker.submit({ dossier: bundle.dossier, ticket }), null, 2));
+    const submitted = broker.submit({ dossier: bundle.dossier, ticket });
+    printResult(args, sandboxToHumanReport(submitted), submitted);
     return;
   }
 
