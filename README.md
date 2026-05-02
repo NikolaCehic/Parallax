@@ -22,6 +22,7 @@ Parallax tries to sit in the middle:
 - The Phase 3 LLM council harness can run the same council boundary through evidence-only prompt contexts.
 - Hard gates stop bad data, bad risk, restricted symbols, stale theses, and unsafe escalation.
 - A lifecycle engine keeps every thesis temporary, monitored, and invalidatable.
+- Phase 4 lifecycle alerts track change since the last run, custom triggers, preferences, and a local notification inbox.
 
 Instead of asking:
 
@@ -166,6 +167,40 @@ Inspect the prompt, persona, and provider registry:
 npm run cli -- prompt-registry
 ```
 
+Scan lifecycle alerts:
+
+```bash
+npm run alerts -- \
+  --audit-dir audits \
+  --prices NVDA=111 \
+  --events NVDA=false
+```
+
+Edit alert preferences:
+
+```bash
+npm run alert-prefs -- \
+  --audit-dir audits \
+  --mute TSLA
+```
+
+Add a custom lifecycle trigger without changing the immutable audit bundle:
+
+```bash
+npm run cli -- trigger-add \
+  --audit audits/dos_x.json \
+  --kind escalate \
+  --condition-type event \
+  --condition "material_event_arrives == true" \
+  --rationale "Material event requires immediate review."
+```
+
+Read the local notification inbox:
+
+```bash
+npm run notifications -- --audit-dir audits
+```
+
 Run a thesis through the local scripted LLM council harness:
 
 ```bash
@@ -231,6 +266,8 @@ npm run cli -- alerts \
   --audit-dir audits \
   --prices NVDA=111,TSLA=240
 ```
+
+Lifecycle alert scans now persist change-since-last-run state in the local workspace. Custom trigger overlays, alert preferences, and notifications are stored beside the audit library so audit bundles remain replayable.
 
 Inspect the exact evidence and tool-output hashes behind a dossier:
 
@@ -412,7 +449,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 40 tests:
+The suite currently includes 42 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -422,6 +459,7 @@ The suite currently includes 40 tests:
 - Phase 1 local-alpha E2E tests;
 - Phase 2 data-backed research E2E tests;
 - Phase 3 LLM council provider, prompt-registry, adversarial-eval, and CLI smoke tests;
+- Phase 4 lifecycle trigger-editor, alert-preference, change-since-last-run, notification, and dashboard tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -451,7 +489,7 @@ src/
   evidence/       Evidence loading and snapshots
   execution/      Sandbox execution controls
   governance/     Registry and calibration helpers
-  lifecycle/      Thesis state and trigger engine
+  lifecycle/      Thesis state, trigger engine, alert prefs, overrides, notifications
   library/        Local dossier library, source view, feedback, export
   llm/            Prompt registry, evidence-only contexts, scripted provider, eval suite
   paper/          Paper-trading helpers
@@ -525,12 +563,16 @@ Current state:
 - scripted LLM council provider harness;
 - prompt, persona, and provider registry;
 - adversarial LLM eval suite;
+- lifecycle alert preferences;
+- custom lifecycle trigger overlays;
+- change-since-last-run monitor state;
+- local notification inbox;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 40 passing tests.
+- 42 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

@@ -463,7 +463,8 @@ export function exportToHumanReport(result: any) {
     `Dossiers: ${result.dossier_count}`,
     `Source views: ${result.source_view_count}`,
     `Audit bundles: ${result.audit_bundle_count ?? 0}`,
-    `Feedback: ${result.feedback_count ?? 0}`
+    `Feedback: ${result.feedback_count ?? 0}`,
+    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`
   ]);
 }
 
@@ -475,7 +476,8 @@ export function importToHumanReport(result: any) {
     `Input: ${result.input}`,
     `Audit dir: ${result.audit_dir}`,
     `Dossiers: ${result.dossier_count}`,
-    `Feedback: ${result.feedback_count}`
+    `Feedback: ${result.feedback_count}`,
+    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`
   ]);
 }
 
@@ -498,8 +500,10 @@ export function alertsToHumanReport(result: any) {
       `${entry.previous_state}->${entry.current_state}`,
       `price=${compact(entry.checked_price)}`,
       `triggers=${entry.fired_triggers?.length ?? 0}`,
+      `change=${entry.change_since_last_run?.status ?? "n/a"}`,
+      entry.muted ? "muted=yes" : "",
       entry.audit_path
-    ].join(" | ")
+    ].filter(Boolean).join(" | ")
   );
 
   return lines([
@@ -510,6 +514,7 @@ export function alertsToHumanReport(result: any) {
     `Audit dir: ${result.audit_dir}`,
     `Dossiers: ${result.dossier_count}`,
     `Need attention: ${result.attention_count}`,
+    `Notifications: ${result.notification_count ?? 0}`,
     "",
     rows.length ? rows.join("\n") : "No dossiers found.",
     "",
@@ -517,6 +522,88 @@ export function alertsToHumanReport(result: any) {
     result.attention_count > 0
       ? "  At least one thesis changed state or fired a lifecycle trigger."
       : "  No saved thesis changed state under the checked conditions."
+  ]);
+}
+
+export function alertPreferencesToHumanReport(preferences: any) {
+  return lines([
+    "Parallax Alert Preferences",
+    "==========================",
+    "",
+    `Audit dir: ${preferences.audit_dir}`,
+    `Channels: ${preferences.channels.join(", ")}`,
+    `Quiet unchanged: ${preferences.quiet_unchanged ? "yes" : "no"}`,
+    `Notify states: ${preferences.notify_on_states.join(", ")}`,
+    `Notify trigger kinds: ${preferences.notify_on_trigger_kinds.join(", ")}`,
+    `Minimum freshness: ${preferences.min_freshness_score}`,
+    `Muted symbols: ${preferences.muted_symbols.length ? preferences.muted_symbols.join(", ") : "None."}`
+  ]);
+}
+
+export function lifecycleTriggerToHumanReport(result: any) {
+  const trigger = result.trigger;
+  return lines([
+    "Parallax Lifecycle Trigger",
+    "==========================",
+    "",
+    `Dossier ID: ${result.dossier_id}`,
+    `Override path: ${result.override_path}`,
+    "",
+    "Trigger",
+    `  ID: ${trigger.id}`,
+    `  Kind: ${trigger.kind}`,
+    `  Condition type: ${trigger.condition_type}`,
+    `  Condition: ${trigger.condition}`,
+    `  Rationale: ${trigger.human_rationale}`,
+    `  Linked assumption: ${compact(trigger.linked_assumption)}`
+  ]);
+}
+
+export function lifecycleOverridesToHumanReport(result: any) {
+  const rows = Object.values(result.overrides).flatMap((override: any) =>
+    (override.custom_triggers ?? []).map((trigger: any) =>
+      [
+        override.dossier_id,
+        trigger.id,
+        trigger.kind,
+        trigger.condition_type,
+        trigger.condition,
+        trigger.human_rationale
+      ].join(" | ")
+    )
+  );
+
+  return lines([
+    "Parallax Lifecycle Overrides",
+    "============================",
+    "",
+    `Audit dir: ${result.audit_dir}`,
+    `Dossiers with overrides: ${Object.keys(result.overrides).length}`,
+    "",
+    rows.length ? rows.join("\n") : "No custom lifecycle triggers."
+  ]);
+}
+
+export function lifecycleNotificationsToHumanReport(result: any) {
+  const rows = result.notifications.map((item: any, index: number) =>
+    [
+      `${index + 1}. ${item.symbol}`,
+      item.severity,
+      item.current_state,
+      item.title,
+      item.created_at,
+      item.audit_path
+    ].join(" | ")
+  );
+
+  return lines([
+    "Parallax Lifecycle Notifications",
+    "=================================",
+    "",
+    `Audit dir: ${result.audit_dir}`,
+    `Notifications: ${result.notifications.length}`,
+    "",
+    rows.length ? rows.join("\n") : "No lifecycle notifications."
   ]);
 }
 

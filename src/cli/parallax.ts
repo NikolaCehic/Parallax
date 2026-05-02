@@ -11,6 +11,7 @@ import {
   runLLMEvalSuite
 } from "../index.js";
 import {
+  alertPreferencesToHumanReport,
   alertsToHumanReport,
   appToHumanReport,
   dataStatusToHumanReport,
@@ -21,6 +22,9 @@ import {
   feedbackToHumanReport,
   importToHumanReport,
   libraryToHumanReport,
+  lifecycleNotificationsToHumanReport,
+  lifecycleOverridesToHumanReport,
+  lifecycleTriggerToHumanReport,
   llmEvalToHumanReport,
   monitorToHumanReport,
   paperToHumanReport,
@@ -44,6 +48,14 @@ import {
   sourceViewFromAudit,
   upsertLibraryEntry
 } from "../library/store.js";
+import {
+  addLifecycleTrigger,
+  disableLifecycleTrigger,
+  readAlertPreferences,
+  readLifecycleNotifications,
+  readLifecycleOverrides,
+  updateAlertPreferences
+} from "../lifecycle/workspace.js";
 import { writeDashboard } from "../app/dashboard.js";
 import { buildDataStatus } from "../data/status.js";
 import { writePortfolioJson } from "../data/portfolio.js";
@@ -79,6 +91,11 @@ Commands:
   library [--audit-dir audits]
   watchlist [--audit-dir audits]
   alerts [--audit-dir audits] [--prices NVDA=111,TSLA=240]
+  alert-prefs [--audit-dir audits] [--mute NVDA] [--unmute NVDA] [--min-freshness 0.35]
+  trigger-add --audit audits/dos_x.json --kind recheck --condition-type price --condition "last_price > 120" --rationale "..."
+  trigger-disable --audit audits/dos_x.json --trigger trig_x
+  triggers [--audit-dir audits]
+  notifications [--audit-dir audits]
   data-status --symbol NVDA [--data-dir fixtures]
   sources --audit audits/dos_x.json
   feedback --audit audits/dos_x.json --rating useful [--notes "..."]
@@ -102,6 +119,8 @@ Common flags:
   --llm-scenario         safe, hallucinated_ref, numeric_fabrication, hidden_recommendation, prompt_injection_obedience.
   --llm-budget-tokens    Maximum context tokens for LLM provider path.
   --llm-budget-usd       Maximum estimated cost for LLM provider path.
+  --events               Symbol event flags, for alerts: NVDA=true,TSLA=false.
+  --vols                 Symbol volatility overrides, for alerts: NVDA=0.9.
 `;
 }
 
@@ -124,6 +143,28 @@ function parsePrices(value?: string | boolean) {
     if (!Number.isNaN(price)) prices[symbol.toUpperCase()] = price;
   }
   return prices;
+}
+
+function parseBooleanMap(value?: string | boolean) {
+  const mapped: Record<string, boolean> = {};
+  if (!value || value === true) return mapped;
+  for (const part of String(value).split(",")) {
+    const [symbol, raw] = part.split("=");
+    if (!symbol || raw === undefined) continue;
+    mapped[symbol.toUpperCase()] = raw === "true" || raw === "1" || raw === "yes";
+  }
+  return mapped;
+}
+
+function parseCsvList(value?: string | boolean) {
+  if (!value || value === true) return undefined;
+  return String(value).split(",").map((item) => item.trim()).filter(Boolean);
+}
+
+function parseOptionalBoolean(value?: string | boolean) {
+  if (value === undefined) return undefined;
+  if (value === true) return true;
+  return ["true", "1", "yes", "on"].includes(String(value).toLowerCase());
 }
 
 function parseLLMBudget(args: CliArgs) {
@@ -240,9 +281,77 @@ async function main() {
     const alerts = await monitorWorkspace({
       auditDir: String(args["audit-dir"] ?? "audits"),
       now: args.now ? String(args.now) : undefined,
-      prices: parsePrices(args.prices)
+      prices: parsePrices(args.prices),
+      events: parseBooleanMap(args.events),
+      annualizedVolatility: parsePrices(args.vols)
     });
     printResult(args, alertsToHumanReport(alerts), alerts);
+    return;
+  }
+
+  if (command === "alert-prefs") {
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const hasUpdate = args.mute || args.unmute || args.channels || args["min-freshness"] || args["quiet-unchanged"] || args.states || args.triggers;
+    const preferences = hasUpdate
+      ? await updateAlertPreferences({
+        auditDir,
+        mute: parseCsvList(args.mute) ?? [],
+        unmute: parseCsvList(args.unmute) ?? [],
+        channels: parseCsvList(args.channels),
+        quietUnchanged: parseOptionalBoolean(args["quiet-unchanged"]),
+        notifyOnStates: parseCsvList(args.states),
+        notifyOnTriggerKinds: parseCsvList(args.triggers),
+        minFreshnessScore: args["min-freshness"] && args["min-freshness"] !== true ? Number(args["min-freshness"]) : undefined
+      })
+      : await readAlertPreferences(auditDir);
+    printResult(args, alertPreferencesToHumanReport(preferences), preferences);
+    return;
+  }
+
+  if (command === "trigger-add") {
+    if (!args.audit) throw new Error("trigger-add requires --audit");
+    for (const required of ["kind", "condition-type", "condition", "rationale"]) {
+      if (!args[required]) throw new Error(`trigger-add requires --${required}`);
+    }
+    const result = await addLifecycleTrigger({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      kind: String(args.kind),
+      conditionType: String(args["condition-type"]),
+      condition: String(args.condition),
+      rationale: String(args.rationale),
+      linkedAssumption: args.assumption ? String(args.assumption) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, lifecycleTriggerToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "trigger-disable") {
+    if (!args.audit) throw new Error("trigger-disable requires --audit");
+    if (!args.trigger) throw new Error("trigger-disable requires --trigger");
+    const result = await disableLifecycleTrigger({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      triggerId: String(args.trigger),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, lifecycleOverridesToHumanReport({
+      audit_dir: result.audit_dir,
+      overrides: { [result.dossier_id]: result.override }
+    }), result);
+    return;
+  }
+
+  if (command === "triggers") {
+    const overrides = await readLifecycleOverrides(String(args["audit-dir"] ?? "audits"));
+    printResult(args, lifecycleOverridesToHumanReport(overrides), overrides);
+    return;
+  }
+
+  if (command === "notifications") {
+    const notifications = await readLifecycleNotifications(String(args["audit-dir"] ?? "audits"));
+    printResult(args, lifecycleNotificationsToHumanReport(notifications), notifications);
     return;
   }
 
@@ -325,7 +434,9 @@ async function main() {
       auditDir: String(args["audit-dir"] ?? "audits"),
       out: args.out ? String(args.out) : undefined,
       now: args.now ? String(args.now) : undefined,
-      prices: parsePrices(args.prices)
+      prices: parsePrices(args.prices),
+      events: parseBooleanMap(args.events),
+      annualizedVolatility: parsePrices(args.vols)
     });
     printResult(args, appToHumanReport(app), app);
     return;

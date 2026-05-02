@@ -20,7 +20,7 @@ function addHours(iso, hours) {
   return new Date(new Date(iso).getTime() + hours * 60 * 60 * 1000).toISOString();
 }
 
-function trigger({ kind, conditionType, condition, rationale, linkedAssumption = "" }) {
+export function createLifecycleTrigger({ kind, conditionType, condition, rationale, linkedAssumption = "" }) {
   const body = {
     kind,
     condition_type: conditionType,
@@ -49,28 +49,28 @@ export function assignLifecycle({ dossierId, snapshot, toolOutputs, decisionPack
   const upper = Number((price + priceBand).toFixed(2));
 
   const triggers = [
-    trigger({
+    createLifecycleTrigger({
       kind: "invalidate",
       conditionType: "price",
       condition: `last_price < ${lower}`,
       rationale: "Price moved below the thesis invalidation band.",
       linkedAssumption: "price_structure_holds"
     }),
-    trigger({
+    createLifecycleTrigger({
       kind: "recheck",
       conditionType: "price",
       condition: `last_price > ${upper}`,
       rationale: "Price moved enough to require a new risk/reward check.",
       linkedAssumption: "entry_quality_remains_reasonable"
     }),
-    trigger({
+    createLifecycleTrigger({
       kind: "downgrade",
       conditionType: "volatility",
       condition: `annualized_volatility_20 > ${Math.max(0.85, volatility.result.annualized_volatility_20 * 1.5).toFixed(3)}`,
       rationale: "Volatility expanded beyond the allowed thesis envelope.",
       linkedAssumption: "volatility_regime_stable"
     }),
-    trigger({
+    createLifecycleTrigger({
       kind: "downgrade",
       conditionType: "time",
       condition: `now > ${addHours(now, expiryHours)}`,
@@ -80,7 +80,7 @@ export function assignLifecycle({ dossierId, snapshot, toolOutputs, decisionPack
   ];
 
   if (event.result.material_event_count > 0) {
-    triggers.push(trigger({
+    triggers.push(createLifecycleTrigger({
       kind: "escalate",
       conditionType: "event",
       condition: "material_event_arrives == true",
@@ -135,7 +135,9 @@ export function evaluateLifecycle(lifecycle, marketState) {
   if (fired.some((item) => item.kind === "invalidate")) state = "invalidated";
   else if (fired.some((item) => item.kind === "downgrade")) state = "stale";
   else if (fired.some((item) => item.kind === "recheck")) state = "stale";
-  else if (fired.some((item) => item.kind === "escalate")) state = "stale";
+  else if (fired.some((item) => item.kind === "escalate")) {
+    state = marketState.upgrade_on_escalate === true ? "upgraded" : "stale";
+  }
 
   if (new Date(marketState.now ?? isoNow()).getTime() > new Date(lifecycle.expires_at).getTime()) {
     state = state === "invalidated" ? "invalidated" : "stale";

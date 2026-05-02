@@ -4,6 +4,21 @@ import { makeId, isoNow } from "../core/ids.js";
 import { readAuditBundle } from "../audit.js";
 import { evaluateLifecycle } from "../lifecycle/engine.js";
 import { summarizeEvidenceItems } from "../data/status.js";
+import {
+  ALERT_PREFERENCES_FILE,
+  LIFECYCLE_CHECKS_FILE,
+  LIFECYCLE_OVERRIDES_FILE,
+  NOTIFICATIONS_FILE,
+  appendLifecycleNotifications,
+  applyLifecycleOverrides,
+  buildLifecycleCheck,
+  diffLifecycleCheck,
+  readAlertPreferences,
+  readLifecycleChecks,
+  readLifecycleNotifications,
+  readLifecycleOverrides,
+  writeLifecycleChecks
+} from "../lifecycle/workspace.js";
 
 export const LIBRARY_FILE = "library.json";
 
@@ -332,6 +347,13 @@ export async function exportWorkspace({
     }
   }
   const feedback = await readFeedback(auditDir);
+  const lifecycleFiles: Record<string, any> = {};
+  for (const fileName of [ALERT_PREFERENCES_FILE, LIFECYCLE_OVERRIDES_FILE, LIFECYCLE_CHECKS_FILE]) {
+    const value = await readJsonIfExists(path.join(auditDir, fileName), undefined);
+    if (value !== undefined) lifecycleFiles[fileName] = value;
+  }
+  const notifications = await readTextIfExists(path.join(auditDir, NOTIFICATIONS_FILE));
+  if (notifications !== undefined) lifecycleFiles[NOTIFICATIONS_FILE] = parseJsonLines(notifications);
 
   const body = {
     schema_version: "0.1.0",
@@ -340,7 +362,8 @@ export async function exportWorkspace({
     sources,
     audit_bundles: auditBundles,
     markdown_documents: markdownDocuments,
-    feedback
+    feedback,
+    lifecycle_files: lifecycleFiles
   };
   await writeJson(out, body);
   return {
@@ -348,7 +371,8 @@ export async function exportWorkspace({
     dossier_count: library.entries.length,
     source_view_count: sources.length,
     audit_bundle_count: auditBundles.length,
-    feedback_count: feedback.length
+    feedback_count: feedback.length,
+    lifecycle_file_count: Object.keys(lifecycleFiles).length
   };
 }
 
@@ -363,11 +387,13 @@ export async function importWorkspace({
   await mkdir(auditDir, { recursive: true });
 
   const entries = [];
+  const auditPathByDossier = new Map<string, string>();
   for (const item of imported.audit_bundles ?? []) {
     const dossier = item.bundle.dossier;
     const auditPath = path.join(auditDir, `${dossier.id}.json`);
     const markdownPath = path.join(auditDir, `${dossier.id}.md`);
     await writeJson(auditPath, item.bundle);
+    auditPathByDossier.set(dossier.id, auditPath);
     entries.push(entryFromDossier(dossier, { auditPath, markdownPath }));
   }
 
@@ -384,6 +410,28 @@ export async function importWorkspace({
   for (const [dossierId, items] of feedbackByDossier.entries()) {
     const text = items.map((item) => JSON.stringify(item)).join("\n") + "\n";
     await writeFile(path.join(auditDir, `${dossierId}.feedback.jsonl`), text);
+  }
+
+  for (const [fileName, value] of Object.entries(imported.lifecycle_files ?? {})) {
+    if (fileName === NOTIFICATIONS_FILE && Array.isArray(value)) {
+      const text = value.map((item: any) => JSON.stringify(item)).join("\n") + (value.length ? "\n" : "");
+      await writeFile(path.join(auditDir, fileName), text);
+    } else if ([ALERT_PREFERENCES_FILE, LIFECYCLE_OVERRIDES_FILE, LIFECYCLE_CHECKS_FILE].includes(fileName)) {
+      const portableValue = fileName === LIFECYCLE_OVERRIDES_FILE && value && typeof value === "object"
+        ? {
+          ...value,
+          audit_dir: auditDir,
+          overrides: Object.fromEntries(Object.entries((value as any).overrides ?? {}).map(([dossierId, override]: any) => [
+            dossierId,
+            {
+              ...override,
+              audit_path: auditPathByDossier.get(dossierId) ?? override.audit_path
+            }
+          ]))
+        }
+        : value;
+      await writeJson(path.join(auditDir, fileName), portableValue);
+    }
   }
 
   const existingLibrary = await loadLibrary(auditDir);
@@ -408,7 +456,8 @@ export async function importWorkspace({
     input,
     audit_dir: auditDir,
     dossier_count: entries.length,
-    feedback_count: imported.feedback?.length ?? 0
+    feedback_count: imported.feedback?.length ?? 0,
+    lifecycle_file_count: Object.keys(imported.lifecycle_files ?? {}).length
   };
 }
 
@@ -419,25 +468,47 @@ function toolByName(dossier: any, toolName: string) {
 export async function monitorWorkspace({
   auditDir = "audits",
   now = isoNow(),
-  prices = {}
+  prices = {},
+  events = {},
+  annualizedVolatility = {},
+  persist = true,
+  notify = true,
+  upgradeOnEscalate = true
 }: {
   auditDir?: string;
   now?: string;
   prices?: Record<string, number>;
+  events?: Record<string, boolean>;
+  annualizedVolatility?: Record<string, number>;
+  persist?: boolean;
+  notify?: boolean;
+  upgradeOnEscalate?: boolean;
 } = {}) {
   const library = await loadLibrary(auditDir);
+  const preferences = await readAlertPreferences(auditDir);
+  const overrides = await readLifecycleOverrides(auditDir);
+  const previousChecks = await readLifecycleChecks(auditDir);
   const entries = [];
+  const nextChecks: Record<string, any> = { ...previousChecks.checks };
 
   for (const entry of library.entries) {
     if (!entry.audit_path) {
-      entries.push({
+      const missing = {
         dossier_id: entry.id,
         symbol: entry.symbol,
+        checked_at: now,
         status: "missing_audit",
         previous_state: entry.thesis_state,
         current_state: entry.thesis_state,
-        fired_triggers: []
-      });
+        fired_triggers: [],
+        change_since_last_run: {
+          status: "changed",
+          changed_fields: ["audit_path"],
+          previous_check: previousChecks.checks[entry.id] ?? null
+        }
+      };
+      nextChecks[entry.id] = buildLifecycleCheck(missing);
+      entries.push(missing);
       continue;
     }
 
@@ -446,16 +517,19 @@ export async function monitorWorkspace({
     const returns = toolByName(dossier, "return_summary");
     const volatility = toolByName(dossier, "volatility_check");
     const lastPrice = prices[dossier.symbol] ?? returns?.result?.latest_close;
-    const updated = evaluateLifecycle(dossier.lifecycle, {
+    const lifecycle = applyLifecycleOverrides(dossier.lifecycle, overrides.overrides[dossier.id]);
+    const updated = evaluateLifecycle(lifecycle, {
       now,
       last_price: lastPrice,
-      annualized_volatility_20: volatility?.result?.annualized_volatility_20 ?? 0,
-      material_event_arrives: false
+      annualized_volatility_20: annualizedVolatility[dossier.symbol] ?? volatility?.result?.annualized_volatility_20 ?? 0,
+      material_event_arrives: events[dossier.symbol] ?? false,
+      upgrade_on_escalate: upgradeOnEscalate
     });
 
-    entries.push({
+    const monitored = {
       dossier_id: dossier.id,
       symbol: dossier.symbol,
+      checked_at: now,
       action_class: dossier.decision_packet.action_class,
       status: updated.state === dossier.lifecycle.state && updated.fired_triggers.length === 0 ? "unchanged" : "attention",
       previous_state: dossier.lifecycle.state,
@@ -464,16 +538,34 @@ export async function monitorWorkspace({
       checked_price: lastPrice,
       expires_at: updated.expires_at,
       fired_triggers: updated.fired_triggers,
+      custom_trigger_count: overrides.overrides[dossier.id]?.custom_triggers?.length ?? 0,
+      muted: preferences.muted_symbols.includes(dossier.symbol),
       audit_path: entry.audit_path
+    };
+    const check = buildLifecycleCheck(monitored);
+    const change = diffLifecycleCheck(previousChecks.checks[dossier.id], check);
+    nextChecks[dossier.id] = check;
+    entries.push({
+      ...monitored,
+      change_since_last_run: change
     });
   }
 
   const attention = entries.filter((entry: any) => entry.status === "attention");
+  const notifications = notify
+    ? await appendLifecycleNotifications({ auditDir, entries, preferences, now })
+    : [];
+  if (persist) {
+    await writeLifecycleChecks(auditDir, nextChecks);
+  }
   return {
     checked_at: now,
     audit_dir: auditDir,
     dossier_count: entries.length,
     attention_count: attention.length,
+    notification_count: notifications.length,
+    notifications,
+    preferences,
     entries
   };
 }

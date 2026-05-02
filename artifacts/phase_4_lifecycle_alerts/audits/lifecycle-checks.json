@@ -1,0 +1,22 @@
+{
+  "schema_version": "0.1.0",
+  "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+  "updated_at": "2026-05-02T17:40:28.891Z",
+  "checks": {
+    "dos_bd6595b556f6": {
+      "dossier_id": "dos_bd6595b556f6",
+      "symbol": "NVDA",
+      "checked_at": "2026-05-01T15:03:00Z",
+      "current_state": "upgraded",
+      "freshness_score": 0.997,
+      "checked_price": 114.6,
+      "fired_trigger_ids": [
+        "trig_f36ff1d4c3c0"
+      ],
+      "fired_trigger_kinds": [
+        "escalate"
+      ],
+      "status": "attention"
+    }
+  }
+}

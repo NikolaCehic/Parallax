@@ -102,7 +102,8 @@ The current repo already has the right skeleton:
 - paper-trading helpers;
 - sandbox execution controls;
 - scripted LLM council harness;
-- 40 tests;
+- lifecycle alert workspace;
+- 42 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -140,7 +141,13 @@ Implemented on 2026-05-02:
 - adversarial LLM eval suite;
 - cost controls for model-style runs;
 - Phase 3 artifact bundle;
-- 40 passing tests.
+- custom lifecycle trigger overlays;
+- alert preference manager;
+- change-since-last-run monitor state;
+- local notification inbox;
+- lifecycle dashboard upgrades;
+- Phase 4 artifact bundle;
+- 42 passing tests.
 
 ## Knowledge Gathered
 
@@ -778,6 +785,8 @@ Exit criteria:
 
 ### Phase 4: Lifecycle And Alerts
 
+Status: Complete for local workspace scope.
+
 Goal:
 
 Make theses live over time.
@@ -791,6 +800,10 @@ Deliverables:
 - change-since-last-run view;
 - stale/invalidated/upgraded states;
 - notification system.
+- replay-safe custom trigger overlays;
+- alert preferences and muted symbols;
+- local notification inbox;
+- change-since-last-run state.
 
 Exit criteria:
 

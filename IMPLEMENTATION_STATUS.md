@@ -8,7 +8,7 @@ TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision 
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, and scripted LLM council safety evals.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, and local notifications.
 
 ## Phase Completion Map
 
@@ -30,10 +30,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 1 Local Alpha | Complete | Local dashboard, library, watchlist, alerts, feedback, portable import/export, phase artifacts |
 | 2 Data-Backed Research App | Complete for local licensed-data-pack scope | Market/fundamental/news/event/corporate-action adapters, portfolio CSV import, freshness dashboard, source viewer upgrades, phase artifacts |
 | 3 LLM Council Beta | Complete for local scripted-provider scope | LLM provider abstraction, prompt/persona/provider registry, evidence-only contexts, adversarial evals, cost controls, phase artifacts |
+| 4 Lifecycle And Alerts | Complete for local workspace scope | Trigger editor, alert preferences, persisted change-since-last-run checks, notification inbox, lifecycle dashboard upgrades, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 40 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, and Phase 3 LLM council safety tests.
+- `npm test` builds TypeScript and runs 42 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, and Phase 4 lifecycle-alert tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -42,6 +43,10 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `llm-scripted` mode builds evidence-only context windows, tracks token/cost budget, stores context hashes, and remains replayable without cloud credentials.
 - `llm-eval` rejects hallucinated references, unsupported calculations, hidden recommendation language, prompt-injection obedience, and cost overruns.
 - `prompt-registry` exposes prompt, persona, and provider registry state for governance review.
+- `trigger-add` writes custom lifecycle triggers as replay-safe local overrides.
+- `alert-prefs` manages local alert channels, muted symbols, and freshness thresholds.
+- `alerts` now reports change since last run and writes local notifications.
+- `notifications` reads the local lifecycle inbox.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -52,6 +57,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `portfolio-import` converts broker-style CSV exports into the local portfolio contract.
 - Phase 2 artifacts live under `artifacts/phase_2_data_backed_research_app/`.
 - Phase 3 artifacts live under `artifacts/phase_3_llm_council_beta/`.
+- Phase 4 artifacts live under `artifacts/phase_4_lifecycle_alerts/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.

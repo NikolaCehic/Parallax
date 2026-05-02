@@ -108,3 +108,11 @@ export { evaluateClaimPackets, runCouncilProvider } from "./council/provider.js"
 export { promptRegistrySnapshot } from "./llm/registry.js";
 export { runLLMEvalSuite } from "./llm/evals.js";
 export { buildEvidenceOnlyContext } from "./llm/context.js";
+export {
+  addLifecycleTrigger,
+  applyLifecycleOverrides,
+  readAlertPreferences,
+  readLifecycleNotifications,
+  readLifecycleOverrides,
+  updateAlertPreferences
+} from "./lifecycle/workspace.js";

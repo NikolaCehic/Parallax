@@ -1,0 +1,83 @@
+{
+  "checked_at": "2026-05-01T15:02:00Z",
+  "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+  "dossier_count": 1,
+  "attention_count": 1,
+  "notification_count": 0,
+  "notifications": [],
+  "preferences": {
+    "schema_version": "0.1.0",
+    "channels": [
+      "local_inbox"
+    ],
+    "quiet_unchanged": true,
+    "notify_on_states": [
+      "stale",
+      "invalidated",
+      "upgraded"
+    ],
+    "notify_on_trigger_kinds": [
+      "recheck",
+      "downgrade",
+      "invalidate",
+      "escalate"
+    ],
+    "muted_symbols": [
+      "NVDA"
+    ],
+    "min_freshness_score": 0.35,
+    "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+    "updated_at": "2026-05-02T17:40:10.716Z"
+  },
+  "entries": [
+    {
+      "dossier_id": "dos_bd6595b556f6",
+      "symbol": "NVDA",
+      "checked_at": "2026-05-01T15:02:00Z",
+      "action_class": "paper_trade_candidate",
+      "status": "attention",
+      "previous_state": "active",
+      "current_state": "invalidated",
+      "freshness_score": 0,
+      "checked_price": 1,
+      "expires_at": "2026-05-02T14:30:00.000Z",
+      "fired_triggers": [
+        {
+          "id": "trig_104b162dc653",
+          "kind": "invalidate",
+          "condition_type": "price",
+          "condition": "last_price < 111.73",
+          "human_rationale": "Price moved below the thesis invalidation band.",
+          "linked_assumption": "price_structure_holds"
+        }
+      ],
+      "custom_trigger_count": 1,
+      "muted": true,
+      "audit_path": "artifacts/phase_4_lifecycle_alerts/audits/dos_bd6595b556f6.json",
+      "change_since_last_run": {
+        "status": "changed",
+        "changed_fields": [
+          "current_state",
+          "freshness_score",
+          "checked_price",
+          "fired_trigger_ids"
+        ],
+        "previous_check": {
+          "dossier_id": "dos_bd6595b556f6",
+          "symbol": "NVDA",
+          "checked_at": "2026-05-01T15:01:00Z",
+          "current_state": "upgraded",
+          "freshness_score": 0.997,
+          "checked_price": 114.6,
+          "fired_trigger_ids": [
+            "trig_f36ff1d4c3c0"
+          ],
+          "fired_trigger_kinds": [
+            "escalate"
+          ],
+          "status": "attention"
+        }
+      }
+    }
+  ]
+}

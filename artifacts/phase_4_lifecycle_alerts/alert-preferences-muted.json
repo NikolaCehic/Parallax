@@ -1,0 +1,24 @@
+{
+  "schema_version": "0.1.0",
+  "channels": [
+    "local_inbox"
+  ],
+  "quiet_unchanged": true,
+  "notify_on_states": [
+    "stale",
+    "invalidated",
+    "upgraded"
+  ],
+  "notify_on_trigger_kinds": [
+    "recheck",
+    "downgrade",
+    "invalidate",
+    "escalate"
+  ],
+  "muted_symbols": [
+    "NVDA"
+  ],
+  "min_freshness_score": 0.35,
+  "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+  "updated_at": "2026-05-02T17:40:10.716Z"
+}

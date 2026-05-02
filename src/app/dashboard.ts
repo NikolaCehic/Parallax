@@ -7,6 +7,7 @@ import {
   sourceViewFromAudit,
   summarizeFeedback
 } from "../library/store.js";
+import { readAlertPreferences, readLifecycleNotifications } from "../lifecycle/workspace.js";
 
 function escapeHtml(value: any) {
   return String(value ?? "")
@@ -51,7 +52,7 @@ function renderDossierRows(entries: any[]) {
 
 function renderAlertRows(entries: any[]) {
   if (!entries.length) {
-    return `<tr><td colspan="5" class="empty">No saved theses to scan.</td></tr>`;
+    return `<tr><td colspan="7" class="empty">No saved theses to scan.</td></tr>`;
   }
   return entries.map((entry: any) => `
     <tr>
@@ -59,7 +60,24 @@ function renderAlertRows(entries: any[]) {
       <td>${badge(entry.status)}</td>
       <td>${escapeHtml(entry.previous_state)} -> ${escapeHtml(entry.current_state)}</td>
       <td>${escapeHtml(entry.fired_triggers?.length ?? 0)}</td>
+      <td>${badge(entry.change_since_last_run?.status ?? "n/a")}</td>
+      <td>${entry.muted ? badge("muted") : badge("on")}</td>
       <td><code>${escapeHtml(entry.audit_path ?? "")}</code></td>
+    </tr>
+  `).join("");
+}
+
+function renderNotificationRows(notifications: any[]) {
+  if (!notifications.length) {
+    return `<tr><td colspan="5" class="empty">No lifecycle notifications.</td></tr>`;
+  }
+  return notifications.slice(0, 12).map((item: any) => `
+    <tr>
+      <td><strong>${escapeHtml(item.symbol)}</strong><span>${escapeHtml(item.created_at)}</span></td>
+      <td>${badge(item.severity)}</td>
+      <td>${badge(item.current_state)}</td>
+      <td>${escapeHtml(item.message)}</td>
+      <td><code>${escapeHtml(item.audit_path ?? "")}</code></td>
     </tr>
   `).join("");
 }
@@ -105,15 +123,29 @@ function renderFeedback(summary: any) {
 export async function buildDashboardHtml({
   auditDir = "audits",
   now,
-  prices = {}
+  prices = {},
+  events = {},
+  annualizedVolatility = {}
 }: {
   auditDir?: string;
   now?: string;
   prices?: Record<string, number>;
+  events?: Record<string, boolean>;
+  annualizedVolatility?: Record<string, number>;
 } = {}) {
   const library = await listLibraryEntries({ auditDir });
-  const alerts = await monitorWorkspace({ auditDir, now, prices });
+  const alerts = await monitorWorkspace({
+    auditDir,
+    now,
+    prices,
+    events,
+    annualizedVolatility,
+    persist: false,
+    notify: false
+  });
   const feedback = await summarizeFeedback(auditDir);
+  const preferences = await readAlertPreferences(auditDir);
+  const notifications = await readLifecycleNotifications(auditDir);
   const policy = productPolicySnapshot();
   const sourceViews = [];
   for (const entry of library.entries) {
@@ -279,6 +311,7 @@ export async function buildDashboardHtml({
       <strong>Workspace</strong>
       <a href="#library">Dossier Library</a>
       <a href="#alerts">Lifecycle Alerts</a>
+      <a href="#notifications">Notification Inbox</a>
       <a href="#sources">Data Freshness</a>
       <a href="#feedback">Alpha Feedback</a>
       <a href="#boundary">Product Boundary</a>
@@ -290,6 +323,7 @@ export async function buildDashboardHtml({
         ${metric("Need Attention", alerts.attention_count, alerts.checked_at)}
         ${metric("Data Sources", sourceCount, "evidence items")}
         ${metric("Feedback", feedback.feedback_count, "local alpha notes")}
+        ${metric("Notifications", notifications.notifications.length, preferences.channels.join(", "))}
       </div>
 
       <section class="section" id="library">
@@ -303,8 +337,16 @@ export async function buildDashboardHtml({
       <section class="section" id="alerts">
         <h2>Lifecycle Alerts</h2>
         <table>
-          <thead><tr><th>Symbol</th><th>Status</th><th>State Change</th><th>Triggers</th><th>Audit</th></tr></thead>
+          <thead><tr><th>Symbol</th><th>Status</th><th>State Change</th><th>Triggers</th><th>Since Last Run</th><th>Alerts</th><th>Audit</th></tr></thead>
           <tbody>${renderAlertRows(alerts.entries)}</tbody>
+        </table>
+      </section>
+
+      <section class="section" id="notifications">
+        <h2>Notification Inbox</h2>
+        <table>
+          <thead><tr><th>Symbol</th><th>Severity</th><th>State</th><th>Message</th><th>Audit</th></tr></thead>
+          <tbody>${renderNotificationRows(notifications.notifications)}</tbody>
         </table>
       </section>
 
@@ -340,14 +382,18 @@ export async function writeDashboard({
   auditDir = "audits",
   out = path.join(auditDir, "parallax-dashboard.html"),
   now,
-  prices = {}
+  prices = {},
+  events = {},
+  annualizedVolatility = {}
 }: {
   auditDir?: string;
   out?: string;
   now?: string;
   prices?: Record<string, number>;
+  events?: Record<string, boolean>;
+  annualizedVolatility?: Record<string, number>;
 } = {}) {
-  const html = (await buildDashboardHtml({ auditDir, now, prices })).replace(/[ \t]+$/gm, "");
+  const html = (await buildDashboardHtml({ auditDir, now, prices, events, annualizedVolatility })).replace(/[ \t]+$/gm, "");
   await mkdir(path.dirname(out), { recursive: true });
   await writeFile(out, html);
   return {

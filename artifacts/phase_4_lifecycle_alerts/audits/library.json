@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+  "entries": [
+    {
+      "id": "dos_bd6595b556f6",
+      "title": "NVDA swing thesis dossier",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "thesis": "Phase 4 lifecycle alert workspace smoke",
+      "created_at": "2026-05-01T14:30:00Z",
+      "action_class": "paper_trade_candidate",
+      "thesis_state": "active",
+      "confidence": 0.63,
+      "freshness_score": 1,
+      "expires_at": "2026-05-02T14:30:00.000Z",
+      "next_review_trigger": "Volatility regime changes materially.",
+      "veto_count": 0,
+      "required_check_count": 6,
+      "policy_status": "allowed",
+      "policy_ceiling": "paper_trade_candidate",
+      "council_provider": "deterministic_rule_council_v0",
+      "council_eval_passed": true,
+      "audit_path": "artifacts/phase_4_lifecycle_alerts/audits/dos_bd6595b556f6.json",
+      "markdown_path": "artifacts/phase_4_lifecycle_alerts/audits/dos_bd6595b556f6.md",
+      "feedback_count": 0
+    }
+  ]
+}

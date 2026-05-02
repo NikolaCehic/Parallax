@@ -1,0 +1,78 @@
+{
+  "checked_at": "2026-05-01T15:01:00Z",
+  "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+  "dossier_count": 1,
+  "attention_count": 1,
+  "notification_count": 0,
+  "notifications": [],
+  "preferences": {
+    "schema_version": "0.1.0",
+    "channels": [
+      "local_inbox"
+    ],
+    "quiet_unchanged": true,
+    "notify_on_states": [
+      "stale",
+      "invalidated",
+      "upgraded"
+    ],
+    "notify_on_trigger_kinds": [
+      "recheck",
+      "downgrade",
+      "invalidate",
+      "escalate"
+    ],
+    "muted_symbols": [],
+    "min_freshness_score": 0.35,
+    "audit_dir": "artifacts/phase_4_lifecycle_alerts/audits",
+    "updated_at": "2026-05-02T17:39:57.717Z"
+  },
+  "entries": [
+    {
+      "dossier_id": "dos_bd6595b556f6",
+      "symbol": "NVDA",
+      "checked_at": "2026-05-01T15:01:00Z",
+      "action_class": "paper_trade_candidate",
+      "status": "attention",
+      "previous_state": "active",
+      "current_state": "upgraded",
+      "freshness_score": 0.997,
+      "checked_price": 114.6,
+      "expires_at": "2026-05-02T14:30:00.000Z",
+      "fired_triggers": [
+        {
+          "id": "trig_f36ff1d4c3c0",
+          "kind": "escalate",
+          "condition_type": "event",
+          "condition": "material_event_arrives == true",
+          "human_rationale": "Material event requires immediate review.",
+          "linked_assumption": "",
+          "source": "user_override",
+          "created_at": "2026-05-01T14:35:00Z"
+        }
+      ],
+      "custom_trigger_count": 1,
+      "muted": false,
+      "audit_path": "artifacts/phase_4_lifecycle_alerts/audits/dos_bd6595b556f6.json",
+      "change_since_last_run": {
+        "status": "unchanged",
+        "changed_fields": [],
+        "previous_check": {
+          "dossier_id": "dos_bd6595b556f6",
+          "symbol": "NVDA",
+          "checked_at": "2026-05-01T15:00:00Z",
+          "current_state": "upgraded",
+          "freshness_score": 0.997,
+          "checked_price": 114.6,
+          "fired_trigger_ids": [
+            "trig_f36ff1d4c3c0"
+          ],
+          "fired_trigger_kinds": [
+            "escalate"
+          ],
+          "status": "attention"
+        }
+      }
+    }
+  ]
+}
