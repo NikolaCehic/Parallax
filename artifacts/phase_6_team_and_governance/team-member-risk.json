@@ -1,0 +1,16 @@
+{
+  "member": {
+    "id": "member_d6b8422ea801",
+    "name": "Ravi Risk",
+    "role": "risk_reviewer",
+    "email": "",
+    "status": "active",
+    "added_at": "2026-05-01T15:02:00Z"
+  },
+  "permissions": [
+    "comment",
+    "approve_risk_review"
+  ],
+  "ledger_path": "artifacts/phase_6_team_and_governance/audits/team-governance.json",
+  "member_count": 3
+}

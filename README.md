@@ -24,6 +24,7 @@ Parallax tries to sit in the middle:
 - A lifecycle engine keeps every thesis temporary, monitored, and invalidatable.
 - Phase 4 lifecycle alerts track change since the last run, custom triggers, preferences, and a local notification inbox.
 - Phase 5 paper trading stores simulated positions, outcomes, attribution, and reviews without unlocking live execution.
+- Phase 6 team governance adds role-aware review assignments, comments, approvals, release controls, and governance exports.
 
 Instead of asking:
 
@@ -103,6 +104,7 @@ TypeScript owns:
 - decision gates;
 - lifecycle state;
 - audit replay;
+- team governance;
 - paper trading;
 - sandbox execution controls.
 
@@ -317,6 +319,64 @@ npm run app -- \
 
 The local workspace is intentionally file-based. It is easy to inspect, easy to delete, and does not require a cloud account.
 
+## Team Governance
+
+Phase 6 adds a local governance ledger for small teams.
+
+Initialize a team workspace:
+
+```bash
+npm run team-init -- \
+  --audit-dir audits \
+  --workspace-name "Research Desk" \
+  --owner "Nikola"
+```
+
+Add reviewers:
+
+```bash
+npm run cli -- team-member-add --audit-dir audits --name "Lena Lead" --role lead_analyst --actor "Nikola"
+npm run cli -- team-member-add --audit-dir audits --name "Ravi Risk" --role risk_reviewer --actor "Nikola"
+npm run cli -- team-member-add --audit-dir audits --name "Casey Compliance" --role compliance_reviewer --actor "Nikola"
+npm run cli -- team-member-add --audit-dir audits --name "Mira Model" --role model_validator --actor "Nikola"
+```
+
+Assign, comment, and approve a dossier:
+
+```bash
+npm run cli -- team-assign \
+  --audit audits/dos_x.json \
+  --type risk_review \
+  --assignee "Ravi Risk" \
+  --requester "Nikola"
+
+npm run cli -- team-comment \
+  --audit audits/dos_x.json \
+  --author "Casey Compliance" \
+  --body "Research-only boundary is clear."
+
+npm run cli -- team-approve \
+  --audit-dir audits \
+  --assignment review_x \
+  --approver "Ravi Risk" \
+  --decision approved \
+  --rationale "Sizing and invalidators are acceptable for paper simulation."
+```
+
+Show release readiness and SOC 2-style control status:
+
+```bash
+npm run team-report -- --audit-dir audits
+```
+
+Export the governance package:
+
+```bash
+npm run team-export -- \
+  --audit-dir audits \
+  --out governance-package.json
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -486,7 +546,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 44 tests:
+The suite currently includes 46 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -498,6 +558,7 @@ The suite currently includes 44 tests:
 - Phase 3 LLM council provider, prompt-registry, adversarial-eval, and CLI smoke tests;
 - Phase 4 lifecycle trigger-editor, alert-preference, change-since-last-run, notification, and dashboard tests;
 - Phase 5 paper-ledger, risk-reservation, attribution, review, export/import, and CLI tests;
+- Phase 6 team-governance role, assignment, approval, release-readiness, export/import, dashboard, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -533,6 +594,7 @@ src/
   paper/          Paper-trading helpers
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
+  team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
   parallax_analytics.py
@@ -610,12 +672,18 @@ Current state:
 - paper risk-budget reservation;
 - paper outcome attribution and review notes;
 - paper calibration dashboard section;
+- team governance ledger;
+- role-aware review assignments;
+- comments and approvals;
+- release readiness controls;
+- governance export package;
+- SOC 2-style readiness program;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 44 passing tests.
+- 46 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

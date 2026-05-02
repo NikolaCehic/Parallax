@@ -123,3 +123,13 @@ export {
   paperLedgerReport,
   recordPaperReview
 } from "./paper/lab.js";
+export {
+  addTeamMember,
+  approveGovernanceReview,
+  assignGovernanceReview,
+  buildGovernanceReport,
+  exportGovernancePackage,
+  initializeTeamWorkspace,
+  loadTeamGovernance,
+  recordGovernanceComment
+} from "./team/governance.js";

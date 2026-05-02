@@ -5,6 +5,7 @@ import { readAuditBundle } from "../audit.js";
 import { evaluateLifecycle } from "../lifecycle/engine.js";
 import { summarizeEvidenceItems } from "../data/status.js";
 import { PAPER_LEDGER_FILE } from "../paper/lab.js";
+import { TEAM_GOVERNANCE_FILE } from "../team/governance.js";
 import {
   ALERT_PREFERENCES_FILE,
   LIFECYCLE_CHECKS_FILE,
@@ -358,6 +359,9 @@ export async function exportWorkspace({
   const paperFiles: Record<string, any> = {};
   const paperLedger = await readJsonIfExists(path.join(auditDir, PAPER_LEDGER_FILE), undefined);
   if (paperLedger !== undefined) paperFiles[PAPER_LEDGER_FILE] = paperLedger;
+  const governanceFiles: Record<string, any> = {};
+  const teamGovernance = await readJsonIfExists(path.join(auditDir, TEAM_GOVERNANCE_FILE), undefined);
+  if (teamGovernance !== undefined) governanceFiles[TEAM_GOVERNANCE_FILE] = teamGovernance;
 
   const body = {
     schema_version: "0.1.0",
@@ -368,7 +372,8 @@ export async function exportWorkspace({
     markdown_documents: markdownDocuments,
     feedback,
     lifecycle_files: lifecycleFiles,
-    paper_files: paperFiles
+    paper_files: paperFiles,
+    governance_files: governanceFiles
   };
   await writeJson(out, body);
   return {
@@ -378,7 +383,8 @@ export async function exportWorkspace({
     audit_bundle_count: auditBundles.length,
     feedback_count: feedback.length,
     lifecycle_file_count: Object.keys(lifecycleFiles).length,
-    paper_file_count: Object.keys(paperFiles).length
+    paper_file_count: Object.keys(paperFiles).length,
+    governance_file_count: Object.keys(governanceFiles).length
   };
 }
 
@@ -455,6 +461,29 @@ export async function importWorkspace({
     await writeJson(path.join(auditDir, fileName), portableValue);
   }
 
+  for (const [fileName, value] of Object.entries(imported.governance_files ?? {})) {
+    if (fileName !== TEAM_GOVERNANCE_FILE) continue;
+    const portableValue = value && typeof value === "object"
+      ? {
+        ...(value as any),
+        audit_dir: auditDir,
+        assignments: ((value as any).assignments ?? []).map((assignment: any) => ({
+          ...assignment,
+          audit_path: auditPathByDossier.get(assignment.dossier_id) ?? assignment.audit_path
+        })),
+        comments: ((value as any).comments ?? []).map((comment: any) => ({
+          ...comment,
+          audit_path: auditPathByDossier.get(comment.dossier_id) ?? comment.audit_path
+        })),
+        approvals: ((value as any).approvals ?? []).map((approval: any) => ({
+          ...approval,
+          audit_path: auditPathByDossier.get(approval.dossier_id) ?? approval.audit_path
+        }))
+      }
+      : value;
+    await writeJson(path.join(auditDir, fileName), portableValue);
+  }
+
   const existingLibrary = await loadLibrary(auditDir);
   const mergedEntries = mergeEntries(existingLibrary.entries, entries).map((entry) => {
     const feedbackItems = feedbackByDossier.get(entry.id) ?? [];
@@ -479,7 +508,8 @@ export async function importWorkspace({
     dossier_count: entries.length,
     feedback_count: imported.feedback?.length ?? 0,
     lifecycle_file_count: Object.keys(imported.lifecycle_files ?? {}).length,
-    paper_file_count: Object.keys(imported.paper_files ?? {}).length
+    paper_file_count: Object.keys(imported.paper_files ?? {}).length,
+    governance_file_count: Object.keys(imported.governance_files ?? {}).length
   };
 }
 

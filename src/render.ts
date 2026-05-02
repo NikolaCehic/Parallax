@@ -578,7 +578,8 @@ export function exportToHumanReport(result: any) {
     `Audit bundles: ${result.audit_bundle_count ?? 0}`,
     `Feedback: ${result.feedback_count ?? 0}`,
     `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
-    `Paper files: ${result.paper_file_count ?? 0}`
+    `Paper files: ${result.paper_file_count ?? 0}`,
+    `Governance files: ${result.governance_file_count ?? 0}`
   ]);
 }
 
@@ -592,7 +593,162 @@ export function importToHumanReport(result: any) {
     `Dossiers: ${result.dossier_count}`,
     `Feedback: ${result.feedback_count}`,
     `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
-    `Paper files: ${result.paper_file_count ?? 0}`
+    `Paper files: ${result.paper_file_count ?? 0}`,
+    `Governance files: ${result.governance_file_count ?? 0}`
+  ]);
+}
+
+export function teamInitToHumanReport(result: any) {
+  return lines([
+    "Parallax Team Workspace",
+    "=======================",
+    "",
+    `Workspace: ${result.workspace.name}`,
+    `Workspace ID: ${result.workspace.id}`,
+    `Members: ${result.member_count}`,
+    `Ledger: ${result.ledger_path}`,
+    "",
+    "Boundary",
+    `  ${result.workspace.product_boundary}`
+  ]);
+}
+
+export function teamMemberToHumanReport(result: any) {
+  return lines([
+    "Parallax Team Member",
+    "====================",
+    "",
+    `Name: ${result.member.name}`,
+    `Role: ${result.member.role}`,
+    `Status: ${result.member.status}`,
+    `Ledger: ${result.ledger_path}`,
+    "",
+    "Permissions",
+    bullet(result.permissions ?? [])
+  ]);
+}
+
+export function teamAssignmentToHumanReport(result: any) {
+  const assignment = result.assignment;
+  return lines([
+    "Parallax Review Assignment",
+    "==========================",
+    "",
+    `Assignment ID: ${assignment.id}`,
+    `Dossier ID: ${assignment.dossier_id}`,
+    `Symbol: ${assignment.symbol}`,
+    `Review type: ${assignment.review_type}`,
+    `Assignee: ${assignment.assignee}`,
+    `Status: ${assignment.status}`,
+    `Due at: ${compact(assignment.due_at)}`,
+    `Audit: ${assignment.audit_path}`,
+    "",
+    "Note",
+    `  ${compact(assignment.note)}`
+  ]);
+}
+
+export function teamCommentToHumanReport(result: any) {
+  const comment = result.comment;
+  return lines([
+    "Parallax Governance Comment",
+    "===========================",
+    "",
+    `Comment ID: ${comment.id}`,
+    `Dossier ID: ${comment.dossier_id}`,
+    `Symbol: ${comment.symbol}`,
+    `Author: ${comment.author}`,
+    `Tags: ${comment.tags.length ? comment.tags.join(", ") : "None."}`,
+    `Created at: ${comment.created_at}`,
+    "",
+    "Comment",
+    `  ${compact(comment.body)}`
+  ]);
+}
+
+export function teamApprovalToHumanReport(result: any) {
+  const approval = result.approval;
+  return lines([
+    "Parallax Governance Approval",
+    "============================",
+    "",
+    `Approval ID: ${approval.id}`,
+    `Assignment ID: ${approval.assignment_id}`,
+    `Dossier ID: ${approval.dossier_id}`,
+    `Review type: ${approval.review_type}`,
+    `Approver: ${approval.approver}`,
+    `Decision: ${approval.decision}`,
+    `Created at: ${approval.created_at}`,
+    "",
+    "Rationale",
+    `  ${compact(approval.rationale)}`
+  ]);
+}
+
+export function teamGovernanceToHumanReport(report: any) {
+  const releaseRows = report.release_controls.map((control: any, index: number) =>
+    [
+      `${index + 1}. ${control.symbol}`,
+      control.action_class,
+      control.status,
+      `ready=${control.release_ready ? "yes" : "no"}`,
+      control.missing_review_types.length ? `missing=${control.missing_review_types.join(",")}` : "missing=none",
+      control.registry_validation.passed ? "registry=passed" : `registry=${control.registry_validation.problems.join("; ")}`
+    ].join(" | ")
+  );
+  const assignmentRows = report.assignments.slice(-8).map((assignment: any) =>
+    [
+      assignment.id,
+      assignment.symbol,
+      assignment.review_type,
+      assignment.assignee,
+      assignment.status
+    ].join(" | ")
+  );
+  const controlRows = report.soc2_readiness.controls.map((control: any) =>
+    `  - ${control.id} ${control.status}: ${control.name}`
+  );
+
+  return lines([
+    "Parallax Team Governance",
+    "========================",
+    "",
+    `Workspace: ${report.summary.workspace_name}`,
+    `Audit dir: ${report.summary.audit_dir}`,
+    `Members: ${report.summary.member_count}`,
+    `Dossiers: ${report.summary.dossier_count}`,
+    `Assignments: ${report.summary.assignment_count}`,
+    `Open assignments: ${report.summary.open_assignment_count}`,
+    `Comments: ${report.summary.comment_count}`,
+    `Approvals: ${report.summary.approval_count}`,
+    `Release ready: ${report.summary.release_ready_count}`,
+    `Blocked releases: ${report.summary.blocked_release_count}`,
+    `SOC 2 readiness: ${report.soc2_readiness.status}`,
+    "",
+    "Release Controls",
+    releaseRows.length ? releaseRows.join("\n") : "No dossiers found.",
+    "",
+    "Recent Assignments",
+    assignmentRows.length ? assignmentRows.join("\n") : "No review assignments.",
+    "",
+    "SOC 2 Readiness Program",
+    controlRows.join("\n")
+  ]);
+}
+
+export function teamGovernanceExportToHumanReport(result: any) {
+  return lines([
+    "Parallax Governance Export",
+    "==========================",
+    "",
+    `Output: ${result.out}`,
+    `Workspace: ${result.workspace_name}`,
+    `Dossiers: ${result.dossier_count}`,
+    `Release ready: ${result.release_ready_count}`,
+    `Assignments: ${result.assignment_count}`,
+    `Comments: ${result.comment_count}`,
+    `Approvals: ${result.approval_count}`,
+    `SOC 2 readiness: ${result.soc2_status}`
   ]);
 }
 

@@ -1,0 +1,17 @@
+{
+  "member": {
+    "id": "member_0c2b86c72c5a",
+    "name": "Mira Model",
+    "role": "model_validator",
+    "email": "",
+    "status": "active",
+    "added_at": "2026-05-01T15:04:00Z"
+  },
+  "permissions": [
+    "comment",
+    "approve_model_review",
+    "export_governance"
+  ],
+  "ledger_path": "artifacts/phase_6_team_and_governance/audits/team-governance.json",
+  "member_count": 5
+}

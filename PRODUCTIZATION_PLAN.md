@@ -104,7 +104,8 @@ The current repo already has the right skeleton:
 - scripted LLM council harness;
 - lifecycle alert workspace;
 - paper trading lab ledger;
-- 44 tests;
+- team governance ledger;
+- 46 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -153,7 +154,14 @@ Implemented on 2026-05-02:
 - paper attribution and calibration summary;
 - paper dashboard section;
 - Phase 5 artifact bundle;
-- 44 passing tests.
+- team workspace ledger;
+- role-aware review assignments;
+- comments and approvals;
+- release readiness controls;
+- governance export package;
+- SOC 2 readiness program;
+- Phase 6 artifact bundle;
+- 46 passing tests.
 
 ## Knowledge Gathered
 
@@ -845,6 +853,8 @@ Exit criteria:
 
 ### Phase 6: Team And Governance
 
+Status: Complete for local team workspace scope.
+
 Goal:
 
 Make Parallax viable for teams and professionals.
@@ -860,6 +870,13 @@ Deliverables:
 - model/tool registry;
 - release controls;
 - SOC 2 readiness program.
+- local `team-governance.json` ledger;
+- role-bound approval enforcement;
+- release readiness report;
+- dashboard governance section;
+- portable governance workspace export/import;
+- governance package export;
+- CLI `team-init`, `team-member-add`, `team-assign`, `team-comment`, `team-approve`, `team-report`, and `team-export` commands.
 
 Exit criteria:
 

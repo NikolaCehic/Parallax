@@ -1,0 +1,10 @@
+{
+  "out": "artifacts/phase_6_team_and_governance/governance-package.json",
+  "workspace_name": "Phase Six Governance Desk",
+  "dossier_count": 1,
+  "release_ready_count": 1,
+  "assignment_count": 4,
+  "comment_count": 1,
+  "approval_count": 4,
+  "soc2_status": "ready"
+}

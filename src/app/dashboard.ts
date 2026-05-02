@@ -9,6 +9,7 @@ import {
   summarizeFeedback
 } from "../library/store.js";
 import { readAlertPreferences, readLifecycleNotifications } from "../lifecycle/workspace.js";
+import { buildGovernanceReport } from "../team/governance.js";
 
 function escapeHtml(value: any) {
   return String(value ?? "")
@@ -20,8 +21,8 @@ function escapeHtml(value: any) {
 
 function stateClass(value: string) {
   if (["invalidated", "no_trade", "blocked", "failed", "attention"].includes(value)) return "bad";
-  if (["stale", "research_needed", "warning", "needs_reframe"].includes(value)) return "warn";
-  if (["active", "watchlist", "paper_trade_candidate", "allowed", "passed", "unchanged"].includes(value)) return "good";
+  if (["stale", "research_needed", "warning", "needs_reframe", "needs_review", "changes_requested"].includes(value)) return "warn";
+  if (["active", "watchlist", "paper_trade_candidate", "allowed", "passed", "unchanged", "ready", "release_ready", "approved"].includes(value)) return "good";
   return "neutral";
 }
 
@@ -100,6 +101,38 @@ function renderPaperRows(trades: any[]) {
   `).join("");
 }
 
+function renderGovernanceRows(releaseControls: any[]) {
+  if (!releaseControls.length) {
+    return `<tr><td colspan="7" class="empty">No dossiers available for team release review.</td></tr>`;
+  }
+  return releaseControls.map((control: any) => `
+    <tr>
+      <td><strong>${escapeHtml(control.symbol)}</strong><span>${escapeHtml(control.dossier_id)}</span></td>
+      <td>${badge(control.action_class)}</td>
+      <td>${badge(control.status)}</td>
+      <td>${control.registry_validation.passed ? badge("passed") : badge("failed")}</td>
+      <td>${escapeHtml(control.approved_review_types.join(", ") || "none")}</td>
+      <td>${escapeHtml(control.missing_review_types.join(", ") || "none")}</td>
+      <td><code>${escapeHtml(control.audit_path)}</code></td>
+    </tr>
+  `).join("");
+}
+
+function renderAssignmentRows(assignments: any[]) {
+  if (!assignments.length) {
+    return `<tr><td colspan="5" class="empty">No team review assignments.</td></tr>`;
+  }
+  return assignments.slice(-12).map((assignment: any) => `
+    <tr>
+      <td><strong>${escapeHtml(assignment.symbol)}</strong><span>${escapeHtml(assignment.id)}</span></td>
+      <td>${escapeHtml(assignment.review_type)}</td>
+      <td>${escapeHtml(assignment.assignee)}</td>
+      <td>${badge(assignment.status)}</td>
+      <td>${escapeHtml(assignment.note)}</td>
+    </tr>
+  `).join("");
+}
+
 function renderSourceRows(sourceViews: any[]) {
   const sources = sourceViews.flatMap((view: any) =>
     view.sources.map((source: any) => ({ ...source, dossier_id: view.dossier_id }))
@@ -165,6 +198,7 @@ export async function buildDashboardHtml({
   const preferences = await readAlertPreferences(auditDir);
   const notifications = await readLifecycleNotifications(auditDir);
   const paper = await paperLedgerReport(auditDir);
+  const governance = await buildGovernanceReport(auditDir);
   const policy = productPolicySnapshot();
   const sourceViews = [];
   for (const entry of library.entries) {
@@ -332,6 +366,7 @@ export async function buildDashboardHtml({
       <a href="#alerts">Lifecycle Alerts</a>
       <a href="#notifications">Notification Inbox</a>
       <a href="#paper">Paper Lab</a>
+      <a href="#governance">Team Governance</a>
       <a href="#sources">Data Freshness</a>
       <a href="#feedback">Alpha Feedback</a>
       <a href="#boundary">Product Boundary</a>
@@ -345,6 +380,7 @@ export async function buildDashboardHtml({
         ${metric("Feedback", feedback.feedback_count, "local alpha notes")}
         ${metric("Notifications", notifications.notifications.length, preferences.channels.join(", "))}
         ${metric("Paper PnL", paper.summary.realized_pnl, `${paper.summary.open_count} open / ${paper.summary.closed_count} closed`)}
+        ${metric("Release Ready", governance.summary.release_ready_count, `${governance.summary.open_assignment_count} open reviews`)}
       </div>
 
       <section class="section" id="library">
@@ -376,6 +412,22 @@ export async function buildDashboardHtml({
         <table>
           <thead><tr><th>Symbol</th><th>Status</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit/Reserved</th><th>Outcome</th></tr></thead>
           <tbody>${renderPaperRows(paper.ledger.trades)}</tbody>
+        </table>
+      </section>
+
+      <section class="section" id="governance">
+        <h2>Team Governance</h2>
+        <div class="body">
+          <p><strong>Workspace:</strong> ${escapeHtml(governance.summary.workspace_name)}</p>
+          <p><strong>SOC 2 readiness:</strong> ${badge(governance.soc2_readiness.status)}</p>
+        </div>
+        <table>
+          <thead><tr><th>Symbol</th><th>Action</th><th>Release</th><th>Registry</th><th>Approved</th><th>Missing</th><th>Audit</th></tr></thead>
+          <tbody>${renderGovernanceRows(governance.release_controls)}</tbody>
+        </table>
+        <table>
+          <thead><tr><th>Symbol</th><th>Review</th><th>Assignee</th><th>Status</th><th>Note</th></tr></thead>
+          <tbody>${renderAssignmentRows(governance.assignments)}</tbody>
         </table>
       </section>
 

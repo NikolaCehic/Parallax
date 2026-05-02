@@ -1,0 +1,31 @@
+Parallax Team Governance
+========================
+
+Workspace: Phase Six Governance Desk
+Audit dir: artifacts/phase_6_team_and_governance/audits
+Members: 5
+Dossiers: 1
+Assignments: 4
+Open assignments: 0
+Comments: 1
+Approvals: 4
+Release ready: 1
+Blocked releases: 0
+SOC 2 readiness: ready
+
+Release Controls
+1. NVDA | paper_trade_candidate | release_ready | ready=yes | missing=none | registry=passed
+
+Recent Assignments
+review_1610ebafd053 | NVDA | analysis_review | Lena Lead | approved
+review_730084632506 | NVDA | risk_review | Ravi Risk | approved
+review_5291dd415366 | NVDA | compliance_review | Casey Compliance | approved
+review_6dea83155b11 | NVDA | model_review | Mira Model | approved
+
+SOC 2 Readiness Program
+  - CC1.1 passed: Control Environment
+  - CC2.1 passed: Communication And Information
+  - CC3.1 passed: Risk Assessment
+  - CC6.1 passed: Logical Access
+  - CC7.1 passed: Change Management
+  - A1.1 passed: Availability And Audit Export

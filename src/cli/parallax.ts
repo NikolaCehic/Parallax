@@ -37,7 +37,14 @@ import {
   promptRegistryToHumanReport,
   replayToHumanReport,
   sandboxToHumanReport,
-  sourcesToHumanReport
+  sourcesToHumanReport,
+  teamApprovalToHumanReport,
+  teamAssignmentToHumanReport,
+  teamCommentToHumanReport,
+  teamGovernanceExportToHumanReport,
+  teamGovernanceToHumanReport,
+  teamInitToHumanReport,
+  teamMemberToHumanReport
 } from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import {
@@ -69,6 +76,15 @@ import {
 import { writeDashboard } from "../app/dashboard.js";
 import { buildDataStatus } from "../data/status.js";
 import { writePortfolioJson } from "../data/portfolio.js";
+import {
+  addTeamMember,
+  approveGovernanceReview,
+  assignGovernanceReview,
+  buildGovernanceReport,
+  exportGovernancePackage,
+  initializeTeamWorkspace,
+  recordGovernanceComment
+} from "../team/governance.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -120,6 +136,13 @@ Commands:
   paper-close --trade paper_trade_x --exit-price 118 [--reason target_reached]
   paper-ledger [--audit-dir audits]
   paper-review --trade paper_trade_x --rating disciplined [--notes "..."]
+  team-init [--audit-dir audits] [--workspace-name "Research Desk"] [--owner "Nikola"]
+  team-member-add --name "Rina" --role risk_reviewer --actor "Owner" [--email rina@example.com]
+  team-assign --audit audits/dos_x.json --type risk_review --assignee "Rina" --requester "Owner"
+  team-comment --audit audits/dos_x.json --author "Rina" --body "..."
+  team-approve --assignment review_x --approver "Rina" --decision approved --rationale "..."
+  team-report [--audit-dir audits]
+  team-export --audit-dir audits --out governance-package.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -135,6 +158,7 @@ Common flags:
   --llm-budget-usd       Maximum estimated cost for LLM provider path.
   --events               Symbol event flags, for alerts: NVDA=true,TSLA=false.
   --vols                 Symbol volatility overrides, for alerts: NVDA=0.9.
+  --tags                 Comma-separated governance comment tags.
 `;
 }
 
@@ -534,6 +558,99 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, paperReviewToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-init") {
+    const result = await initializeTeamWorkspace({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      workspaceName: String(args["workspace-name"] ?? "Parallax Team Workspace"),
+      owner: String(args.owner ?? "workspace_owner"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, teamInitToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-member-add") {
+    if (!args.name) throw new Error("team-member-add requires --name");
+    if (!args.role) throw new Error("team-member-add requires --role");
+    const result = await addTeamMember({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      name: String(args.name),
+      role: String(args.role),
+      email: args.email ? String(args.email) : "",
+      actor: args.actor ? String(args.actor) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, teamMemberToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-assign") {
+    if (!args.audit) throw new Error("team-assign requires --audit");
+    if (!args.type) throw new Error("team-assign requires --type");
+    if (!args.assignee) throw new Error("team-assign requires --assignee");
+    if (!args.requester) throw new Error("team-assign requires --requester");
+    const result = await assignGovernanceReview({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      reviewType: String(args.type),
+      assignee: String(args.assignee),
+      requester: args.requester ? String(args.requester) : "",
+      dueAt: args["due-at"] ? String(args["due-at"]) : "",
+      note: args.note ? String(args.note) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, teamAssignmentToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-comment") {
+    if (!args.audit) throw new Error("team-comment requires --audit");
+    if (!args.author) throw new Error("team-comment requires --author");
+    if (!args.body) throw new Error("team-comment requires --body");
+    const result = await recordGovernanceComment({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      author: String(args.author),
+      body: String(args.body),
+      tags: parseCsvList(args.tags) ?? [],
+      visibility: args.visibility ? String(args.visibility) : "team",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, teamCommentToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-approve") {
+    if (!args.assignment) throw new Error("team-approve requires --assignment");
+    if (!args.approver) throw new Error("team-approve requires --approver");
+    const result = await approveGovernanceReview({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      assignmentId: String(args.assignment),
+      approver: String(args.approver),
+      decision: args.decision ? String(args.decision) : "approved",
+      rationale: args.rationale ? String(args.rationale) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, teamApprovalToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "team-report") {
+    const report = await buildGovernanceReport(String(args["audit-dir"] ?? "audits"));
+    printResult(args, teamGovernanceToHumanReport(report), report);
+    return;
+  }
+
+  if (command === "team-export") {
+    if (!args.out) throw new Error("team-export requires --out");
+    const result = await exportGovernancePackage({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      out: String(args.out)
+    });
+    printResult(args, teamGovernanceExportToHumanReport(result), result);
     return;
   }
 
