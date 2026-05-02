@@ -1,0 +1,969 @@
+# Parallax Productization Plan
+
+Status: Productization blueprint  
+Date: 2026-05-02  
+Goal: Turn Parallax from a local prototype into a viable product other people can safely use.
+
+## Executive Summary
+
+Parallax should become a **governed trading-thesis research platform**, not a live trading bot and not a signal service.
+
+The best product wedge is:
+
+> A tool that helps analysts, active investors, and small teams turn a trade idea into an evidence-linked, adversarially reviewed, auditable thesis dossier with lifecycle monitoring.
+
+The product should not begin by telling users what to buy. It should begin by helping users think better, document better, monitor better, and avoid unsupported conviction.
+
+The safest and strongest commercial path is:
+
+1. local/private alpha for power users;
+2. cloud research workspace for teams;
+3. paper-trading and calibration lab;
+4. compliance/governance package;
+5. only later, permissioned execution through regulated partners.
+
+## Product Positioning
+
+### What Parallax Is
+
+Parallax is a thesis-analysis agent.
+
+It accepts:
+
+- a ticker or asset;
+- a time horizon;
+- a user-supplied thesis;
+- portfolio/account constraints, if available;
+- market, event, and data context.
+
+It outputs:
+
+- a Trade Thesis Dossier;
+- action class;
+- council review;
+- bull/bear cases;
+- risks and invalidators;
+- hard vetoes;
+- lifecycle triggers;
+- audit trail.
+
+### What Parallax Is Not
+
+Parallax should not initially be positioned as:
+
+- an AI stock picker;
+- an automated trading system;
+- a broker;
+- a registered adviser substitute;
+- a guaranteed-alpha tool;
+- a personalized recommendation engine for retail investors;
+- a product that can replace judgment, compliance, or risk review.
+
+### Recommended Public Description
+
+> Parallax is a research accountability platform for trading ideas. It turns a thesis into a structured dossier, checks the evidence, challenges assumptions, surfaces risks, and monitors invalidation triggers over time.
+
+## Core Product Rule
+
+The first productized version should keep this ceiling:
+
+```text
+no_trade
+research_needed
+watchlist
+paper_trade_candidate
+```
+
+Do not ship live execution as a general feature.
+
+Live execution should exist only as a later enterprise/regulated-partner workflow with:
+
+- explicit human approval;
+- pre-trade risk checks;
+- broker-side controls;
+- kill switch;
+- compliance review;
+- post-trade review;
+- legal sign-off.
+
+## Current Prototype Strengths
+
+The current repo already has the right skeleton:
+
+- TypeScript orchestration;
+- Python deterministic analytics;
+- human-readable CLI;
+- JSON mode;
+- evidence snapshots;
+- 12 council roles;
+- decision gates;
+- lifecycle engine;
+- audit replay;
+- paper-trading helpers;
+- sandbox execution controls;
+- 23 tests;
+- 10 synthetic E2E scenarios.
+
+This foundation should be kept. The next work is not a rewrite. It is product hardening.
+
+## Knowledge Gathered
+
+This plan is grounded in the following constraints and frameworks.
+
+### AI Risk And Model Governance
+
+NIST AI RMF and its Generative AI Profile support a govern/map/measure/manage pattern for AI risk management. Parallax should treat each persona, prompt, model, and analytics tool as governed components with validation, monitoring, and audit trails.
+
+Sources:
+
+- [NIST AI Risk Management Framework](https://www.nist.gov/itl/ai-risk-management-framework)
+- [NIST AI RMF Generative AI Profile](https://www.nist.gov/itl/ai-risk-management-framework)
+
+### Model Risk Management
+
+SR 11-7 frames model risk as the risk of adverse consequences from incorrect or misused model outputs. Parallax should adopt SR 11-7-style controls even if not legally required: model inventory, validation, monitoring, change control, and independent review.
+
+Source:
+
+- [Federal Reserve SR 11-7: Model Risk Management](https://www.federalreserve.gov/bankinforeg/srletters/sr1107.htm)
+
+### Broker/Adviser And Trading Controls
+
+FINRA and SEC sources imply that product behavior, communications, recommendations, conflicts, supervision, and execution access matter deeply. Even if Parallax starts as a research tool, the product must be designed so it does not accidentally become ungoverned investment advice or unapproved market access.
+
+Sources:
+
+- [FINRA Regulatory Notice 24-09 on GenAI/LLMs](https://www.finra.org/rules-guidance/notices/24-09)
+- [SEC Market Access Rule 15c3-5 overview](https://www.sec.gov/rules-regulations/2011/06/risk-management-controls-brokers-or-dealers-market-access)
+- [SEC Regulation Best Interest FAQ](https://www.sec.gov/rules-regulations/staff-guidance/trading-markets-frequently-asked-questions/faq-regulation-best)
+- [FINRA Rule 2210, Communications with the Public](https://www.finra.org/rules-guidance/rulebooks/finra-rules/2210)
+- [SEC Investment Adviser Marketing](https://www.sec.gov/investment/investment-adviser-marketing)
+- [SEC PDA conflicts rule page, showing 2025 withdrawal of proposed rule S7-12-23](https://www.sec.gov/rules-regulations/2023/07/s7-12-23)
+
+### Cybersecurity And Agent Security
+
+Parallax is an agentic AI product with financial data. It needs secure-by-design architecture, threat modeling, least privilege, prompt-injection defenses, tenant isolation, and auditability.
+
+Sources:
+
+- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+- [CISA Secure by Design](https://www.cisa.gov/securebydesign)
+- [OWASP Top 10 for LLM Applications 2025](https://github.com/OWASP/www-project-top-10-for-large-language-model-applications/)
+- [OWASP Top 10 for Agentic Applications 2026](https://genai.owasp.org/resource/owasp-top-10-for-agentic-applications-for-2026/)
+
+### Privacy
+
+Parallax may process portfolio holdings, trading history, preferences, and sensitive research. Privacy controls must be built early: data minimization, clear retention, deletion, tenancy boundaries, and explicit user control over what is stored.
+
+Source:
+
+- [NIST Privacy Framework](https://www.nist.gov/privacy-framework)
+
+### Truthful AI Claims
+
+AI product marketing must be accurate. Do not claim Parallax predicts markets, guarantees returns, replaces advisers, or autonomously validates all facts. Claims must match the actual product behavior.
+
+Source:
+
+- [FTC Operation AI Comply](https://consumer.ftc.gov/consumer-alerts/2024/09/operation-ai-comply-detecting-ai-infused-frauds-and-deceptions)
+
+## Recommended Product Strategy
+
+### Beachhead Market
+
+Start with:
+
+- serious self-directed investors;
+- independent analysts;
+- small research teams;
+- trading educators;
+- boutique funds that want better thesis discipline;
+- professionals who already understand that this is research support, not a recommendation engine.
+
+Avoid starting with:
+
+- mass-market retail “what should I buy?” users;
+- automated trading users;
+- performance-seeking signal subscribers;
+- anyone expecting guaranteed returns.
+
+### Product Wedge
+
+The wedge should be:
+
+> Trade Thesis Dossiers with evidence, dissent, invalidators, and lifecycle monitoring.
+
+This is clearer and safer than:
+
+> AI trading signals.
+
+### Packaging
+
+1. **Parallax Local**
+   - Desktop/local-first.
+   - User controls their data.
+   - Good for alpha users and credibility.
+
+2. **Parallax Cloud**
+   - Hosted workspace.
+   - Accounts, saved dossiers, watchlists, alerts.
+   - Good for teams and subscriptions.
+
+3. **Parallax Pro**
+   - More data integrations.
+   - Portfolio context.
+   - Paper-trade lab.
+   - Team collaboration.
+
+4. **Parallax Governance**
+   - Audit exports.
+   - Model/tool registry.
+   - Review workflows.
+   - Compliance package.
+
+5. **Parallax Execution Partner**
+   - Not a default product.
+   - Only through regulated broker/adviser partner workflows.
+
+## Product Requirements For Viability
+
+### User Experience
+
+The product needs a UI, not only a CLI.
+
+Minimum usable app:
+
+- dashboard;
+- new thesis flow;
+- dossier view;
+- council view;
+- evidence/source view;
+- invalidator editor;
+- watchlist;
+- lifecycle alerts;
+- paper-trade lab;
+- audit export.
+
+The best first UI is a desktop-style web app:
+
+- React/Next.js or similar frontend;
+- TypeScript API backend;
+- Python analytics services;
+- local-first mode possible;
+- later hosted SaaS.
+
+### Dossier Experience
+
+Every dossier should show:
+
+- what was asked;
+- what data was used;
+- what calculations were run;
+- what the council concluded;
+- strongest bull case;
+- strongest bear case;
+- what would prove the thesis wrong;
+- whether the thesis is active, stale, invalidated, or upgraded;
+- why the action class was chosen;
+- how to recheck it.
+
+### User Trust Features
+
+Users should be able to click:
+
+- “show evidence”;
+- “show calculation”;
+- “show dissent”;
+- “why not paper trade?”;
+- “what changed since last run?”;
+- “what would invalidate this?”;
+- “export audit bundle.”
+
+## Productized Architecture
+
+### Target Architecture
+
+```text
+Frontend App
+  -> TypeScript API
+  -> Evidence Service
+  -> Python Analytics Workers
+  -> LLM/Persona Orchestrator
+  -> Decision Gate
+  -> Lifecycle Monitor
+  -> Audit/Event Store
+  -> Notification Service
+  -> Paper Trading Lab
+```
+
+### Core Services
+
+1. **Identity And Workspace Service**
+   - accounts;
+   - workspaces;
+   - roles;
+   - API keys;
+   - tenant isolation.
+
+2. **Evidence Service**
+   - data adapters;
+   - provenance;
+   - freshness;
+   - licenses;
+   - snapshots;
+   - corporate actions;
+   - event calendars.
+
+3. **Analytics Service**
+   - Python workers;
+   - versioned calculations;
+   - validated metrics;
+   - backtests;
+   - stress tests;
+   - factor exposure.
+
+4. **Council Service**
+   - persona definitions;
+   - LLM adapters;
+   - prompt registry;
+   - tool permissions;
+   - claim packet validation.
+
+5. **Decision Gate**
+   - hard vetoes;
+   - action ceilings;
+   - risk checks;
+   - compliance checks;
+   - confidence/freshness caps.
+
+6. **Lifecycle Monitor**
+   - trigger evaluator;
+   - state machine;
+   - stale/invalidated/upgraded transitions;
+   - alert scheduling;
+   - replay of market changes.
+
+7. **Audit/Event Store**
+   - immutable event log;
+   - evidence hashes;
+   - tool outputs;
+   - persona packets;
+   - decisions;
+   - user approvals;
+   - exports.
+
+8. **Paper Trading Lab**
+   - simulated tickets;
+   - fill assumptions;
+   - position tracking;
+   - attribution;
+   - calibration.
+
+9. **Governance Console**
+   - model registry;
+   - tool registry;
+   - prompt registry;
+   - validation reports;
+   - incident log;
+   - release controls.
+
+## Data Strategy
+
+### Data Needed For Product Viability
+
+Start with one asset class.
+
+Recommended first asset class:
+
+```text
+US equities and ETFs
+```
+
+Required data:
+
+- OHLCV market data;
+- corporate actions;
+- fundamentals;
+- earnings calendar;
+- news/events;
+- sector/industry mapping;
+- ETF/factor proxies;
+- portfolio holdings import;
+- benchmark data;
+- optional options/volatility data later.
+
+### Data Principles
+
+- Every data point needs source, timestamp, license, and freshness.
+- Never mix live data and stale data without marking it.
+- Never allow unlicensed data into shared product outputs.
+- Cache snapshots for replay.
+- Make vendor disagreement visible.
+- Treat external text as untrusted input.
+
+### Vendor Strategy
+
+Do not hard-code the product around one vendor.
+
+Build adapters:
+
+```text
+MarketDataAdapter
+FundamentalsAdapter
+NewsAdapter
+EventsAdapter
+PortfolioAdapter
+BrokerConstraintAdapter
+```
+
+The first paid production blocker will likely be data licensing, not code.
+
+## AI Strategy
+
+### LLM Use
+
+LLMs should be used for:
+
+- reasoning over evidence;
+- writing clear explanations;
+- attacking assumptions;
+- comparing bull/bear cases;
+- asking for missing checks;
+- summarizing change since last run.
+
+LLMs should not be used as the source of:
+
+- prices;
+- returns;
+- volatility;
+- backtests;
+- portfolio risk;
+- compliance status;
+- order placement.
+
+### Model-Agnostic Design
+
+Build a provider abstraction:
+
+```text
+LLMProvider
+  -> generateClaimPacket()
+  -> critiqueClaimPackets()
+  -> synthesizeDossier()
+```
+
+Support:
+
+- local deterministic personas;
+- cloud LLM providers;
+- local models;
+- ensemble/red-team models for high-risk workflows.
+
+### Evaluation Before LLM Launch
+
+Before turning on LLM-generated council packets:
+
+- build golden dossiers;
+- build adversarial prompt-injection tests;
+- test hallucinated citations;
+- test numeric fabrication;
+- test overconfident conclusions;
+- test hidden recommendation behavior;
+- test failure to preserve dissent;
+- require schema validation;
+- require evidence refs.
+
+## Compliance And Legal Plan
+
+Legal counsel is mandatory before public launch.
+
+### Initial Safer Posture
+
+Launch as:
+
+```text
+research workflow / thesis discipline / decision-support tool
+```
+
+Avoid:
+
+```text
+personalized investment recommendations
+automated advice
+autonomous execution
+performance promises
+copy-trading
+signal subscriptions
+```
+
+### Legal Questions To Answer Before Beta
+
+1. Does the product provide investment advice for compensation?
+2. Is output personalized to user holdings or risk profile?
+3. Does any output constitute a “recommendation”?
+4. Are users retail, professional, or institutional?
+5. Are communications fair, balanced, and not misleading?
+6. Are claims about AI truthful?
+7. Are data licenses compatible with product use?
+8. Does paper trading imply performance claims?
+9. Is any broker connection contemplated?
+10. Is registration, exemption, or partnership required?
+
+### Practical Product Controls
+
+- Use action classes, not buy/sell instructions.
+- Keep `no_trade` and `research_needed` first-class.
+- Require user-supplied thesis.
+- Show uncertainty and invalidators prominently.
+- Keep audit logs.
+- Avoid model-generated performance claims.
+- No automatic order placement.
+- No hidden personalization without disclosure.
+
+## Security Plan
+
+### Threats
+
+Parallax must defend against:
+
+- prompt injection from news, filings, social text, webpages;
+- malicious data payloads;
+- account takeover;
+- API key leakage;
+- SSRF through data connectors;
+- cross-tenant data leakage;
+- over-privileged tools;
+- unsafe file parsing;
+- malicious plugin/skill supply chain;
+- model output overreliance;
+- audit log tampering.
+
+### Security Controls
+
+- tenant isolation;
+- RBAC;
+- encrypted secrets;
+- least-privilege service tokens;
+- sandboxed workers;
+- egress allowlists;
+- input validation;
+- schema validation;
+- immutable audit log;
+- dependency scanning;
+- SAST/DAST;
+- prompt-injection test suite;
+- rate limits;
+- incident response plan;
+- security event logging.
+
+### Agent-Specific Controls
+
+- external text is data, not instruction;
+- council personas cannot execute tools directly;
+- tool calls must be typed and allowlisted;
+- no shell/network/file access from model outputs;
+- all numeric claims require tool refs;
+- all final outputs require decision gate;
+- all order candidates require approval.
+
+## Reliability And Observability
+
+### Observability
+
+Track:
+
+- dossier creation latency;
+- evidence fetch failures;
+- stale data rate;
+- veto rate;
+- hallucination/unsupported-claim rate;
+- audit replay success;
+- trigger firing rate;
+- alert precision;
+- paper outcome attribution;
+- model/tool version drift;
+- user overrides;
+- incident events.
+
+### SLOs For SaaS Beta
+
+Initial targets:
+
+- 99.5% API availability;
+- 95% dossier generation under 30 seconds for standard equity thesis;
+- 100% audit bundle creation for completed dossiers;
+- 0 known cross-tenant leaks;
+- 0 live execution paths in beta.
+
+## Testing Plan
+
+The current test suite is a good start. Productization requires these additional layers:
+
+1. Unit tests
+   - schemas;
+   - analytics;
+   - decision gates;
+   - lifecycle state machine.
+
+2. Synthetic E2E tests
+   - already started;
+   - expand to more regimes and asset classes.
+
+3. Historical replay tests
+   - run dossiers across historical windows;
+   - check trigger behavior and stale-state transitions.
+
+4. Data vendor tests
+   - missing data;
+   - stale data;
+   - corporate action errors;
+   - symbol mapping conflicts;
+   - vendor disagreement.
+
+5. AI evals
+   - hallucination;
+   - unsupported numeric claims;
+   - prompt injection;
+   - hidden recommendation pressure;
+   - failure to preserve dissent.
+
+6. Security tests
+   - SSRF;
+   - tenant isolation;
+   - injection;
+   - secrets exposure;
+   - unsafe file ingestion.
+
+7. Compliance tests
+   - marketing claims;
+   - audit export;
+   - restricted list;
+   - action ceiling;
+   - approval bypass.
+
+## Product Roadmap
+
+### Phase 0: Product-Legal Definition
+
+Goal:
+
+Define exactly what Parallax is allowed to be.
+
+Deliverables:
+
+- product positioning memo;
+- legal posture memo;
+- user class definition;
+- risk disclosures;
+- prohibited claims list;
+- action ceiling policy;
+- data license requirements;
+- beta terms draft.
+
+Exit criteria:
+
+- clear public wording;
+- no buy/sell signal positioning;
+- counsel-reviewed launch boundaries.
+
+### Phase 1: Local Alpha
+
+Goal:
+
+Turn the CLI prototype into a polished local workflow.
+
+Deliverables:
+
+- improved CLI;
+- local app UI or Tauri/Electron shell;
+- dossier library;
+- watchlist view;
+- local persistence;
+- import/export;
+- expanded synthetic E2E;
+- user feedback loop.
+
+Exit criteria:
+
+- 20-50 trusted users can run Parallax locally;
+- no cloud data risk;
+- clear qualitative feedback on dossier usefulness.
+
+### Phase 2: Data-Backed Research App
+
+Goal:
+
+Connect real licensed data and make dossiers useful on real markets.
+
+Deliverables:
+
+- market data adapter;
+- fundamentals adapter;
+- event calendar;
+- news/provenance adapter;
+- portfolio CSV/broker export import;
+- corporate action handling;
+- data freshness dashboard;
+- source viewer.
+
+Exit criteria:
+
+- real US equities/ETF dossiers;
+- deterministic replay;
+- data licensing confirmed;
+- stale and conflicting data handled visibly.
+
+### Phase 3: LLM Council Beta
+
+Goal:
+
+Replace deterministic persona text with validated LLM claim packets.
+
+Deliverables:
+
+- LLM provider abstraction;
+- prompt registry;
+- persona registry;
+- claim packet schema enforcement;
+- evidence-only context windows;
+- adversarial evals;
+- hallucination tests;
+- red-team suite;
+- cost controls.
+
+Exit criteria:
+
+- LLM council improves dossier quality without increasing unsupported claims;
+- all outputs remain auditable;
+- model failures downgrade action class.
+
+### Phase 4: Lifecycle And Alerts
+
+Goal:
+
+Make theses live over time.
+
+Deliverables:
+
+- lifecycle dashboard;
+- trigger editor;
+- alert preferences;
+- market/event monitor;
+- change-since-last-run view;
+- stale/invalidated/upgraded states;
+- notification system.
+
+Exit criteria:
+
+- users trust Parallax to tell them when a thesis needs recheck;
+- alerts are precise enough to avoid fatigue.
+
+### Phase 5: Paper Trading Lab
+
+Goal:
+
+Connect thesis quality to simulated outcomes.
+
+Deliverables:
+
+- paper portfolio;
+- simulated tickets;
+- fill assumptions;
+- slippage model;
+- attribution;
+- calibration dashboard;
+- thesis/outcome review.
+
+Exit criteria:
+
+- users can learn whether thesis process is improving;
+- paper results do not become marketing performance claims.
+
+### Phase 6: Team And Governance
+
+Goal:
+
+Make Parallax viable for teams and professionals.
+
+Deliverables:
+
+- workspaces;
+- roles;
+- review assignments;
+- comments;
+- approvals;
+- audit exports;
+- model/tool registry;
+- release controls;
+- SOC 2 readiness program.
+
+Exit criteria:
+
+- small teams can use Parallax with review and audit discipline;
+- governance controls are operational, not decorative.
+
+### Phase 7: Regulated/Partner Execution
+
+Goal:
+
+Only if justified, add permissioned execution through a regulated partner.
+
+Deliverables:
+
+- legal/compliance approval;
+- broker sandbox;
+- broker production adapter;
+- pre-trade controls;
+- human approval;
+- kill switch;
+- post-trade review;
+- market access control review.
+
+Exit criteria:
+
+- no order can bypass controls;
+- partner/regulatory obligations are understood;
+- live execution is limited, auditable, and reversible.
+
+## Team Needed
+
+Minimum productization team:
+
+- product/CEO;
+- TypeScript full-stack engineer;
+- Python quant/data engineer;
+- AI/LLM engineer;
+- security engineer or advisor;
+- compliance/legal counsel;
+- design/product UX;
+- part-time finance/domain expert;
+- data vendor/commercial owner.
+
+## Business Model
+
+Start with subscriptions.
+
+Possible tiers:
+
+1. **Local Pro**
+   - local app;
+   - manual data/imports;
+   - personal dossier library.
+
+2. **Cloud Pro**
+   - hosted data;
+   - saved dossiers;
+   - lifecycle alerts;
+   - paper lab.
+
+3. **Team**
+   - workspaces;
+   - comments;
+   - review workflows;
+   - audit exports.
+
+4. **Governance/Enterprise**
+   - compliance package;
+   - SSO;
+   - model registry;
+   - data controls;
+   - custom integrations.
+
+Avoid performance-fee or signal-subscription models at the start. They create the wrong incentives and more regulatory risk.
+
+## GTM Plan
+
+### First Audience
+
+Start with people who already write trade theses:
+
+- independent analysts;
+- active discretionary traders;
+- small funds;
+- finance creators who teach process;
+- research teams.
+
+### Launch Message
+
+Use:
+
+> Better trade theses. Clearer invalidators. Less hidden conviction.
+
+Avoid:
+
+> AI that tells you what to buy.
+
+### First Proof Points
+
+- before/after thesis quality;
+- reduced stale-thesis mistakes;
+- better documentation;
+- better post-mortems;
+- clearer risk language;
+- fewer impulsive entries.
+
+## Most Important Product Decisions
+
+### Decision 1: Research Tool First
+
+Do not start as an investment adviser or trading signal service.
+
+### Decision 2: Dossier Is The Product
+
+The core object is not a chat answer. It is a saved, replayable, monitored dossier.
+
+### Decision 3: Lifecycle Is The Moat
+
+The valuable thing is not a one-time opinion. It is knowing when a thesis has become stale, invalidated, or worth rechecking.
+
+### Decision 4: Deterministic Tools Own Numbers
+
+Never let generated text be the source of financial calculations.
+
+### Decision 5: Compliance And Audit Are Core UX
+
+Safety should not be hidden in backend logs. It should be visible in the product.
+
+## Kill Criteria
+
+Stop or redesign if:
+
+- users treat it as a buy/sell oracle despite UX controls;
+- unsupported claims persist after evals;
+- data licensing cannot support commercial use;
+- alerts are too noisy to trust;
+- paper outcomes create misleading marketing pressure;
+- compliance posture cannot be made clear;
+- unit economics are broken by data/model costs.
+
+## Immediate Next Steps
+
+1. Build product/legal positioning memo.
+2. Decide first user class and prohibited use cases.
+3. Convert CLI flow into a desktop/web dossier UI.
+4. Add real licensed US equities/ETF data adapter.
+5. Add source viewer and evidence inspector.
+6. Build LLM provider abstraction behind eval gates.
+7. Expand E2E suite with real historical replay.
+8. Create private alpha with 10-20 serious users.
+9. Collect dossier usefulness feedback.
+10. Decide whether to remain local-first or move to SaaS beta.
+
+## Final Reviewed Plan
+
+The best solution is not to make Parallax more autonomous.
+
+The best solution is to make it more trustworthy:
+
+- clearer product positioning;
+- stronger evidence layer;
+- better UI;
+- real data;
+- validated LLM council;
+- lifecycle monitoring;
+- auditability;
+- governance;
+- paper attribution;
+- regulated execution only later.
+
+This plan preserves the original insight of Parallax while turning it into something other people could actually use.

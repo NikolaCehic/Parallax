@@ -310,6 +310,7 @@ TradeAgent/
 - [Phased Implementation Plan](TradeAgent/PHASED_IMPLEMENTATION_PLAN.md)
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [E2E Testing](E2E_TESTING.md)
+- [Productization Plan](PRODUCTIZATION_PLAN.md)
 - [Best Solution Notes](TradeAgent/best_solution.md)
 
 ## Safety Boundaries

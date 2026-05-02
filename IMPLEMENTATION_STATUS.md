@@ -68,4 +68,4 @@ Within a local prototype scope, the current implementation reaches the intended 
 
 > I do not know a better architecture for this agent, and I do not know what is structurally wrong with the current one.
 
-The remaining improvements are productionization choices: external data vendors, richer analytics, validated model adapters, UI, deployment, and regulated execution review.
+The remaining improvements are productization choices: external data vendors, richer analytics, validated model adapters, UI, deployment, and regulated execution review. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).
