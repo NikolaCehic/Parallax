@@ -1,0 +1,41 @@
+{
+  "config": {
+    "schema_version": "0.1.0",
+    "control_plane_id": "saas_cp_4c3b35f6d4a3",
+    "environment": "managed_beta_scaffold",
+    "root_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas",
+    "owner": "Parallax Platform Operator",
+    "created_at": "2026-05-02T20:00:00.000Z",
+    "tenancy": {
+      "isolation_model": "tenant_directory_per_workspace",
+      "path_traversal_protection": true,
+      "cross_tenant_queries_allowed": false,
+      "default_region": "local_dev",
+      "pii_storage": "not_configured"
+    },
+    "identity": {
+      "sso_required_for_managed_saas": true,
+      "local_bearer_tokens_allowed_for_private_beta": true,
+      "configured_provider_count": 0
+    },
+    "secrets": {
+      "storage_model": "external_secret_references_only",
+      "raw_secret_storage_allowed": false,
+      "rotation_required_days": 90
+    },
+    "observability": {
+      "event_file": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/observability-events.jsonl",
+      "audit_events_required": true,
+      "pii_in_logs_allowed": false
+    },
+    "production_boundaries": {
+      "direct_broker_connection": false,
+      "production_partner_adapter_default": "locked",
+      "external_provider_credentials_required": true
+    },
+    "tenants": [],
+    "secret_refs": [],
+    "integrations": []
+  },
+  "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json"
+}

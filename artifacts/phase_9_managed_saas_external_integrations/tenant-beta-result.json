@@ -1,0 +1,16 @@
+{
+  "tenant": {
+    "id": "tenant_2ef5ae6f4e45",
+    "slug": "beta_research",
+    "name": "Beta Research Desk",
+    "owner": "Beta Owner",
+    "plan": "team_beta",
+    "region": "us_dev",
+    "data_residency": "us_dev",
+    "status": "active",
+    "audit_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/tenants/beta_research/audits",
+    "created_at": "2026-05-02T20:00:00.000Z"
+  },
+  "tenant_count": 2,
+  "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json"
+}

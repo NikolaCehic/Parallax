@@ -27,6 +27,7 @@ Parallax tries to sit in the middle:
 - Phase 6 team governance adds role-aware review assignments, comments, approvals, release controls, and governance exports.
 - Phase 7 partner execution adds legal approval, market-access review, human approval, kill switch, post-trade review, and a locked production-adapter boundary.
 - Phase 8 beta deployment adds an authenticated local API, readiness checks, deployment config, Docker scaffold, and beta export package.
+- Phase 9 managed SaaS scaffolding adds tenant isolation, external secret references, provider manifests, observability events, and readiness/export checks for a future hosted product.
 
 Instead of asking:
 
@@ -110,6 +111,7 @@ TypeScript owns:
 - paper trading;
 - sandbox and partner execution controls.
 - beta API and deployment readiness.
+- managed SaaS control-plane scaffolding.
 
 Python owns:
 
@@ -508,6 +510,55 @@ npm run cli -- beta-export \
 
 Deployment files live in [deploy/README.md](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/deploy/README.md), with a root [Dockerfile](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/Dockerfile).
 
+## Managed SaaS Scaffold
+
+Phase 9 adds the first managed-product control plane. It is not a real hosted cloud deployment yet; it is the auditable scaffold for one.
+
+Initialize a managed SaaS root:
+
+```bash
+npm run saas-init -- \
+  --root-dir managed-saas \
+  --owner "Platform Owner"
+```
+
+Create a tenant workspace:
+
+```bash
+npm run cli -- tenant-create \
+  --root-dir managed-saas \
+  --slug alpha \
+  --name "Alpha Research"
+```
+
+Register external secret references and provider manifests. Parallax stores references and hashes, not raw secrets:
+
+```bash
+npm run cli -- secret-ref-add \
+  --root-dir managed-saas \
+  --name MARKET_DATA_VENDOR \
+  --scope market_data_vendor \
+  --ref secret://vendor/market-data
+
+npm run cli -- integration-add \
+  --root-dir managed-saas \
+  --kind market_data_vendor \
+  --name "Licensed Market Data" \
+  --provider "licensed_us_equities_vendor" \
+  --secret-ref MARKET_DATA_VENDOR \
+  --tenant alpha
+```
+
+Check and export managed readiness:
+
+```bash
+npm run saas-readiness -- --root-dir managed-saas
+
+npm run saas-export -- \
+  --root-dir managed-saas \
+  --out managed-saas-package.json
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -677,7 +728,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 50 tests:
+The suite currently includes 52 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -692,6 +743,7 @@ The suite currently includes 50 tests:
 - Phase 6 team-governance role, assignment, approval, release-readiness, export/import, dashboard, and CLI tests;
 - Phase 7 partner-execution legal approval, market-access review, human approval, kill switch, production lock, post-trade review, export/import, dashboard, and CLI tests;
 - Phase 8 beta-deployment readiness, authenticated API, analysis endpoint, dashboard endpoint, export, and CLI tests;
+- Phase 9 managed-SaaS tenant isolation, secret-reference hygiene, provider manifest, observability, export, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -728,6 +780,7 @@ src/
   paper/          Paper-trading helpers
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
+  saas/           Managed SaaS tenancy, secret-reference, provider-manifest, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -739,7 +792,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -772,9 +825,10 @@ Current intentional limits:
 
 - no direct live broker integration;
 - partner production adapter is locked by default;
-- no external market data vendor yet;
-- no external LLM API integration yet; the current LLM path is a local scripted harness;
-- no external SSO provider yet; beta auth is bearer-token based;
+- no external market data vendor API yet; Phase 9 records manifests only;
+- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 9 records manifests only;
+- no external SSO provider yet; Phase 9 records identity-provider manifests but does not connect one;
+- no hosted cloud tenancy yet; Phase 9 proves local tenant isolation and managed-readiness evidence only;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -829,7 +883,13 @@ Current state:
 - authenticated beta API server;
 - Docker deployment scaffold;
 - beta export package;
-- 50 passing tests.
+- managed SaaS control-plane config;
+- tenant workspace isolation;
+- external secret-reference registry;
+- external provider manifest registry;
+- managed observability event log;
+- managed SaaS readiness and export package;
+- 52 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

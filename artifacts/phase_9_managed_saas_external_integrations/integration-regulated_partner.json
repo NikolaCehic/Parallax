@@ -1,0 +1,19 @@
+{
+  "integration": {
+    "id": "integration_7aaf152aee65",
+    "kind": "regulated_partner",
+    "name": "Regulated Partner Placeholder",
+    "provider": "regulated_execution_partner",
+    "status": "disabled_until_legal_approval",
+    "validation_status": "not_validated",
+    "tenant_slug": "",
+    "secret_ref": "REGULATED_PARTNER",
+    "data_license": "",
+    "endpoint": "",
+    "notes": "Manifest only; production adapter remains locked.",
+    "created_at": "2026-05-02T20:00:00.000Z",
+    "raw_secret_stored": false
+  },
+  "integration_count": 4,
+  "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json"
+}

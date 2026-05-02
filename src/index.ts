@@ -160,3 +160,17 @@ export {
   createBetaServer,
   startBetaServer
 } from "./beta/server.js";
+export {
+  createManagedTenant,
+  exportManagedSaasPackage,
+  initializeManagedSaas,
+  loadManagedSaasConfig,
+  managedSaasConfigPath,
+  managedSaasReadiness,
+  managedSaasStatus,
+  observabilitySummary,
+  readObservabilityEvents,
+  recordObservabilityEvent,
+  registerExternalIntegration,
+  registerSecretReference
+} from "./saas/managed.js";

@@ -107,7 +107,8 @@ The current repo already has the right skeleton:
 - team governance ledger;
 - partner execution ledger;
 - beta deployment/API layer;
-- 50 tests;
+- managed SaaS control-plane scaffold;
+- 52 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -177,7 +178,14 @@ Implemented on 2026-05-02:
 - Docker deployment scaffold;
 - beta export package;
 - Phase 8 artifact bundle;
-- 50 passing tests.
+- managed SaaS control-plane config;
+- tenant isolation model;
+- external secret-reference registry;
+- external provider manifests for SSO, market data, LLM, regulated partner, and observability;
+- managed observability event log;
+- managed SaaS readiness/status/export package;
+- Phase 9 artifact bundle;
+- 52 passing tests.
 
 ## Knowledge Gathered
 
@@ -961,6 +969,40 @@ Exit criteria:
 - external providers are explicit and disabled until configured;
 - production partner adapter remains locked by default;
 - beta export package can reconstruct readiness and workspace state.
+
+### Phase 9: Managed SaaS And External Integrations
+
+Status: Complete for managed beta scaffold scope.
+
+Goal:
+
+Create the control-plane evidence needed before Parallax can become a hosted product for other people.
+
+Deliverables:
+
+- managed SaaS config;
+- tenant workspace registry;
+- tenant audit-directory isolation;
+- external secret-reference registry;
+- external integration manifest registry;
+- identity-provider manifest placeholder;
+- market-data vendor manifest placeholder;
+- LLM provider manifest placeholder;
+- regulated-partner manifest placeholder;
+- observability manifest and JSONL event log;
+- managed SaaS readiness/status reports;
+- managed SaaS export package;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- tenant slugs cannot escape the managed root;
+- each tenant gets an isolated audit directory;
+- raw secrets are not stored;
+- provider manifests exist but remain disabled until configured;
+- readiness reports external integration gaps explicitly;
+- production execution remains locked;
+- export package reconstructs managed readiness evidence.
 
 ## Team Needed
 

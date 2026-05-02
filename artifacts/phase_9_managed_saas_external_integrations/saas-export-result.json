@@ -1,0 +1,8 @@
+{
+  "out": "artifacts/phase_9_managed_saas_external_integrations/managed-saas-package.json",
+  "readiness_status": "ready_for_managed_beta_scaffold",
+  "tenant_count": 2,
+  "secret_ref_count": 5,
+  "integration_count": 5,
+  "observability_event_count": 1
+}

@@ -1,0 +1,19 @@
+{
+  "integration": {
+    "id": "integration_c24dab77fc18",
+    "kind": "observability",
+    "name": "Managed Logs Placeholder",
+    "provider": "managed_logs_metrics",
+    "status": "disabled_until_configured",
+    "validation_status": "not_validated",
+    "tenant_slug": "",
+    "secret_ref": "OBSERVABILITY_VENDOR",
+    "data_license": "",
+    "endpoint": "",
+    "notes": "Manifest only; local JSONL observability remains active for this scaffold.",
+    "created_at": "2026-05-02T20:00:00.000Z",
+    "raw_secret_stored": false
+  },
+  "integration_count": 5,
+  "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json"
+}

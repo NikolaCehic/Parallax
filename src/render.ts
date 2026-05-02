@@ -925,6 +925,164 @@ export function betaServeToHumanReport(result: any) {
   ]);
 }
 
+export function saasInitToHumanReport(result: any) {
+  const config = result.config;
+  return lines([
+    "Parallax Managed SaaS Control Plane",
+    "===================================",
+    "",
+    `Control plane: ${config.control_plane_id}`,
+    `Environment: ${config.environment}`,
+    `Owner: ${config.owner}`,
+    `Root dir: ${config.root_dir}`,
+    `Config: ${result.config_path}`,
+    "",
+    "Boundaries",
+    `  Cross-tenant queries: ${config.tenancy.cross_tenant_queries_allowed ? "allowed" : "disabled"}`,
+    `  Raw secret storage: ${config.secrets.raw_secret_storage_allowed ? "allowed" : "blocked"}`,
+    `  Direct broker connection: ${config.production_boundaries.direct_broker_connection ? "allowed" : "blocked"}`
+  ]);
+}
+
+export function tenantCreateToHumanReport(result: any) {
+  const tenant = result.tenant;
+  return lines([
+    "Parallax Managed Tenant",
+    "=======================",
+    "",
+    `Tenant: ${tenant.name}`,
+    `Slug: ${tenant.slug}`,
+    `Plan: ${tenant.plan}`,
+    `Region: ${tenant.region}`,
+    `Data residency: ${tenant.data_residency}`,
+    `Audit dir: ${tenant.audit_dir}`,
+    `Tenants: ${result.tenant_count}`,
+    `Config: ${result.config_path}`
+  ]);
+}
+
+export function secretRefToHumanReport(result: any) {
+  const secret = result.secret;
+  return lines([
+    "Parallax Secret Reference",
+    "=========================",
+    "",
+    `Name: ${secret.name}`,
+    `Provider: ${secret.provider}`,
+    `Scope: ${secret.scope}`,
+    `Reference hash: ${secret.secret_ref_hash}`,
+    `Raw secret stored: ${secret.raw_secret_stored ? "yes" : "no"}`,
+    `Rotation days: ${secret.rotation_days}`,
+    `Secret refs: ${result.secret_ref_count}`,
+    `Config: ${result.config_path}`
+  ]);
+}
+
+export function externalIntegrationToHumanReport(result: any) {
+  const integration = result.integration;
+  return lines([
+    "Parallax External Integration Manifest",
+    "======================================",
+    "",
+    `Kind: ${integration.kind}`,
+    `Name: ${integration.name}`,
+    `Provider: ${integration.provider}`,
+    `Status: ${integration.status}`,
+    `Validation: ${integration.validation_status}`,
+    `Tenant: ${compact(integration.tenant_slug)}`,
+    `Secret ref: ${compact(integration.secret_ref)}`,
+    `Raw secret stored: ${integration.raw_secret_stored ? "yes" : "no"}`,
+    `Integrations: ${result.integration_count}`,
+    `Config: ${result.config_path}`,
+    "",
+    "Notes",
+    `  ${compact(integration.notes)}`
+  ]);
+}
+
+export function observabilityEventToHumanReport(result: any) {
+  const event = result.event;
+  return lines([
+    "Parallax Observability Event",
+    "============================",
+    "",
+    `Event ID: ${event.id}`,
+    `Type: ${event.event_type}`,
+    `Severity: ${event.severity}`,
+    `Tenant: ${compact(event.tenant_slug)}`,
+    `Created at: ${event.created_at}`,
+    `Path: ${result.observability_path}`,
+    "",
+    "Message",
+    `  ${compact(event.message)}`
+  ]);
+}
+
+export function saasReadinessToHumanReport(report: any) {
+  const controlRows = report.controls.map((control: any) =>
+    [
+      `  - ${control.id}`,
+      control.passed ? "passed" : "failed",
+      control.severity,
+      control.detail
+    ].join(" | ")
+  );
+  const integrationRows = Object.entries(report.summary.integration_kinds).map(([kind, count]) =>
+    `  - ${kind}: ${count}`
+  );
+  return lines([
+    "Parallax Managed SaaS Readiness",
+    "================================",
+    "",
+    `Status: ${report.status}`,
+    `Root dir: ${report.root_dir}`,
+    `Tenants: ${report.summary.tenant_count}`,
+    `Secret refs: ${report.summary.secret_ref_count}`,
+    `Integrations: ${report.summary.integration_count}`,
+    `Observability events: ${report.summary.observability_event_count}`,
+    `Required failures: ${report.summary.required_failed_count}`,
+    "",
+    "Integration Manifests",
+    integrationRows.join("\n"),
+    "",
+    "Controls",
+    controlRows.join("\n")
+  ]);
+}
+
+export function saasStatusToHumanReport(status: any) {
+  return lines([
+    "Parallax Managed SaaS Status",
+    "============================",
+    "",
+    `Control plane: ${status.control_plane_id}`,
+    `Environment: ${status.environment}`,
+    `Readiness: ${status.readiness.status}`,
+    `Tenants: ${status.readiness.summary.tenant_count}`,
+    `Secret refs: ${status.readiness.summary.secret_ref_count}`,
+    `Integrations: ${status.readiness.summary.integration_count}`,
+    `Observability events: ${status.readiness.summary.observability_event_count}`,
+    "",
+    "Production Boundary",
+    `  Direct broker connection: ${status.production_boundaries.direct_broker_connection ? "allowed" : "blocked"}`,
+    `  Partner adapter default: ${status.production_boundaries.production_partner_adapter_default}`
+  ]);
+}
+
+export function saasExportToHumanReport(result: any) {
+  return lines([
+    "Parallax Managed SaaS Export",
+    "============================",
+    "",
+    `Output: ${result.out}`,
+    `Readiness: ${result.readiness_status}`,
+    `Tenants: ${result.tenant_count}`,
+    `Secret refs: ${result.secret_ref_count}`,
+    `Integrations: ${result.integration_count}`,
+    `Observability events: ${result.observability_event_count}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

@@ -1,0 +1,32 @@
+Parallax Managed SaaS Readiness
+================================
+
+Status: ready_for_managed_beta_scaffold
+Root dir: artifacts/phase_9_managed_saas_external_integrations/managed-saas
+Tenants: 2
+Secret refs: 5
+Integrations: 5
+Observability events: 1
+Required failures: 0
+
+Integration Manifests
+  - identity_provider: 1
+  - market_data_vendor: 1
+  - llm_provider: 1
+  - regulated_partner: 1
+  - storage: 0
+  - observability: 1
+
+Controls
+  - tenant_isolation | passed | required | Tenant audit dirs stay inside the managed SaaS root.
+  - tenant_count | passed | required | At least one tenant workspace exists.
+  - cross_tenant_queries_disabled | passed | required | Cross-tenant queries are disabled by default.
+  - secret_refs_only | passed | required | Only external secret references are stored.
+  - identity_provider_manifest | passed | required | Identity provider manifest exists.
+  - market_data_vendor_manifest | passed | required | Market-data vendor manifest exists.
+  - llm_provider_manifest | passed | required | LLM provider manifest exists.
+  - regulated_partner_manifest | passed | required | Regulated partner manifest exists.
+  - observability_manifest | passed | required | Observability provider manifest exists.
+  - observability_enabled | passed | required | Observability manifest and events exist.
+  - production_execution_locked | passed | required | Regulated partner production integration is not enabled by manifest.
+  - external_integrations_not_validated | passed | warning | External integrations are visible but not treated as production validated.

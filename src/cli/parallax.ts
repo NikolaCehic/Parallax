@@ -51,15 +51,23 @@ import {
   portfolioImportToHumanReport,
   promptRegistryToHumanReport,
   replayToHumanReport,
+  saasExportToHumanReport,
+  saasInitToHumanReport,
+  saasReadinessToHumanReport,
+  saasStatusToHumanReport,
+  secretRefToHumanReport,
   sandboxToHumanReport,
   sourcesToHumanReport,
+  tenantCreateToHumanReport,
   teamApprovalToHumanReport,
   teamAssignmentToHumanReport,
   teamCommentToHumanReport,
   teamGovernanceExportToHumanReport,
   teamGovernanceToHumanReport,
   teamInitToHumanReport,
-  teamMemberToHumanReport
+  teamMemberToHumanReport,
+  externalIntegrationToHumanReport,
+  observabilityEventToHumanReport
 } from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import {
@@ -120,6 +128,17 @@ import {
   initializeBetaDeployment
 } from "../beta/deployment.js";
 import { startBetaServer } from "../beta/server.js";
+import {
+  createManagedTenant,
+  exportManagedSaasPackage,
+  initializeManagedSaas,
+  managedSaasConfigPath,
+  managedSaasReadiness,
+  managedSaasStatus,
+  recordObservabilityEvent,
+  registerExternalIntegration,
+  registerSecretReference
+} from "../saas/managed.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -193,6 +212,14 @@ Commands:
   beta-status [--audit-dir audits]
   beta-export --audit-dir audits --out beta-deployment-package.json
   beta-serve [--audit-dir audits] [--host 127.0.0.1] [--port 8787]
+  saas-init [--root-dir managed-saas] [--owner "Platform Owner"]
+  tenant-create --root-dir managed-saas --slug alpha --name "Alpha Research"
+  secret-ref-add --root-dir managed-saas --name MARKET_DATA --scope market_data_vendor --ref secret://vendor/key
+  integration-add --root-dir managed-saas --kind market_data_vendor --name "Market Data" --provider "Vendor"
+  observability-record --root-dir managed-saas --type control_check [--tenant alpha] [--message "..."]
+  saas-readiness [--root-dir managed-saas]
+  saas-status [--root-dir managed-saas]
+  saas-export --root-dir managed-saas --out managed-saas-package.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -210,6 +237,7 @@ Common flags:
   --vols                 Symbol volatility overrides, for alerts: NVDA=0.9.
   --tags                 Comma-separated governance comment tags.
   --config               Beta deployment config path.
+  --root-dir             Managed SaaS control-plane root directory.
 `;
 }
 
@@ -270,6 +298,21 @@ function parseLLMBudget(args: CliArgs) {
     budget.maxEstimatedCostUsd = Number(args["llm-budget-usd"]);
   }
   return Object.keys(budget).length ? budget : undefined;
+}
+
+function parseJsonObject(value?: string | boolean) {
+  if (!value || value === true) return {};
+  const parsed = JSON.parse(String(value));
+  if (!parsed || Array.isArray(parsed) || typeof parsed !== "object") {
+    throw new Error("--metadata must be a JSON object");
+  }
+  return parsed;
+}
+
+function saasPaths(args: CliArgs) {
+  const rootDir = String(args["root-dir"] ?? "managed-saas");
+  const configPath = args.config ? String(args.config) : managedSaasConfigPath(rootDir);
+  return { rootDir, configPath };
 }
 
 async function main() {
@@ -902,6 +945,132 @@ async function main() {
       out: String(args.out)
     });
     printResult(args, betaExportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "saas-init") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await initializeManagedSaas({
+      rootDir,
+      configPath,
+      owner: String(args.owner ?? "platform_owner"),
+      environment: String(args.environment ?? "managed_beta"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, saasInitToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "tenant-create") {
+    if (!args.slug) throw new Error("tenant-create requires --slug");
+    if (!args.name) throw new Error("tenant-create requires --name");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await createManagedTenant({
+      rootDir,
+      configPath,
+      slug: String(args.slug),
+      name: String(args.name),
+      owner: String(args.owner ?? "tenant_owner"),
+      plan: String(args.plan ?? "private_beta"),
+      region: String(args.region ?? "local_dev"),
+      dataResidency: String(args["data-residency"] ?? "local_dev"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, tenantCreateToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "secret-ref-add") {
+    for (const required of ["name", "scope", "ref"]) {
+      if (!args[required]) throw new Error(`secret-ref-add requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await registerSecretReference({
+      rootDir,
+      configPath,
+      name: String(args.name),
+      provider: String(args.provider ?? "external_secret_manager"),
+      scope: String(args.scope),
+      secretRef: String(args.ref),
+      owner: String(args.owner ?? "platform_security"),
+      rotationDays: args["rotation-days"] && args["rotation-days"] !== true ? Number(args["rotation-days"]) : 90,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, secretRefToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "integration-add") {
+    for (const required of ["kind", "name", "provider"]) {
+      if (!args[required]) throw new Error(`integration-add requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await registerExternalIntegration({
+      rootDir,
+      configPath,
+      kind: String(args.kind),
+      name: String(args.name),
+      provider: String(args.provider),
+      status: String(args.status ?? "disabled_until_configured"),
+      validationStatus: String(args["validation-status"] ?? "not_validated"),
+      tenantSlug: args.tenant ? String(args.tenant) : "",
+      secretRef: args["secret-ref"] ? String(args["secret-ref"]) : "",
+      dataLicense: args["data-license"] ? String(args["data-license"]) : "",
+      endpoint: args.endpoint ? String(args.endpoint) : "",
+      notes: args.notes ? String(args.notes) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, externalIntegrationToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "observability-record") {
+    if (!args.type) throw new Error("observability-record requires --type");
+    const { rootDir } = saasPaths(args);
+    const result = await recordObservabilityEvent({
+      rootDir,
+      tenantSlug: args.tenant ? String(args.tenant) : "",
+      eventType: String(args.type),
+      severity: String(args.severity ?? "info"),
+      message: args.message ? String(args.message) : "",
+      metadata: parseJsonObject(args.metadata),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, observabilityEventToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "saas-readiness") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await managedSaasReadiness({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, saasReadinessToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "saas-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await managedSaasStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, saasStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "saas-export") {
+    if (!args.out) throw new Error("saas-export requires --out");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await exportManagedSaasPackage({
+      rootDir,
+      configPath,
+      out: String(args.out)
+    });
+    printResult(args, saasExportToHumanReport(result), result);
     return;
   }
 

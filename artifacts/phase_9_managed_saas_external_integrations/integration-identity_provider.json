@@ -1,0 +1,19 @@
+{
+  "integration": {
+    "id": "integration_2207c2155907",
+    "kind": "identity_provider",
+    "name": "OIDC SSO Placeholder",
+    "provider": "enterprise_oidc",
+    "status": "disabled_until_configured",
+    "validation_status": "not_validated",
+    "tenant_slug": "",
+    "secret_ref": "IDENTITY_PROVIDER",
+    "data_license": "",
+    "endpoint": "https://idp.example.invalid/oauth2",
+    "notes": "Manifest only; no external SSO connection is active.",
+    "created_at": "2026-05-02T20:00:00.000Z",
+    "raw_secret_stored": false
+  },
+  "integration_count": 1,
+  "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json"
+}

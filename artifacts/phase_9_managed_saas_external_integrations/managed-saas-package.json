@@ -1,0 +1,523 @@
+{
+  "schema_version": "0.1.0",
+  "exported_at": "2026-05-02T20:42:29.965Z",
+  "status": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-02T20:42:29.964Z",
+    "readiness": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-02T20:42:29.964Z",
+      "status": "ready_for_managed_beta_scaffold",
+      "root_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas",
+      "config_path": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/managed-saas.json",
+      "summary": {
+        "tenant_count": 2,
+        "secret_ref_count": 5,
+        "integration_count": 5,
+        "observability_event_count": 1,
+        "required_failed_count": 0,
+        "integration_kinds": {
+          "identity_provider": 1,
+          "market_data_vendor": 1,
+          "llm_provider": 1,
+          "regulated_partner": 1,
+          "storage": 0,
+          "observability": 1
+        }
+      },
+      "controls": [
+        {
+          "id": "tenant_isolation",
+          "passed": true,
+          "detail": "Tenant audit dirs stay inside the managed SaaS root.",
+          "severity": "required"
+        },
+        {
+          "id": "tenant_count",
+          "passed": true,
+          "detail": "At least one tenant workspace exists.",
+          "severity": "required"
+        },
+        {
+          "id": "cross_tenant_queries_disabled",
+          "passed": true,
+          "detail": "Cross-tenant queries are disabled by default.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_only",
+          "passed": true,
+          "detail": "Only external secret references are stored.",
+          "severity": "required"
+        },
+        {
+          "id": "identity_provider_manifest",
+          "passed": true,
+          "detail": "Identity provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "market_data_vendor_manifest",
+          "passed": true,
+          "detail": "Market-data vendor manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "llm_provider_manifest",
+          "passed": true,
+          "detail": "LLM provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "regulated_partner_manifest",
+          "passed": true,
+          "detail": "Regulated partner manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "observability_manifest",
+          "passed": true,
+          "detail": "Observability provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "observability_enabled",
+          "passed": true,
+          "detail": "Observability manifest and events exist.",
+          "severity": "required"
+        },
+        {
+          "id": "production_execution_locked",
+          "passed": true,
+          "detail": "Regulated partner production integration is not enabled by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "external_integrations_not_validated",
+          "passed": true,
+          "detail": "External integrations are visible but not treated as production validated.",
+          "severity": "warning"
+        }
+      ],
+      "tenants": [
+        {
+          "id": "tenant_037008ff4731",
+          "slug": "alpha_research",
+          "name": "Alpha Research Desk",
+          "owner": "Alpha Owner",
+          "plan": "private_beta",
+          "region": "us_dev",
+          "data_residency": "us_dev",
+          "status": "active",
+          "audit_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/tenants/alpha_research/audits",
+          "created_at": "2026-05-02T20:00:00.000Z"
+        },
+        {
+          "id": "tenant_2ef5ae6f4e45",
+          "slug": "beta_research",
+          "name": "Beta Research Desk",
+          "owner": "Beta Owner",
+          "plan": "team_beta",
+          "region": "us_dev",
+          "data_residency": "us_dev",
+          "status": "active",
+          "audit_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/tenants/beta_research/audits",
+          "created_at": "2026-05-02T20:00:00.000Z"
+        }
+      ],
+      "secret_refs": [
+        {
+          "id": "secret_ref_d361a3dfd2f0",
+          "name": "IDENTITY_PROVIDER",
+          "provider": "external_secret_manager",
+          "scope": "identity_provider",
+          "secret_ref_hash": "abff5ca25a61e9015e6918468a65f06828269e82ab1cd0cc2fc9bc67611b203e",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_7e6668d8df3f",
+          "name": "MARKET_DATA_VENDOR",
+          "provider": "external_secret_manager",
+          "scope": "market_data_vendor",
+          "secret_ref_hash": "f9ce8abe4a41ddd3b9f2bcfaf13b7c2490ecc55890ccce5352d8938c154eb310",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_dcf5d8274806",
+          "name": "LLM_PROVIDER",
+          "provider": "external_secret_manager",
+          "scope": "llm_provider",
+          "secret_ref_hash": "66945e5a0c0b28e26200db1611e44ea254d13858ca687b60edca00342eeeddc5",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_29a8c8529bc4",
+          "name": "REGULATED_PARTNER",
+          "provider": "external_secret_manager",
+          "scope": "regulated_partner",
+          "secret_ref_hash": "f1b520560db576a3029e17dea89f1d25bc34f4fea94cbdaea4029d15bef5d9fc",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_51d0b68652f7",
+          "name": "OBSERVABILITY_VENDOR",
+          "provider": "external_secret_manager",
+          "scope": "observability",
+          "secret_ref_hash": "38c58d7a0dfc22d8d7b8629e80ce71079af811af7cbdd2437706eeb43dd318d5",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        }
+      ],
+      "integrations": [
+        {
+          "id": "integration_2207c2155907",
+          "kind": "identity_provider",
+          "name": "OIDC SSO Placeholder",
+          "provider": "enterprise_oidc",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "IDENTITY_PROVIDER",
+          "data_license": "",
+          "endpoint": "https://idp.example.invalid/oauth2",
+          "notes": "Manifest only; no external SSO connection is active.",
+          "created_at": "2026-05-02T20:00:00.000Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_8c13e6d7e3b4",
+          "kind": "market_data_vendor",
+          "name": "Licensed US Equities Data Placeholder",
+          "provider": "licensed_us_equities_vendor",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha_research",
+          "secret_ref": "MARKET_DATA_VENDOR",
+          "data_license": "contract_required_before_shared_outputs",
+          "endpoint": "",
+          "notes": "Manifest only; production data license must be validated separately.",
+          "created_at": "2026-05-02T20:00:00.000Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_8e8a44b5b60e",
+          "kind": "llm_provider",
+          "name": "Model Gateway Placeholder",
+          "provider": "model_gateway",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "LLM_PROVIDER",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "Manifest only; current LLM path remains scripted and local.",
+          "created_at": "2026-05-02T20:00:00.000Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_7aaf152aee65",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Placeholder",
+          "provider": "regulated_execution_partner",
+          "status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "REGULATED_PARTNER",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "Manifest only; production adapter remains locked.",
+          "created_at": "2026-05-02T20:00:00.000Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_c24dab77fc18",
+          "kind": "observability",
+          "name": "Managed Logs Placeholder",
+          "provider": "managed_logs_metrics",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "OBSERVABILITY_VENDOR",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "Manifest only; local JSONL observability remains active for this scaffold.",
+          "created_at": "2026-05-02T20:00:00.000Z",
+          "raw_secret_stored": false
+        }
+      ],
+      "observability": {
+        "root_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas",
+        "event_count": 1,
+        "by_severity": {
+          "info": 1
+        },
+        "by_type": {
+          "managed_readiness_check": 1
+        },
+        "by_tenant": {
+          "alpha_research": 1
+        },
+        "latest": [
+          {
+            "id": "obs_dd9331ce1b26",
+            "tenant_slug": "alpha_research",
+            "event_type": "managed_readiness_check",
+            "severity": "info",
+            "message": "Phase 9 managed SaaS scaffold generated readiness evidence.",
+            "metadata": {
+              "phase": 9,
+              "purpose": "artifact_generation"
+            },
+            "created_at": "2026-05-02T20:00:00.000Z"
+          }
+        ]
+      }
+    },
+    "control_plane_id": "saas_cp_4c3b35f6d4a3",
+    "environment": "managed_beta_scaffold",
+    "tenancy": {
+      "isolation_model": "tenant_directory_per_workspace",
+      "path_traversal_protection": true,
+      "cross_tenant_queries_allowed": false,
+      "default_region": "local_dev",
+      "pii_storage": "not_configured"
+    },
+    "production_boundaries": {
+      "direct_broker_connection": false,
+      "production_partner_adapter_default": "locked",
+      "external_provider_credentials_required": true
+    }
+  },
+  "config": {
+    "schema_version": "0.1.0",
+    "control_plane_id": "saas_cp_4c3b35f6d4a3",
+    "environment": "managed_beta_scaffold",
+    "root_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas",
+    "owner": "Parallax Platform Operator",
+    "created_at": "2026-05-02T20:00:00.000Z",
+    "tenancy": {
+      "isolation_model": "tenant_directory_per_workspace",
+      "path_traversal_protection": true,
+      "cross_tenant_queries_allowed": false,
+      "default_region": "local_dev",
+      "pii_storage": "not_configured"
+    },
+    "identity": {
+      "sso_required_for_managed_saas": true,
+      "local_bearer_tokens_allowed_for_private_beta": true,
+      "configured_provider_count": 1
+    },
+    "secrets": {
+      "storage_model": "external_secret_references_only",
+      "raw_secret_storage_allowed": false,
+      "rotation_required_days": 90
+    },
+    "observability": {
+      "event_file": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/observability-events.jsonl",
+      "audit_events_required": true,
+      "pii_in_logs_allowed": false
+    },
+    "production_boundaries": {
+      "direct_broker_connection": false,
+      "production_partner_adapter_default": "locked",
+      "external_provider_credentials_required": true
+    },
+    "tenants": [
+      {
+        "id": "tenant_037008ff4731",
+        "slug": "alpha_research",
+        "name": "Alpha Research Desk",
+        "owner": "Alpha Owner",
+        "plan": "private_beta",
+        "region": "us_dev",
+        "data_residency": "us_dev",
+        "status": "active",
+        "audit_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/tenants/alpha_research/audits",
+        "created_at": "2026-05-02T20:00:00.000Z"
+      },
+      {
+        "id": "tenant_2ef5ae6f4e45",
+        "slug": "beta_research",
+        "name": "Beta Research Desk",
+        "owner": "Beta Owner",
+        "plan": "team_beta",
+        "region": "us_dev",
+        "data_residency": "us_dev",
+        "status": "active",
+        "audit_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas/tenants/beta_research/audits",
+        "created_at": "2026-05-02T20:00:00.000Z"
+      }
+    ],
+    "secret_refs": [
+      {
+        "id": "secret_ref_d361a3dfd2f0",
+        "name": "IDENTITY_PROVIDER",
+        "provider": "external_secret_manager",
+        "scope": "identity_provider",
+        "secret_ref": "secret://parallax/managed/identity-provider",
+        "secret_ref_hash": "abff5ca25a61e9015e6918468a65f06828269e82ab1cd0cc2fc9bc67611b203e",
+        "owner": "Platform Security",
+        "rotation_days": 90,
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "secret_ref_7e6668d8df3f",
+        "name": "MARKET_DATA_VENDOR",
+        "provider": "external_secret_manager",
+        "scope": "market_data_vendor",
+        "secret_ref": "secret://parallax/managed/market-data",
+        "secret_ref_hash": "f9ce8abe4a41ddd3b9f2bcfaf13b7c2490ecc55890ccce5352d8938c154eb310",
+        "owner": "Platform Security",
+        "rotation_days": 90,
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "secret_ref_dcf5d8274806",
+        "name": "LLM_PROVIDER",
+        "provider": "external_secret_manager",
+        "scope": "llm_provider",
+        "secret_ref": "secret://parallax/managed/llm-provider",
+        "secret_ref_hash": "66945e5a0c0b28e26200db1611e44ea254d13858ca687b60edca00342eeeddc5",
+        "owner": "Platform Security",
+        "rotation_days": 90,
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "secret_ref_29a8c8529bc4",
+        "name": "REGULATED_PARTNER",
+        "provider": "external_secret_manager",
+        "scope": "regulated_partner",
+        "secret_ref": "secret://parallax/managed/regulated-partner",
+        "secret_ref_hash": "f1b520560db576a3029e17dea89f1d25bc34f4fea94cbdaea4029d15bef5d9fc",
+        "owner": "Platform Security",
+        "rotation_days": 90,
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "secret_ref_51d0b68652f7",
+        "name": "OBSERVABILITY_VENDOR",
+        "provider": "external_secret_manager",
+        "scope": "observability",
+        "secret_ref": "secret://parallax/managed/observability",
+        "secret_ref_hash": "38c58d7a0dfc22d8d7b8629e80ce71079af811af7cbdd2437706eeb43dd318d5",
+        "owner": "Platform Security",
+        "rotation_days": 90,
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      }
+    ],
+    "integrations": [
+      {
+        "id": "integration_2207c2155907",
+        "kind": "identity_provider",
+        "name": "OIDC SSO Placeholder",
+        "provider": "enterprise_oidc",
+        "status": "disabled_until_configured",
+        "validation_status": "not_validated",
+        "tenant_slug": "",
+        "secret_ref": "IDENTITY_PROVIDER",
+        "data_license": "",
+        "endpoint": "https://idp.example.invalid/oauth2",
+        "notes": "Manifest only; no external SSO connection is active.",
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "integration_8c13e6d7e3b4",
+        "kind": "market_data_vendor",
+        "name": "Licensed US Equities Data Placeholder",
+        "provider": "licensed_us_equities_vendor",
+        "status": "disabled_until_configured",
+        "validation_status": "not_validated",
+        "tenant_slug": "alpha_research",
+        "secret_ref": "MARKET_DATA_VENDOR",
+        "data_license": "contract_required_before_shared_outputs",
+        "endpoint": "",
+        "notes": "Manifest only; production data license must be validated separately.",
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "integration_8e8a44b5b60e",
+        "kind": "llm_provider",
+        "name": "Model Gateway Placeholder",
+        "provider": "model_gateway",
+        "status": "disabled_until_configured",
+        "validation_status": "not_validated",
+        "tenant_slug": "",
+        "secret_ref": "LLM_PROVIDER",
+        "data_license": "",
+        "endpoint": "",
+        "notes": "Manifest only; current LLM path remains scripted and local.",
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "integration_7aaf152aee65",
+        "kind": "regulated_partner",
+        "name": "Regulated Partner Placeholder",
+        "provider": "regulated_execution_partner",
+        "status": "disabled_until_legal_approval",
+        "validation_status": "not_validated",
+        "tenant_slug": "",
+        "secret_ref": "REGULATED_PARTNER",
+        "data_license": "",
+        "endpoint": "",
+        "notes": "Manifest only; production adapter remains locked.",
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "integration_c24dab77fc18",
+        "kind": "observability",
+        "name": "Managed Logs Placeholder",
+        "provider": "managed_logs_metrics",
+        "status": "disabled_until_configured",
+        "validation_status": "not_validated",
+        "tenant_slug": "",
+        "secret_ref": "OBSERVABILITY_VENDOR",
+        "data_license": "",
+        "endpoint": "",
+        "notes": "Manifest only; local JSONL observability remains active for this scaffold.",
+        "created_at": "2026-05-02T20:00:00.000Z",
+        "raw_secret_stored": false
+      }
+    ],
+    "updated_at": "2026-05-02T20:42:29.961Z"
+  },
+  "observability": {
+    "root_dir": "artifacts/phase_9_managed_saas_external_integrations/managed-saas",
+    "event_count": 1,
+    "by_severity": {
+      "info": 1
+    },
+    "by_type": {
+      "managed_readiness_check": 1
+    },
+    "by_tenant": {
+      "alpha_research": 1
+    },
+    "latest": [
+      {
+        "id": "obs_dd9331ce1b26",
+        "tenant_slug": "alpha_research",
+        "event_type": "managed_readiness_check",
+        "severity": "info",
+        "message": "Phase 9 managed SaaS scaffold generated readiness evidence.",
+        "metadata": {
+          "phase": 9,
+          "purpose": "artifact_generation"
+        },
+        "created_at": "2026-05-02T20:00:00.000Z"
+      }
+    ]
+  }
+}
