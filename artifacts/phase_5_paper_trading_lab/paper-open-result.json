@@ -1,0 +1,94 @@
+{
+  "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+  "ledger_path": "artifacts/phase_5_paper_trading_lab/audits/paper-ledger.json",
+  "trade": {
+    "id": "paper_trade_d73ff967414e",
+    "dossier_id": "dos_bb1b4b378920",
+    "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+    "symbol": "NVDA",
+    "side": "buy",
+    "opened_at": "2026-05-01T15:00:00Z",
+    "status": "open",
+    "ticket": {
+      "id": "paper_ticket_6ef530762fd4",
+      "dossier_id": "dos_bb1b4b378920",
+      "symbol": "NVDA",
+      "side": "buy",
+      "quantity": 8,
+      "reference_price": 114.6,
+      "notional": 916.8,
+      "status": "created",
+      "created_at": "2026-05-01T15:00:00Z",
+      "fill_model": {
+        "type": "next_bar_with_cost_proxy",
+        "estimated_spread_bps": 22,
+        "estimated_slippage_bps": 16
+      },
+      "order_type": "market_simulated",
+      "time_in_force": "paper_day",
+      "invalidation_ref": "Volatility regime changes materially.",
+      "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+      "simulation_only": true,
+      "live_execution_unlocked": false,
+      "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+      "lab_created_at": "2026-05-01T15:00:00Z"
+    },
+    "filled": {
+      "id": "paper_ticket_6ef530762fd4",
+      "dossier_id": "dos_bb1b4b378920",
+      "symbol": "NVDA",
+      "side": "buy",
+      "quantity": 8,
+      "reference_price": 114.6,
+      "notional": 916.8,
+      "status": "filled",
+      "created_at": "2026-05-01T15:00:00Z",
+      "fill_model": {
+        "type": "next_bar_with_cost_proxy",
+        "estimated_spread_bps": 22,
+        "estimated_slippage_bps": 16
+      },
+      "order_type": "market_simulated",
+      "time_in_force": "paper_day",
+      "invalidation_ref": "Volatility regime changes materially.",
+      "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+      "simulation_only": true,
+      "live_execution_unlocked": false,
+      "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+      "lab_created_at": "2026-05-01T15:00:00Z",
+      "filled_at": "2026-05-01T15:00:00Z",
+      "fill_price": 115.44,
+      "fill_notional": 923.5
+    },
+    "reserved_notional": 923.5,
+    "risk_budget_cap": 2000,
+    "simulation_only": true,
+    "live_execution_unlocked": false
+  },
+  "ledger_summary": {
+    "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+    "trade_count": 1,
+    "open_count": 1,
+    "closed_count": 0,
+    "review_count": 0,
+    "reserved_notional": 923.5,
+    "realized_pnl": 0,
+    "win_rate": 0,
+    "loss_count": 0,
+    "average_realized_return": 0,
+    "max_drawdown": 0,
+    "turnover_notional": 923.5,
+    "by_symbol": {
+      "NVDA": {
+        "open_count": 1,
+        "closed_count": 0,
+        "realized_pnl": 0,
+        "reserved_notional": 923.5
+      }
+    },
+    "simulation_only": true,
+    "live_execution_unlocked": false,
+    "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution."
+  },
+  "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution."
+}

@@ -1,0 +1,15 @@
+{
+  "dossier_id": "dos_bb1b4b378920",
+  "action_class": "paper_trade_candidate",
+  "thesis_state": "active",
+  "confidence": 0.63,
+  "freshness_score": 1,
+  "policy_status": "allowed",
+  "effective_action_ceiling": "paper_trade_candidate",
+  "council_provider": "deterministic_rule_council_v0",
+  "council_eval_passed": true,
+  "llm_usage": null,
+  "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+  "markdown_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.md",
+  "library_path": "artifacts/phase_5_paper_trading_lab/audits/library.json"
+}

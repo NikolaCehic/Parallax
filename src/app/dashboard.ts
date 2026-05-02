@@ -1,6 +1,7 @@
 import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
 import { productPolicySnapshot } from "../product/policy.js";
+import { paperLedgerReport } from "../paper/lab.js";
 import {
   listLibraryEntries,
   monitorWorkspace,
@@ -82,6 +83,23 @@ function renderNotificationRows(notifications: any[]) {
   `).join("");
 }
 
+function renderPaperRows(trades: any[]) {
+  if (!trades.length) {
+    return `<tr><td colspan="7" class="empty">No paper trades in this workspace.</td></tr>`;
+  }
+  return trades.map((trade: any) => `
+    <tr>
+      <td><strong>${escapeHtml(trade.symbol)}</strong><span>${escapeHtml(trade.id)}</span></td>
+      <td>${badge(trade.status)}</td>
+      <td>${escapeHtml(trade.side)}</td>
+      <td>${escapeHtml(trade.ticket.quantity)}</td>
+      <td>${escapeHtml(trade.filled.fill_price)}</td>
+      <td>${trade.status === "closed" ? escapeHtml(trade.closed.exit_price) : escapeHtml(trade.reserved_notional)}</td>
+      <td>${trade.status === "closed" ? escapeHtml(trade.realized_pnl) : badge("simulation_only")}</td>
+    </tr>
+  `).join("");
+}
+
 function renderSourceRows(sourceViews: any[]) {
   const sources = sourceViews.flatMap((view: any) =>
     view.sources.map((source: any) => ({ ...source, dossier_id: view.dossier_id }))
@@ -146,6 +164,7 @@ export async function buildDashboardHtml({
   const feedback = await summarizeFeedback(auditDir);
   const preferences = await readAlertPreferences(auditDir);
   const notifications = await readLifecycleNotifications(auditDir);
+  const paper = await paperLedgerReport(auditDir);
   const policy = productPolicySnapshot();
   const sourceViews = [];
   for (const entry of library.entries) {
@@ -312,6 +331,7 @@ export async function buildDashboardHtml({
       <a href="#library">Dossier Library</a>
       <a href="#alerts">Lifecycle Alerts</a>
       <a href="#notifications">Notification Inbox</a>
+      <a href="#paper">Paper Lab</a>
       <a href="#sources">Data Freshness</a>
       <a href="#feedback">Alpha Feedback</a>
       <a href="#boundary">Product Boundary</a>
@@ -324,6 +344,7 @@ export async function buildDashboardHtml({
         ${metric("Data Sources", sourceCount, "evidence items")}
         ${metric("Feedback", feedback.feedback_count, "local alpha notes")}
         ${metric("Notifications", notifications.notifications.length, preferences.channels.join(", "))}
+        ${metric("Paper PnL", paper.summary.realized_pnl, `${paper.summary.open_count} open / ${paper.summary.closed_count} closed`)}
       </div>
 
       <section class="section" id="library">
@@ -347,6 +368,14 @@ export async function buildDashboardHtml({
         <table>
           <thead><tr><th>Symbol</th><th>Severity</th><th>State</th><th>Message</th><th>Audit</th></tr></thead>
           <tbody>${renderNotificationRows(notifications.notifications)}</tbody>
+        </table>
+      </section>
+
+      <section class="section" id="paper">
+        <h2>Paper Lab</h2>
+        <table>
+          <thead><tr><th>Symbol</th><th>Status</th><th>Side</th><th>Qty</th><th>Entry</th><th>Exit/Reserved</th><th>Outcome</th></tr></thead>
+          <tbody>${renderPaperRows(paper.ledger.trades)}</tbody>
         </table>
       </section>
 

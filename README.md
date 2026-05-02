@@ -23,6 +23,7 @@ Parallax tries to sit in the middle:
 - Hard gates stop bad data, bad risk, restricted symbols, stale theses, and unsafe escalation.
 - A lifecycle engine keeps every thesis temporary, monitored, and invalidatable.
 - Phase 4 lifecycle alerts track change since the last run, custom triggers, preferences, and a local notification inbox.
+- Phase 5 paper trading stores simulated positions, outcomes, attribution, and reviews without unlocking live execution.
 
 Instead of asking:
 
@@ -421,7 +422,7 @@ Interpretation
 
 ## Paper And Sandbox Modes
 
-Parallax includes paper-trading and sandbox execution helpers, but they are intentionally gated.
+Parallax includes a paper-trading lab and sandbox execution helpers, but they are intentionally gated.
 
 Paper tickets require:
 
@@ -429,6 +430,42 @@ Paper tickets require:
 - no hard vetoes;
 - an action class of `paper_trade_candidate`;
 - risk budget checks.
+
+Open a paper trade from a paper-eligible dossier:
+
+```bash
+npm run cli -- paper-open \
+  --audit audits/dos_x.json \
+  --audit-dir audits \
+  --risk-budget 0.01 \
+  --market-price 115
+```
+
+Close and attribute it:
+
+```bash
+npm run cli -- paper-close \
+  --audit-dir audits \
+  --trade paper_trade_x \
+  --exit-price 118 \
+  --reason target_reached
+```
+
+Review the process:
+
+```bash
+npm run cli -- paper-review \
+  --audit-dir audits \
+  --trade paper_trade_x \
+  --rating disciplined \
+  --notes "followed the invalidation plan"
+```
+
+Show the paper ledger and calibration summary:
+
+```bash
+npm run paper-ledger -- --audit-dir audits
+```
 
 Sandbox submission requires:
 
@@ -449,7 +486,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 42 tests:
+The suite currently includes 44 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -460,6 +497,7 @@ The suite currently includes 42 tests:
 - Phase 2 data-backed research E2E tests;
 - Phase 3 LLM council provider, prompt-registry, adversarial-eval, and CLI smoke tests;
 - Phase 4 lifecycle trigger-editor, alert-preference, change-since-last-run, notification, and dashboard tests;
+- Phase 5 paper-ledger, risk-reservation, attribution, review, export/import, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -493,6 +531,7 @@ src/
   library/        Local dossier library, source view, feedback, export
   llm/            Prompt registry, evidence-only contexts, scripted provider, eval suite
   paper/          Paper-trading helpers
+                  and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
 
 python/
@@ -567,12 +606,16 @@ Current state:
 - custom lifecycle trigger overlays;
 - change-since-last-run monitor state;
 - local notification inbox;
+- persistent paper trading ledger;
+- paper risk-budget reservation;
+- paper outcome attribution and review notes;
+- paper calibration dashboard section;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 42 passing tests.
+- 44 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

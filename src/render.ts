@@ -261,6 +261,119 @@ export function paperToHumanReport({ ticket, filled }: any) {
   ]);
 }
 
+export function paperOpenToHumanReport(result: any) {
+  const trade = result.trade;
+  return lines([
+    "Parallax Paper Open",
+    "===================",
+    "",
+    `Trade ID: ${trade.id}`,
+    `Symbol: ${trade.symbol}`,
+    `Side: ${trade.side}`,
+    `Status: ${trade.status}`,
+    `Quantity: ${trade.ticket.quantity}`,
+    `Fill price: ${trade.filled.fill_price}`,
+    `Reserved notional: ${trade.reserved_notional}`,
+    `Risk cap: ${trade.risk_budget_cap}`,
+    `Ledger: ${result.ledger_path}`,
+    "",
+    "Ledger Summary",
+    `  Open: ${result.ledger_summary.open_count}`,
+    `  Closed: ${result.ledger_summary.closed_count}`,
+    `  Reserved: ${result.ledger_summary.reserved_notional}`,
+    `  Realized PnL: ${result.ledger_summary.realized_pnl}`,
+    "",
+    "Simulation Boundary",
+    `  ${result.disclosure}`
+  ]);
+}
+
+export function paperCloseToHumanReport(result: any) {
+  const trade = result.trade;
+  return lines([
+    "Parallax Paper Close",
+    "====================",
+    "",
+    `Trade ID: ${trade.id}`,
+    `Symbol: ${trade.symbol}`,
+    `Status: ${trade.status}`,
+    `Closed at: ${trade.closed_at}`,
+    `Exit price: ${trade.closed.exit_price}`,
+    `Realized PnL: ${trade.realized_pnl}`,
+    `Realized return: ${pct(trade.realized_return)}`,
+    "",
+    "Attribution",
+    `  Thesis quality: ${trade.attribution.thesis_quality}`,
+    `  Timing quality: ${trade.attribution.timing_quality}`,
+    `  Sizing quality: ${trade.attribution.sizing_quality}`,
+    `  Execution quality: ${trade.attribution.execution_quality}`,
+    "",
+    "Simulation Boundary",
+    `  ${result.disclosure}`
+  ]);
+}
+
+export function paperReviewToHumanReport(result: any) {
+  return lines([
+    "Parallax Paper Review",
+    "=====================",
+    "",
+    `Review ID: ${result.review.id}`,
+    `Trade ID: ${result.review.trade_id}`,
+    `Symbol: ${result.review.symbol}`,
+    `Rating: ${result.review.rating}`,
+    `Reviewer: ${result.review.reviewer}`,
+    `Created at: ${result.review.created_at}`,
+    "",
+    "Notes",
+    `  ${compact(result.review.notes)}`
+  ]);
+}
+
+export function paperLedgerToHumanReport(report: any) {
+  const rows = report.ledger.trades.map((trade: any, index: number) =>
+    [
+      `${index + 1}. ${trade.symbol}`,
+      trade.status,
+      trade.side,
+      `qty=${trade.ticket.quantity}`,
+      `entry=${trade.filled.fill_price}`,
+      trade.status === "closed" ? `exit=${trade.closed.exit_price}` : "",
+      trade.status === "closed" ? `pnl=${trade.realized_pnl}` : `reserved=${trade.reserved_notional}`,
+      trade.id
+    ].filter(Boolean).join(" | ")
+  );
+
+  return lines([
+    "Parallax Paper Ledger",
+    "=====================",
+    "",
+    `Audit dir: ${report.summary.audit_dir}`,
+    `Trades: ${report.summary.trade_count}`,
+    `Open: ${report.summary.open_count}`,
+    `Closed: ${report.summary.closed_count}`,
+    `Reviews: ${report.summary.review_count}`,
+    `Reserved notional: ${report.summary.reserved_notional}`,
+    `Realized PnL: ${report.summary.realized_pnl}`,
+    `Win rate: ${pct(report.summary.win_rate)}`,
+    `Average return: ${pct(report.summary.average_realized_return)}`,
+    `Max drawdown: ${report.summary.max_drawdown}`,
+    `Live execution unlocked: ${report.summary.live_execution_unlocked ? "yes" : "no"}`,
+    "",
+    "Trades",
+    rows.length ? rows.join("\n") : "No paper trades.",
+    "",
+    "Calibration",
+    `  Dossiers: ${report.calibration.dossier_count}`,
+    `  Paper outcomes: ${report.calibration.paper_outcome_count}`,
+    `  Profitable paper rate: ${pct(report.calibration.profitable_paper_rate)}`,
+    `  ${report.calibration.note}`,
+    "",
+    "Simulation Boundary",
+    `  ${report.summary.disclosure}`
+  ]);
+}
+
 export function sandboxToHumanReport(submitted: any) {
   return lines([
     "Parallax Sandbox Submission",
@@ -464,7 +577,8 @@ export function exportToHumanReport(result: any) {
     `Source views: ${result.source_view_count}`,
     `Audit bundles: ${result.audit_bundle_count ?? 0}`,
     `Feedback: ${result.feedback_count ?? 0}`,
-    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`
+    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
+    `Paper files: ${result.paper_file_count ?? 0}`
   ]);
 }
 
@@ -477,7 +591,8 @@ export function importToHumanReport(result: any) {
     `Audit dir: ${result.audit_dir}`,
     `Dossiers: ${result.dossier_count}`,
     `Feedback: ${result.feedback_count}`,
-    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`
+    `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
+    `Paper files: ${result.paper_file_count ?? 0}`
   ]);
 }
 

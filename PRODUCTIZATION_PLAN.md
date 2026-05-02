@@ -103,7 +103,8 @@ The current repo already has the right skeleton:
 - sandbox execution controls;
 - scripted LLM council harness;
 - lifecycle alert workspace;
-- 42 tests;
+- paper trading lab ledger;
+- 44 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -147,7 +148,12 @@ Implemented on 2026-05-02:
 - local notification inbox;
 - lifecycle dashboard upgrades;
 - Phase 4 artifact bundle;
-- 42 passing tests.
+- paper ledger and risk reservation;
+- paper open/close/review CLI workflow;
+- paper attribution and calibration summary;
+- paper dashboard section;
+- Phase 5 artifact bundle;
+- 44 passing tests.
 
 ## Knowledge Gathered
 
@@ -812,6 +818,8 @@ Exit criteria:
 
 ### Phase 5: Paper Trading Lab
 
+Status: Complete for local simulation scope.
+
 Goal:
 
 Connect thesis quality to simulated outcomes.
@@ -825,6 +833,10 @@ Deliverables:
 - attribution;
 - calibration dashboard;
 - thesis/outcome review.
+- persistent paper ledger;
+- risk budget reservation;
+- open/closed paper views;
+- explicit simulation-only boundary.
 
 Exit criteria:
 

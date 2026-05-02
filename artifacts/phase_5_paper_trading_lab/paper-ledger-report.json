@@ -1,0 +1,293 @@
+{
+  "ledger": {
+    "schema_version": "0.1.0",
+    "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+    "created_at": "2026-05-02T18:20:30.694Z",
+    "simulation_only": true,
+    "live_execution_unlocked": false,
+    "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+    "trades": [
+      {
+        "id": "paper_trade_d73ff967414e",
+        "dossier_id": "dos_bb1b4b378920",
+        "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+        "symbol": "NVDA",
+        "side": "buy",
+        "opened_at": "2026-05-01T15:00:00Z",
+        "status": "closed",
+        "ticket": {
+          "id": "paper_ticket_6ef530762fd4",
+          "dossier_id": "dos_bb1b4b378920",
+          "symbol": "NVDA",
+          "side": "buy",
+          "quantity": 8,
+          "reference_price": 114.6,
+          "notional": 916.8,
+          "status": "created",
+          "created_at": "2026-05-01T15:00:00Z",
+          "fill_model": {
+            "type": "next_bar_with_cost_proxy",
+            "estimated_spread_bps": 22,
+            "estimated_slippage_bps": 16
+          },
+          "order_type": "market_simulated",
+          "time_in_force": "paper_day",
+          "invalidation_ref": "Volatility regime changes materially.",
+          "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+          "simulation_only": true,
+          "live_execution_unlocked": false,
+          "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+          "lab_created_at": "2026-05-01T15:00:00Z"
+        },
+        "filled": {
+          "id": "paper_ticket_6ef530762fd4",
+          "dossier_id": "dos_bb1b4b378920",
+          "symbol": "NVDA",
+          "side": "buy",
+          "quantity": 8,
+          "reference_price": 114.6,
+          "notional": 916.8,
+          "status": "filled",
+          "created_at": "2026-05-01T15:00:00Z",
+          "fill_model": {
+            "type": "next_bar_with_cost_proxy",
+            "estimated_spread_bps": 22,
+            "estimated_slippage_bps": 16
+          },
+          "order_type": "market_simulated",
+          "time_in_force": "paper_day",
+          "invalidation_ref": "Volatility regime changes materially.",
+          "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+          "simulation_only": true,
+          "live_execution_unlocked": false,
+          "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+          "lab_created_at": "2026-05-01T15:00:00Z",
+          "filled_at": "2026-05-01T15:00:00Z",
+          "fill_price": 115.44,
+          "fill_notional": 923.5
+        },
+        "reserved_notional": 0,
+        "risk_budget_cap": 2000,
+        "simulation_only": true,
+        "live_execution_unlocked": false,
+        "closed": {
+          "id": "paper_ticket_6ef530762fd4",
+          "dossier_id": "dos_bb1b4b378920",
+          "symbol": "NVDA",
+          "side": "buy",
+          "quantity": 8,
+          "reference_price": 114.6,
+          "notional": 916.8,
+          "status": "closed",
+          "created_at": "2026-05-01T15:00:00Z",
+          "fill_model": {
+            "type": "next_bar_with_cost_proxy",
+            "estimated_spread_bps": 22,
+            "estimated_slippage_bps": 16
+          },
+          "order_type": "market_simulated",
+          "time_in_force": "paper_day",
+          "invalidation_ref": "Volatility regime changes materially.",
+          "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+          "simulation_only": true,
+          "live_execution_unlocked": false,
+          "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+          "lab_created_at": "2026-05-01T15:00:00Z",
+          "filled_at": "2026-05-01T15:00:00Z",
+          "fill_price": 115.44,
+          "fill_notional": 923.5,
+          "closed_at": "2026-05-02T15:00:00Z",
+          "exit_price": 118.44,
+          "realized_pnl": 24,
+          "realized_return": 0.02599,
+          "close_reason": "target_reached"
+        },
+        "attribution": {
+          "dossier_id": "dos_bb1b4b378920",
+          "paper_ticket_id": "paper_ticket_6ef530762fd4",
+          "realized_pnl": 24,
+          "realized_return": 0.02599,
+          "thesis_quality": "supported_by_outcome",
+          "timing_quality": "good",
+          "sizing_quality": "within_budget",
+          "execution_quality": "next_bar_with_cost_proxy",
+          "process_note": "Outcome linked to original active dossier."
+        },
+        "closed_at": "2026-05-02T15:00:00Z",
+        "realized_pnl": 24,
+        "realized_return": 0.02599
+      }
+    ],
+    "reviews": [
+      {
+        "id": "paper_review_6b8d294a48d1",
+        "trade_id": "paper_trade_d73ff967414e",
+        "dossier_id": "dos_bb1b4b378920",
+        "symbol": "NVDA",
+        "reviewer": "paper_lab_user",
+        "rating": "disciplined",
+        "notes": "Followed dossier invalidators and simulation-only process.",
+        "created_at": "2026-05-02T16:00:00Z"
+      }
+    ],
+    "updated_at": "2026-05-02T18:20:46.064Z"
+  },
+  "summary": {
+    "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+    "trade_count": 1,
+    "open_count": 0,
+    "closed_count": 1,
+    "review_count": 1,
+    "reserved_notional": 0,
+    "realized_pnl": 24,
+    "win_rate": 1,
+    "loss_count": 0,
+    "average_realized_return": 0.02599,
+    "max_drawdown": 0,
+    "turnover_notional": 1847,
+    "by_symbol": {
+      "NVDA": {
+        "open_count": 0,
+        "closed_count": 1,
+        "realized_pnl": 24,
+        "reserved_notional": 0
+      }
+    },
+    "simulation_only": true,
+    "live_execution_unlocked": false,
+    "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution."
+  },
+  "calibration": {
+    "dossier_count": 1,
+    "veto_rate": 0,
+    "stale_or_invalid_rate": 0,
+    "paper_outcome_count": 1,
+    "profitable_paper_rate": 1,
+    "note": "Calibration is descriptive only; it must not auto-change prompts, personas, or strategies."
+  },
+  "open_trades": [],
+  "closed_trades": [
+    {
+      "id": "paper_trade_d73ff967414e",
+      "dossier_id": "dos_bb1b4b378920",
+      "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+      "symbol": "NVDA",
+      "side": "buy",
+      "opened_at": "2026-05-01T15:00:00Z",
+      "status": "closed",
+      "ticket": {
+        "id": "paper_ticket_6ef530762fd4",
+        "dossier_id": "dos_bb1b4b378920",
+        "symbol": "NVDA",
+        "side": "buy",
+        "quantity": 8,
+        "reference_price": 114.6,
+        "notional": 916.8,
+        "status": "created",
+        "created_at": "2026-05-01T15:00:00Z",
+        "fill_model": {
+          "type": "next_bar_with_cost_proxy",
+          "estimated_spread_bps": 22,
+          "estimated_slippage_bps": 16
+        },
+        "order_type": "market_simulated",
+        "time_in_force": "paper_day",
+        "invalidation_ref": "Volatility regime changes materially.",
+        "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+        "simulation_only": true,
+        "live_execution_unlocked": false,
+        "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+        "lab_created_at": "2026-05-01T15:00:00Z"
+      },
+      "filled": {
+        "id": "paper_ticket_6ef530762fd4",
+        "dossier_id": "dos_bb1b4b378920",
+        "symbol": "NVDA",
+        "side": "buy",
+        "quantity": 8,
+        "reference_price": 114.6,
+        "notional": 916.8,
+        "status": "filled",
+        "created_at": "2026-05-01T15:00:00Z",
+        "fill_model": {
+          "type": "next_bar_with_cost_proxy",
+          "estimated_spread_bps": 22,
+          "estimated_slippage_bps": 16
+        },
+        "order_type": "market_simulated",
+        "time_in_force": "paper_day",
+        "invalidation_ref": "Volatility regime changes materially.",
+        "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+        "simulation_only": true,
+        "live_execution_unlocked": false,
+        "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+        "lab_created_at": "2026-05-01T15:00:00Z",
+        "filled_at": "2026-05-01T15:00:00Z",
+        "fill_price": 115.44,
+        "fill_notional": 923.5
+      },
+      "reserved_notional": 0,
+      "risk_budget_cap": 2000,
+      "simulation_only": true,
+      "live_execution_unlocked": false,
+      "closed": {
+        "id": "paper_ticket_6ef530762fd4",
+        "dossier_id": "dos_bb1b4b378920",
+        "symbol": "NVDA",
+        "side": "buy",
+        "quantity": 8,
+        "reference_price": 114.6,
+        "notional": 916.8,
+        "status": "closed",
+        "created_at": "2026-05-01T15:00:00Z",
+        "fill_model": {
+          "type": "next_bar_with_cost_proxy",
+          "estimated_spread_bps": 22,
+          "estimated_slippage_bps": 16
+        },
+        "order_type": "market_simulated",
+        "time_in_force": "paper_day",
+        "invalidation_ref": "Volatility regime changes materially.",
+        "audit_path": "artifacts/phase_5_paper_trading_lab/audits/dos_bb1b4b378920.json",
+        "simulation_only": true,
+        "live_execution_unlocked": false,
+        "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution.",
+        "lab_created_at": "2026-05-01T15:00:00Z",
+        "filled_at": "2026-05-01T15:00:00Z",
+        "fill_price": 115.44,
+        "fill_notional": 923.5,
+        "closed_at": "2026-05-02T15:00:00Z",
+        "exit_price": 118.44,
+        "realized_pnl": 24,
+        "realized_return": 0.02599,
+        "close_reason": "target_reached"
+      },
+      "attribution": {
+        "dossier_id": "dos_bb1b4b378920",
+        "paper_ticket_id": "paper_ticket_6ef530762fd4",
+        "realized_pnl": 24,
+        "realized_return": 0.02599,
+        "thesis_quality": "supported_by_outcome",
+        "timing_quality": "good",
+        "sizing_quality": "within_budget",
+        "execution_quality": "next_bar_with_cost_proxy",
+        "process_note": "Outcome linked to original active dossier."
+      },
+      "closed_at": "2026-05-02T15:00:00Z",
+      "realized_pnl": 24,
+      "realized_return": 0.02599
+    }
+  ],
+  "reviews": [
+    {
+      "id": "paper_review_6b8d294a48d1",
+      "trade_id": "paper_trade_d73ff967414e",
+      "dossier_id": "dos_bb1b4b378920",
+      "symbol": "NVDA",
+      "reviewer": "paper_lab_user",
+      "rating": "disciplined",
+      "notes": "Followed dossier invalidators and simulation-only process.",
+      "created_at": "2026-05-02T16:00:00Z"
+    }
+  ]
+}

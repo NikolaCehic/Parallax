@@ -116,3 +116,10 @@ export {
   readLifecycleOverrides,
   updateAlertPreferences
 } from "./lifecycle/workspace.js";
+export {
+  closeLedgerTrade,
+  loadPaperLedger,
+  openPaperTrade,
+  paperLedgerReport,
+  recordPaperReview
+} from "./paper/lab.js";

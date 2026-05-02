@@ -4,6 +4,7 @@ import { makeId, isoNow } from "../core/ids.js";
 import { readAuditBundle } from "../audit.js";
 import { evaluateLifecycle } from "../lifecycle/engine.js";
 import { summarizeEvidenceItems } from "../data/status.js";
+import { PAPER_LEDGER_FILE } from "../paper/lab.js";
 import {
   ALERT_PREFERENCES_FILE,
   LIFECYCLE_CHECKS_FILE,
@@ -354,6 +355,9 @@ export async function exportWorkspace({
   }
   const notifications = await readTextIfExists(path.join(auditDir, NOTIFICATIONS_FILE));
   if (notifications !== undefined) lifecycleFiles[NOTIFICATIONS_FILE] = parseJsonLines(notifications);
+  const paperFiles: Record<string, any> = {};
+  const paperLedger = await readJsonIfExists(path.join(auditDir, PAPER_LEDGER_FILE), undefined);
+  if (paperLedger !== undefined) paperFiles[PAPER_LEDGER_FILE] = paperLedger;
 
   const body = {
     schema_version: "0.1.0",
@@ -363,7 +367,8 @@ export async function exportWorkspace({
     audit_bundles: auditBundles,
     markdown_documents: markdownDocuments,
     feedback,
-    lifecycle_files: lifecycleFiles
+    lifecycle_files: lifecycleFiles,
+    paper_files: paperFiles
   };
   await writeJson(out, body);
   return {
@@ -372,7 +377,8 @@ export async function exportWorkspace({
     source_view_count: sources.length,
     audit_bundle_count: auditBundles.length,
     feedback_count: feedback.length,
-    lifecycle_file_count: Object.keys(lifecycleFiles).length
+    lifecycle_file_count: Object.keys(lifecycleFiles).length,
+    paper_file_count: Object.keys(paperFiles).length
   };
 }
 
@@ -434,6 +440,21 @@ export async function importWorkspace({
     }
   }
 
+  for (const [fileName, value] of Object.entries(imported.paper_files ?? {})) {
+    if (fileName !== PAPER_LEDGER_FILE) continue;
+    const portableValue = value && typeof value === "object"
+      ? {
+        ...(value as any),
+        audit_dir: auditDir,
+        trades: ((value as any).trades ?? []).map((trade: any) => ({
+          ...trade,
+          audit_path: auditPathByDossier.get(trade.dossier_id) ?? trade.audit_path
+        }))
+      }
+      : value;
+    await writeJson(path.join(auditDir, fileName), portableValue);
+  }
+
   const existingLibrary = await loadLibrary(auditDir);
   const mergedEntries = mergeEntries(existingLibrary.entries, entries).map((entry) => {
     const feedbackItems = feedbackByDossier.get(entry.id) ?? [];
@@ -457,7 +478,8 @@ export async function importWorkspace({
     audit_dir: auditDir,
     dossier_count: entries.length,
     feedback_count: imported.feedback?.length ?? 0,
-    lifecycle_file_count: Object.keys(imported.lifecycle_files ?? {}).length
+    lifecycle_file_count: Object.keys(imported.lifecycle_files ?? {}).length,
+    paper_file_count: Object.keys(imported.paper_files ?? {}).length
   };
 }
 

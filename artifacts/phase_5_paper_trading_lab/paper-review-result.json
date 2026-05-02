@@ -1,0 +1,39 @@
+{
+  "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+  "ledger_path": "artifacts/phase_5_paper_trading_lab/audits/paper-ledger.json",
+  "review": {
+    "id": "paper_review_6b8d294a48d1",
+    "trade_id": "paper_trade_d73ff967414e",
+    "dossier_id": "dos_bb1b4b378920",
+    "symbol": "NVDA",
+    "reviewer": "paper_lab_user",
+    "rating": "disciplined",
+    "notes": "Followed dossier invalidators and simulation-only process.",
+    "created_at": "2026-05-02T16:00:00Z"
+  },
+  "ledger_summary": {
+    "audit_dir": "artifacts/phase_5_paper_trading_lab/audits",
+    "trade_count": 1,
+    "open_count": 0,
+    "closed_count": 1,
+    "review_count": 1,
+    "reserved_notional": 0,
+    "realized_pnl": 24,
+    "win_rate": 1,
+    "loss_count": 0,
+    "average_realized_return": 0.02599,
+    "max_drawdown": 0,
+    "turnover_notional": 1847,
+    "by_symbol": {
+      "NVDA": {
+        "open_count": 0,
+        "closed_count": 1,
+        "realized_pnl": 24,
+        "reserved_notional": 0
+      }
+    },
+    "simulation_only": true,
+    "live_execution_unlocked": false,
+    "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution."
+  }
+}

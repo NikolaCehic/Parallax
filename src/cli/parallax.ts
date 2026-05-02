@@ -27,6 +27,10 @@ import {
   lifecycleTriggerToHumanReport,
   llmEvalToHumanReport,
   monitorToHumanReport,
+  paperCloseToHumanReport,
+  paperLedgerToHumanReport,
+  paperOpenToHumanReport,
+  paperReviewToHumanReport,
   paperToHumanReport,
   policyToHumanReport,
   portfolioImportToHumanReport,
@@ -36,6 +40,12 @@ import {
   sourcesToHumanReport
 } from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
+import {
+  closeLedgerTrade,
+  openPaperTrade,
+  paperLedgerReport,
+  recordPaperReview
+} from "../paper/lab.js";
 import { ApprovalStore, SandboxBroker, KillSwitch } from "../execution/sandbox.js";
 import {
   exportWorkspace,
@@ -106,6 +116,10 @@ Commands:
   portfolio-import --csv broker.csv --out fixtures/portfolio/default.json
   policy
   paper --audit audits/dos_x.json
+  paper-open --audit audits/dos_x.json [--risk-budget 0.01] [--market-price 115]
+  paper-close --trade paper_trade_x --exit-price 118 [--reason target_reached]
+  paper-ledger [--audit-dir audits]
+  paper-review --trade paper_trade_x --rating disciplined [--notes "..."]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -471,6 +485,55 @@ async function main() {
     const filled = simulatePaperFill(ticket);
     const result = { ticket, filled };
     printResult(args, paperToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "paper-open") {
+    if (!args.audit) throw new Error("paper-open requires --audit");
+    const result = await openPaperTrade({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      side: args.side ? String(args.side) : "buy",
+      riskBudgetPct: args["risk-budget"] && args["risk-budget"] !== true ? Number(args["risk-budget"]) : undefined,
+      marketPrice: args["market-price"] && args["market-price"] !== true ? Number(args["market-price"]) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, paperOpenToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "paper-close") {
+    if (!args.trade) throw new Error("paper-close requires --trade");
+    if (!args["exit-price"]) throw new Error("paper-close requires --exit-price");
+    const result = await closeLedgerTrade({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      tradeId: String(args.trade),
+      exitPrice: Number(args["exit-price"]),
+      reason: args.reason ? String(args.reason) : "manual_close",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, paperCloseToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "paper-ledger") {
+    const report = await paperLedgerReport(String(args["audit-dir"] ?? "audits"));
+    printResult(args, paperLedgerToHumanReport(report), report);
+    return;
+  }
+
+  if (command === "paper-review") {
+    if (!args.trade) throw new Error("paper-review requires --trade");
+    if (!args.rating) throw new Error("paper-review requires --rating");
+    const result = await recordPaperReview({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      tradeId: String(args.trade),
+      rating: String(args.rating),
+      notes: args.notes ? String(args.notes) : "",
+      reviewer: args.reviewer ? String(args.reviewer) : "paper_lab_user",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, paperReviewToHumanReport(result), result);
     return;
   }
 
