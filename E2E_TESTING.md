@@ -1,6 +1,6 @@
 # Parallax E2E Testing
 
-The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, partner-execution controls, beta-deployment API state, managed SaaS control-plane state, provider validation state, local-alpha workspace, LLM council, and sandbox-execution data.
+The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, partner-execution controls, beta-deployment API state, managed SaaS control-plane state, provider validation state, hosted API state, local-alpha workspace, LLM council, and sandbox-execution data.
 
 It does not use one static happy-path fixture. Each E2E scenario creates its own temporary market data, event data, and portfolio constraints, then runs:
 
@@ -11,7 +11,7 @@ Evidence Snapshot
   -> Cross-Examination
   -> Decision Gate
   -> Lifecycle Assignment
-  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Partner Execution/Beta API/Managed SaaS/Provider Validation/Sandbox paths where relevant
+  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Partner Execution/Beta API/Managed SaaS/Provider Validation/Hosted API/Sandbox paths where relevant
 ```
 
 Run:
@@ -44,6 +44,7 @@ The E2E suite currently proves:
 18. Phase 8 beta deployment can initialize hashed-token config, report local-beta readiness, reject unauthenticated API calls, create dossiers through the API, serve status/library/dashboard endpoints, and export a beta deployment package.
 19. Phase 9 managed SaaS can initialize a control plane, isolate tenant audit directories, reject path traversal, store only external secret references, declare disabled external provider manifests, record observability events, report readiness, and export managed evidence.
 20. Phase 10 provider validation can check SSO, market-data, LLM, regulated-partner, and observability manifests, block invalid vendor contracts, hide raw secret references, and generate the hosted console HTML.
+21. Phase 11 hosted API can report hosted readiness, persist tenant state/events, block cross-tenant access, reject secret-like tenant payloads, create tenant-scoped dossiers through HTTP, keep tenant libraries separated, serve the hosted console, and expose human-readable CLI controls.
 
 ## Issues Found By E2E
 
@@ -60,7 +61,7 @@ The current E2E suite supports the project exit condition:
 
 > I do not know how to improve the system any more and I do not know what is wrong with the current solution.
 
-Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, restricted data licenses, concentration risk, high volatility, event timing, corporate-action adjustment, weak source provenance, LLM hallucination, prompt injection, unsupported LLM numerical claims, LLM budget overrun, lifecycle decay, custom trigger safety, alert preference muting, notification generation, change-since-last-run tracking, paper risk overcommitment, paper outcome attribution, simulation-only boundaries, audit replay, governance validation, role approval bypass, release-readiness gaps, SOC 2 readiness evidence, partner legal approval gaps, market-access breaches, partner human-approval gaps, production-adapter bypass, post-trade-review persistence, beta API authentication, beta readiness drift, raw-token persistence, tenant path traversal, raw-secret persistence, external-provider validation gaps, provider-contract blocking, hosted-console redaction, managed observability evidence, local workspace portability, dashboard generation, approval bypass, kill switch, and pre-trade controls.
+Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, restricted data licenses, concentration risk, high volatility, event timing, corporate-action adjustment, weak source provenance, LLM hallucination, prompt injection, unsupported LLM numerical claims, LLM budget overrun, lifecycle decay, custom trigger safety, alert preference muting, notification generation, change-since-last-run tracking, paper risk overcommitment, paper outcome attribution, simulation-only boundaries, audit replay, governance validation, role approval bypass, release-readiness gaps, SOC 2 readiness evidence, partner legal approval gaps, market-access breaches, partner human-approval gaps, production-adapter bypass, post-trade-review persistence, beta API authentication, beta readiness drift, raw-token persistence, tenant path traversal, raw-secret persistence, external-provider validation gaps, provider-contract blocking, hosted-console redaction, hosted API authentication, tenant-state isolation, cross-tenant denial, secret-payload rejection, managed observability evidence, local workspace portability, dashboard generation, approval bypass, kill switch, and pre-trade controls.
 
 The remaining improvements are productionization choices, not known architectural defects:
 

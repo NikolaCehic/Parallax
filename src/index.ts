@@ -183,3 +183,20 @@ export {
   buildHostedConsoleHtml,
   writeHostedConsole
 } from "./app/hosted_console.js";
+export {
+  appendTenantEvent,
+  normalizeTenantSlug,
+  readTenantEvents,
+  readTenantState,
+  resolveTenant,
+  saveTenantStateValue,
+  tenantPersistenceStatus
+} from "./saas/persistence.js";
+export {
+  createHostedRequestHandler,
+  createHostedServer,
+  hostedApiStatus,
+  hostedApiTokenHash,
+  startHostedServer,
+  verifyHostedApiToken
+} from "./saas/server.js";

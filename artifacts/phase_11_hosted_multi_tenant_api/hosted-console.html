@@ -1,0 +1,397 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parallax Hosted Console</title>
+  <style>
+    :root {
+      color-scheme: light;
+      --bg: oklch(0.975 0.007 205);
+      --surface: oklch(0.995 0.004 205);
+      --band: oklch(0.941 0.011 205);
+      --text: oklch(0.235 0.019 225);
+      --muted: oklch(0.48 0.022 225);
+      --line: oklch(0.858 0.018 205);
+      --accent: oklch(0.49 0.13 191);
+      --good: oklch(0.47 0.105 154);
+      --warn: oklch(0.61 0.123 78);
+      --bad: oklch(0.55 0.16 31);
+      --shadow: 0 18px 42px oklch(0.35 0.035 225 / 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 24px;
+      align-items: end;
+      padding: 28px 32px 18px;
+      border-bottom: 1px solid var(--line);
+      background: var(--surface);
+    }
+    h1, h2 { margin: 0; letter-spacing: 0; }
+    h1 { font-size: 1.6rem; line-height: 1.15; }
+    h2 { font-size: 1rem; }
+    .subtle { color: var(--muted); margin-top: 6px; max-width: 72ch; }
+    main { display: grid; gap: 22px; padding: 22px 32px 40px; }
+    .statusbar {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(150px, 1fr));
+      gap: 1px;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+    }
+    .statusbar section {
+      background: var(--surface);
+      min-height: 84px;
+      padding: 14px 16px;
+    }
+    .statusbar span, th, .table-title span, .control-note {
+      color: var(--muted);
+      font-size: 0.78rem;
+      font-weight: 650;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .statusbar strong {
+      display: block;
+      margin-top: 10px;
+      font-size: 1.02rem;
+      overflow-wrap: anywhere;
+    }
+    .grid {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .table-title {
+      display: flex;
+      justify-content: space-between;
+      gap: 16px;
+      align-items: center;
+      padding: 15px 18px;
+      background: var(--band);
+      border-bottom: 1px solid var(--line);
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      table-layout: fixed;
+    }
+    th, td {
+      text-align: left;
+      padding: 12px 14px;
+      border-bottom: 1px solid var(--line);
+      vertical-align: top;
+      overflow-wrap: anywhere;
+    }
+    tbody tr:last-child th, tbody tr:last-child td { border-bottom: 0; }
+    td span, td strong { display: block; }
+    td span { color: var(--muted); font-size: 0.82rem; margin-top: 3px; }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      color: oklch(0.34 0.05 225);
+    }
+    .badge {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: oklch(0.97 0.006 205);
+      font-size: 0.78rem;
+      font-weight: 700;
+      white-space: nowrap;
+    }
+    .badge.good { color: var(--good); background: oklch(0.94 0.04 154); border-color: oklch(0.82 0.05 154); }
+    .badge.warn { color: var(--warn); background: oklch(0.96 0.045 78); border-color: oklch(0.84 0.06 78); }
+    .badge.bad { color: var(--bad); background: oklch(0.95 0.04 31); border-color: oklch(0.82 0.065 31); }
+    .empty { color: var(--muted); }
+    @media (max-width: 980px) {
+      header, .grid { grid-template-columns: 1fr; }
+      .statusbar { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 680px) {
+      header, main { padding-left: 16px; padding-right: 16px; }
+      .statusbar { grid-template-columns: 1fr; }
+      table, thead, tbody, tr, th, td { display: block; }
+      thead { display: none; }
+      tr { border-bottom: 1px solid var(--line); }
+      th, td { border-bottom: 0; }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div>
+      <h1>Parallax Hosted Console</h1>
+      <p class="subtle">managed_beta | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas</p>
+    </div>
+    <span class="badge good">ready_for_provider_contract_beta</span>
+  </header>
+  <main>
+    <div class="statusbar">
+      <section><span>Managed Readiness</span><strong>ready_for_managed_beta_scaffold</strong></section>
+      <section><span>Provider Contracts</span><strong>5 / 5</strong></section>
+      <section><span>Tenants</span><strong>2</strong></section>
+      <section><span>Required Failures</span><strong>0</strong></section>
+      <section><span>Production Providers</span><strong>0</strong></section>
+    </div>
+
+    <section class="panel">
+      <div class="table-title"><h2>Provider Contracts</h2><span>2026-05-02T21:36:57.838Z</span></div>
+      <table>
+        <thead><tr><th>Manifest</th><th>Provider</th><th>Contract</th><th>Manifest Status</th><th>Validation</th><th>Secret Ref</th><th>Failures</th></tr></thead>
+        <tbody>
+    <tr>
+      <td><strong>OIDC Contract</strong><span>identity_provider</span></td>
+      <td>enterprise_oidc</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>IDENTITY_PROVIDER</td>
+      <td>0</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Licensed Market Data Contract</strong><span>market_data_vendor</span></td>
+      <td>licensed_us_equities_vendor</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>MARKET_DATA_VENDOR</td>
+      <td>0</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Model Gateway Contract</strong><span>llm_provider</span></td>
+      <td>model_gateway</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>LLM_PROVIDER</td>
+      <td>0</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Regulated Partner Contract</strong><span>regulated_partner</span></td>
+      <td>regulated_execution_partner</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_legal_approval</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>REGULATED_PARTNER</td>
+      <td>0</td>
+    </tr>
+  
+    <tr>
+      <td><strong>Managed Logs Contract</strong><span>observability</span></td>
+      <td>managed_logs_metrics</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>OBSERVABILITY_VENDOR</td>
+      <td>0</td>
+    </tr>
+  </tbody>
+      </table>
+    </section>
+
+    <div class="grid">
+      <section class="panel">
+        <div class="table-title"><h2>Tenants</h2><span>/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas</span></div>
+        <table>
+          <thead><tr><th>Tenant</th><th>Status</th><th>Plan</th><th>Region</th><th>Residency</th><th>Audit Dir</th></tr></thead>
+          <tbody>
+    <tr>
+      <td><strong>Alpha Research</strong><span>alpha</span></td>
+      <td><span class="badge good">active</span></td>
+      <td>private_beta</td>
+      <td>local_dev</td>
+      <td>local_dev</td>
+      <td><code>/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/audits</code></td>
+    </tr>
+  
+    <tr>
+      <td><strong>Beta Research</strong><span>beta</span></td>
+      <td><span class="badge good">active</span></td>
+      <td>private_beta</td>
+      <td>local_dev</td>
+      <td>local_dev</td>
+      <td><code>/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/audits</code></td>
+    </tr>
+  </tbody>
+        </table>
+      </section>
+
+      <section class="panel">
+        <div class="table-title"><h2>Control Plane</h2><span>managed_beta</span></div>
+        <table>
+          <tbody>
+            <tr><th>Control plane</th><td>saas_cp_19c29843fdbb</td></tr>
+            <tr><th>Cross-tenant queries</th><td>disabled</td></tr>
+            <tr><th>Direct broker connection</th><td>blocked</td></tr>
+            <tr><th>Partner adapter default</th><td>locked</td></tr>
+            <tr><th>Observability events</th><td>1</td></tr>
+          </tbody>
+        </table>
+      </section>
+    </div>
+
+    <section class="panel">
+      <div class="table-title"><h2>Readiness Controls</h2><span>Required and warning gates</span></div>
+      <table>
+        <thead><tr><th>Control</th><th>Status</th><th>Severity</th><th>Detail</th></tr></thead>
+        <tbody>
+    <tr>
+      <td><code>managed_saas_ready</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Managed SaaS scaffold readiness passed.</td>
+    </tr>
+  
+    <tr>
+      <td><code>required_provider_manifests</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Required provider manifests exist.</td>
+    </tr>
+  
+    <tr>
+      <td><code>provider_contracts_validated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Provider contract checks passed.</td>
+    </tr>
+  
+    <tr>
+      <td><code>no_production_providers</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>No external provider is enabled for production.</td>
+    </tr>
+  
+    <tr>
+      <td><code>secret_refs_sanitized</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Provider report exposes secret names and hashes only.</td>
+    </tr>
+  
+    <tr>
+      <td><code>external_production_validation_pending</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge warn">warning</span></td>
+      <td>External providers remain pending production validation.</td>
+    </tr>
+  
+    <tr>
+      <td><code>tenant_isolation</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Tenant audit dirs stay inside the managed SaaS root.</td>
+    </tr>
+  
+    <tr>
+      <td><code>tenant_count</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant workspace exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>cross_tenant_queries_disabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Cross-tenant queries are disabled by default.</td>
+    </tr>
+  
+    <tr>
+      <td><code>secret_refs_only</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Only external secret references are stored.</td>
+    </tr>
+  
+    <tr>
+      <td><code>identity_provider_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Identity provider manifest exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>market_data_vendor_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Market-data vendor manifest exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>llm_provider_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>LLM provider manifest exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>regulated_partner_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Regulated partner manifest exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>observability_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Observability provider manifest exists.</td>
+    </tr>
+  
+    <tr>
+      <td><code>observability_enabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Observability manifest and events exist.</td>
+    </tr>
+  
+    <tr>
+      <td><code>production_execution_locked</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Regulated partner production integration is not enabled by manifest.</td>
+    </tr>
+  
+    <tr>
+      <td><code>external_integrations_not_validated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge warn">warning</span></td>
+      <td>External integrations are visible but not treated as production validated.</td>
+    </tr>
+  </tbody>
+      </table>
+    </section>
+  </main>
+</body>
+</html>

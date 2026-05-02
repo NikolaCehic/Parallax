@@ -1,0 +1,8 @@
+{
+  "http_status": 200,
+  "body": {
+    "schema_version": "0.1.0",
+    "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/audits",
+    "entries": []
+  }
+}

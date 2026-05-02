@@ -1,0 +1,51 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-02T10:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/managed-saas.json",
+  "status": "ready_for_tenant_persistence",
+  "summary": {
+    "tenant_count": 2,
+    "total_state_key_count": 1,
+    "total_event_count": 2,
+    "total_dossier_count": 1,
+    "tenant_paths_isolated": true
+  },
+  "tenants": [
+    {
+      "tenant_slug": "alpha",
+      "tenant_name": "Alpha Research",
+      "status": "active",
+      "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/audits",
+      "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/tenant-state.json",
+      "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/tenant-events.jsonl",
+      "state_key_count": 1,
+      "event_count": 2,
+      "dossier_count": 1,
+      "latest_event": {
+        "id": "tenant_evt_401c0e4fe678",
+        "tenant_slug": "alpha",
+        "event_type": "tenant_analysis_created",
+        "actor": "phase11_artifact",
+        "payload": {
+          "dossier_id": "dos_d84cad5dc2b3",
+          "symbol": "NVDA",
+          "action_class": "watchlist"
+        },
+        "created_at": "2026-05-02T10:00:00Z"
+      }
+    },
+    {
+      "tenant_slug": "beta",
+      "tenant_name": "Beta Research",
+      "status": "active",
+      "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/audits",
+      "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/tenant-state.json",
+      "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/tenant-events.jsonl",
+      "state_key_count": 0,
+      "event_count": 0,
+      "dossier_count": 0,
+      "latest_event": null
+    }
+  ]
+}

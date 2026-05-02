@@ -29,6 +29,7 @@ Parallax tries to sit in the middle:
 - Phase 8 beta deployment adds an authenticated local API, readiness checks, deployment config, Docker scaffold, and beta export package.
 - Phase 9 managed SaaS scaffolding adds tenant isolation, external secret references, provider manifests, observability events, and readiness/export checks for a future hosted product.
 - Phase 10 provider validation adds contract checks for external manifests and a static hosted console for managed-beta review.
+- Phase 11 hosted API adds tenant-scoped persistence, HTTP tenant isolation, hosted API readiness, and CLI controls for local multi-tenant operation.
 
 Instead of asking:
 
@@ -114,6 +115,7 @@ TypeScript owns:
 - beta API and deployment readiness.
 - managed SaaS control-plane scaffolding.
 - provider contract validation and hosted console generation.
+- hosted multi-tenant API and tenant persistence.
 
 Python owns:
 
@@ -571,6 +573,32 @@ npm run hosted-console -- \
   --out managed-saas/parallax-hosted-console.html
 ```
 
+Check hosted API readiness, write tenant state, and run the local hosted API:
+
+```bash
+npm run hosted-api-status -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+
+npm run tenant-state-set -- \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --key screen.settings \
+  --value '{"symbols":["NVDA"],"mode":"research"}'
+
+npm run hosted-serve -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+```
+
+Tenant-scoped API calls must include both bearer auth and the matching tenant header:
+
+```bash
+curl -H "Authorization: Bearer $PARALLAX_HOSTED_API_TOKEN" \
+  -H "x-parallax-tenant: alpha" \
+  http://127.0.0.1:8888/api/tenants/alpha/state
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -740,7 +768,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 54 tests:
+The suite currently includes 56 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -757,6 +785,7 @@ The suite currently includes 54 tests:
 - Phase 8 beta-deployment readiness, authenticated API, analysis endpoint, dashboard endpoint, export, and CLI tests;
 - Phase 9 managed-SaaS tenant isolation, secret-reference hygiene, provider manifest, observability, export, and CLI tests;
 - Phase 10 provider-contract validation, hosted-console generation, raw-secret redaction, blocking checks, and CLI tests;
+- Phase 11 hosted API readiness, tenant state persistence, HTTP tenant isolation, analysis/library endpoints, hosted-console serving, secret-payload rejection, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -794,7 +823,7 @@ src/
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, secret-reference, provider-manifest, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -806,7 +835,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -839,10 +868,10 @@ Current intentional limits:
 
 - no direct live broker integration;
 - partner production adapter is locked by default;
-- no external market data vendor API yet; Phase 10 validates manifests only;
-- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 10 validates manifests only;
-- no external SSO provider yet; Phase 10 validates identity-provider manifests but does not connect one;
-- no hosted cloud tenancy yet; Phase 10 writes a static hosted console and local readiness evidence only;
+- no external market data vendor API yet; Phase 11 serves local hosted workflows but still validates manifests only;
+- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 11 validates manifests only;
+- no external SSO provider yet; Phase 11 uses local bearer auth and validates identity-provider manifests but does not connect one;
+- no hosted cloud tenancy yet; Phase 11 provides a local multi-tenant hosted API and console surface, not cloud infrastructure;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -905,7 +934,9 @@ Current state:
 - managed SaaS readiness and export package;
 - provider contract validation report;
 - static hosted console generator;
-- 54 passing tests.
+- hosted multi-tenant API server;
+- tenant state and event persistence;
+- 56 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

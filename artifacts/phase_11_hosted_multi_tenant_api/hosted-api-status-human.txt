@@ -1,0 +1,18 @@
+Parallax Hosted API Status
+==========================
+
+Status: ready_for_hosted_multi_tenant_api
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas
+Tenants: 2
+Providers: 5
+Dossiers: 0
+Required failures: 0
+Raw token stored: no
+Direct live broker connection: no
+
+Controls
+  - api_auth_configured | passed | required | Hosted API bearer auth token hash is configured at runtime.
+  - provider_contracts_ready | passed | required | Provider contract validation passed.
+  - tenant_persistence_ready | passed | required | Tenant persistence paths are isolated and readable.
+  - tenant_count | passed | required | At least one tenant exists.
+  - no_production_providers | passed | required | No provider manifest is enabled for production.

@@ -1,0 +1,7 @@
+{
+  "http_status": 401,
+  "body": {
+    "error": "unauthorized",
+    "message": "Provide Authorization: Bearer <hosted_api_token>."
+  }
+}

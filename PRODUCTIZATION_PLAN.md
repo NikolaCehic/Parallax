@@ -110,7 +110,8 @@ The current repo already has the right skeleton:
 - managed SaaS control-plane scaffold;
 - provider contract validation harness;
 - hosted console foundation;
-- 54 tests;
+- hosted multi-tenant API and tenant persistence;
+- 56 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -190,7 +191,11 @@ Implemented on 2026-05-02:
 - provider contract validation report;
 - hosted console generator;
 - Phase 10 artifact bundle;
-- 54 passing tests.
+- hosted API readiness report;
+- tenant state/event persistence;
+- authenticated tenant-scoped hosted API;
+- Phase 11 artifact bundle;
+- 56 passing tests.
 
 ## Knowledge Gathered
 
@@ -1037,6 +1042,34 @@ Exit criteria:
 - production providers remain locked by manifest;
 - hosted console renders tenants, providers, controls, and production boundaries;
 - external vendors remain manifests until credentials, licenses, legal review, and production validation are complete.
+
+### Phase 11: Hosted Multi-Tenant API And Persistence
+
+Status: Complete for local hosted API scope.
+
+Goal:
+
+Turn the managed SaaS scaffold into a local hosted API that can serve multiple tenants without leaking state, while preserving the no-live-execution boundary.
+
+Deliverables:
+
+- tenant state and event persistence files;
+- tenant path and state-key validation;
+- hosted API readiness report;
+- authenticated HTTP server;
+- tenant-scoped state, event, library, analysis, status, control-plane, health, readiness, and console routes;
+- cross-tenant header enforcement;
+- secret-like tenant payload rejection;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- tenant state and libraries stay isolated by tenant root;
+- hosted API requires bearer auth for product routes;
+- tenant routes require a matching `x-parallax-tenant` header;
+- hosted readiness requires provider contracts, tenant persistence, auth config, tenant count, and production-provider lock;
+- hosted API does not store raw bearer tokens or connect live brokers;
+- secret-like tenant payloads are rejected before persistence.
 
 ## Team Needed
 

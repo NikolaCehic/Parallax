@@ -1135,6 +1135,75 @@ export function hostedConsoleToHumanReport(result: any) {
   ]);
 }
 
+export function tenantPersistenceToHumanReport(report: any) {
+  const tenantRows = report.tenants.map((tenant: any) =>
+    [
+      `  - ${tenant.tenant_slug}`,
+      tenant.status,
+      `state_keys=${tenant.state_key_count}`,
+      `events=${tenant.event_count}`,
+      `dossiers=${tenant.dossier_count}`,
+      tenant.audit_dir
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Tenant Persistence",
+    "===========================",
+    "",
+    `Status: ${report.status}`,
+    `Root dir: ${report.root_dir}`,
+    `Tenants: ${report.summary.tenant_count}`,
+    `State keys: ${report.summary.total_state_key_count}`,
+    `Events: ${report.summary.total_event_count}`,
+    `Dossiers: ${report.summary.total_dossier_count}`,
+    `Paths isolated: ${report.summary.tenant_paths_isolated ? "yes" : "no"}`,
+    "",
+    "Tenants",
+    tenantRows.length ? tenantRows.join("\n") : "No tenants."
+  ]);
+}
+
+export function hostedApiStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    [
+      `  - ${control.id}`,
+      control.passed ? "passed" : "failed",
+      control.severity,
+      control.detail
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Hosted API Status",
+    "==========================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Tenants: ${status.summary.tenant_count}`,
+    `Providers: ${status.summary.provider_count}`,
+    `Dossiers: ${status.summary.total_dossier_count}`,
+    `Required failures: ${status.summary.required_failure_count}`,
+    `Raw token stored: ${status.summary.raw_token_stored ? "yes" : "no"}`,
+    `Direct live broker connection: ${status.summary.direct_live_broker_connection ? "yes" : "no"}`,
+    "",
+    "Controls",
+    controls.join("\n")
+  ]);
+}
+
+export function hostedServeToHumanReport(result: any) {
+  return lines([
+    "Parallax Hosted API Server",
+    "==========================",
+    "",
+    `URL: ${result.url}`,
+    `Health: ${result.url}/healthz`,
+    `Readiness: ${result.url}/readyz`,
+    `Console: ${result.url}/console`,
+    `Root dir: ${result.root_dir}`,
+    `Raw token stored: ${result.raw_token_stored ? "yes" : "no"}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

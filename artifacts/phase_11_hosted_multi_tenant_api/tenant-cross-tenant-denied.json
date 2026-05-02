@@ -1,0 +1,7 @@
+{
+  "http_status": 403,
+  "body": {
+    "error": "forbidden",
+    "message": "Tenant header alpha cannot access tenant beta."
+  }
+}

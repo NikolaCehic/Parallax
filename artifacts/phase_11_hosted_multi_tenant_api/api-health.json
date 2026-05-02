@@ -1,0 +1,9 @@
+{
+  "http_status": 200,
+  "body": {
+    "status": "ok",
+    "service": "parallax-hosted",
+    "raw_token_stored": false,
+    "direct_live_broker_connection": false
+  }
+}

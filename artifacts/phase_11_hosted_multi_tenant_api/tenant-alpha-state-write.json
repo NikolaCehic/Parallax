@@ -1,0 +1,21 @@
+{
+  "http_status": 200,
+  "body": {
+    "state": {
+      "schema_version": "0.1.0",
+      "tenant_slug": "alpha",
+      "values": {
+        "screen.settings": {
+          "symbols": [
+            "NVDA"
+          ],
+          "mode": "research"
+        }
+      },
+      "updated_by": "phase11_artifact",
+      "updated_at": "2026-05-02T10:00:00Z"
+    },
+    "key": "screen.settings",
+    "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/tenant-state.json"
+  }
+}

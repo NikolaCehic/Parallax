@@ -1,0 +1,14 @@
+Parallax Tenant Persistence
+===========================
+
+Status: ready_for_tenant_persistence
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas
+Tenants: 2
+State keys: 0
+Events: 0
+Dossiers: 0
+Paths isolated: yes
+
+Tenants
+  - alpha | active | state_keys=0 | events=0 | dossiers=0 | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/alpha/audits
+  - beta | active | state_keys=0 | events=0 | dossiers=0 | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/tenants/beta/audits

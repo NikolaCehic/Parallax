@@ -1,0 +1,10 @@
+{
+  "phase": 11,
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_11_hosted_multi_tenant_api/managed-saas/managed-saas.json",
+  "tenant_count": 2,
+  "provider_count": 5,
+  "api_token_hash_configured": true,
+  "raw_token_stored": false,
+  "direct_live_broker_connection": false
+}

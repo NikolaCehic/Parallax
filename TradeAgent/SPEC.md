@@ -6,7 +6,7 @@ Scope: analysis-first trading thesis council with lifecycle monitoring
 
 Implementation language split:
 
-- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, and sandbox execution controls.
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, and hosted API serving.
 - Python owns deterministic quant-style analytics.
 
 ## 1. Product Definition
@@ -29,6 +29,8 @@ The system must preserve the reasoning chain that produced the answer.
 - No unvalidated strategy self-improvement.
 - No LLM-generated numerical claims without deterministic tool support.
 - No hidden order staging or broker access bypass.
+- No cross-tenant state leakage.
+- No raw secret, raw token, or broker credential persistence.
 - No claim that the system provides legal, financial, tax, or investment advice.
 - No high-frequency trading design in the initial system.
 
@@ -243,7 +245,7 @@ Trigger severities:
 
 Responsibilities:
 
-- log every prompt, model version, tool version, input, output, claim packet, critique, synthesis, veto, override, and approval;
+- log every prompt, model version, tool version, input, output, claim packet, critique, synthesis, veto, override, approval, tenant event, and hosted control-plane action;
 - support deterministic replay for frozen evidence;
 - support export for review;
 - track model and persona calibration over time.
@@ -389,6 +391,9 @@ The system must never treat high confidence as actionable when freshness is low.
 - All state transitions must pass through deterministic services.
 - Prompt-injection test fixtures must be part of CI.
 - Secrets and broker credentials must never be exposed to council prompts.
+- Tenant-scoped hosted routes must require bearer auth and a matching tenant header.
+- Raw bearer tokens must be hashed at configuration/runtime boundaries and never written into reports.
+- External providers must remain disabled until contract, license, legal, security, and production validation are complete.
 
 ## 11. MVP Functional Requirements
 
@@ -428,7 +433,11 @@ Later phases add:
 - outcome attribution;
 - model registry;
 - monitoring dashboards;
-- broker integration behind approval gates;
+- team governance and release approvals;
+- managed SaaS tenancy with isolated tenant roots;
+- external provider manifest validation;
+- hosted API readiness and tenant-scoped persistence;
+- broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 
 ## 14. Open Decisions

@@ -25,7 +25,9 @@ import {
   exportToHumanReport,
   feedbackSummaryToHumanReport,
   feedbackToHumanReport,
+  hostedApiStatusToHumanReport,
   hostedConsoleToHumanReport,
+  hostedServeToHumanReport,
   importToHumanReport,
   libraryToHumanReport,
   lifecycleNotificationsToHumanReport,
@@ -61,6 +63,7 @@ import {
   sandboxToHumanReport,
   sourcesToHumanReport,
   tenantCreateToHumanReport,
+  tenantPersistenceToHumanReport,
   teamApprovalToHumanReport,
   teamAssignmentToHumanReport,
   teamCommentToHumanReport,
@@ -146,6 +149,15 @@ import {
   providerValidationPath,
   validateProviderContracts
 } from "../providers/validation.js";
+import {
+  hostedApiStatus,
+  hostedApiTokenHash,
+  startHostedServer
+} from "../saas/server.js";
+import {
+  saveTenantStateValue,
+  tenantPersistenceStatus
+} from "../saas/persistence.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -230,6 +242,10 @@ Commands:
   provider-validate [--root-dir managed-saas] [--out managed-saas/provider-validation.json]
   provider-status [--root-dir managed-saas]
   hosted-console [--root-dir managed-saas] [--out managed-saas/parallax-hosted-console.html]
+  hosted-api-status [--root-dir managed-saas] [--api-token "..."]
+  tenant-persistence [--root-dir managed-saas] [--tenant alpha]
+  tenant-state-set --root-dir managed-saas --tenant alpha --key watchlist.filter --value '{"symbols":["NVDA"]}'
+  hosted-serve --root-dir managed-saas --api-token "dev-secret-token" [--host 127.0.0.1] [--port 8888]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -317,6 +333,11 @@ function parseJsonObject(value?: string | boolean) {
     throw new Error("--metadata must be a JSON object");
   }
   return parsed;
+}
+
+function parseJsonValue(value?: string | boolean) {
+  if (!value || value === true) return {};
+  return JSON.parse(String(value));
 }
 
 function saasPaths(args: CliArgs) {
@@ -1117,6 +1138,72 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, hostedConsoleToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "hosted-api-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await hostedApiStatus({
+      rootDir,
+      configPath,
+      apiTokenHash: args["api-token"] && args["api-token"] !== true ? hostedApiTokenHash(String(args["api-token"])) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, hostedApiStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "tenant-persistence") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await tenantPersistenceStatus({
+      rootDir,
+      configPath,
+      tenantSlug: args.tenant && args.tenant !== true ? String(args.tenant) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, tenantPersistenceToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "tenant-state-set") {
+    for (const required of ["tenant", "key", "value"]) {
+      if (!args[required]) throw new Error(`tenant-state-set requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await saveTenantStateValue({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      key: String(args.key),
+      value: parseJsonValue(args.value),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, tenantPersistenceToHumanReport(await tenantPersistenceStatus({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      now: args.now ? String(args.now) : undefined
+    })), result);
+    return;
+  }
+
+  if (command === "hosted-serve") {
+    if (!args["api-token"]) throw new Error("hosted-serve requires --api-token");
+    const { rootDir, configPath } = saasPaths(args);
+    const started = await startHostedServer({
+      rootDir,
+      configPath,
+      dataDir: String(args["data-dir"] ?? "fixtures"),
+      apiToken: String(args["api-token"]),
+      host: String(args.host ?? "127.0.0.1"),
+      port: args.port && args.port !== true ? Number(args.port) : 8888
+    });
+    console.log(hostedServeToHumanReport(started));
+    process.on("SIGINT", async () => {
+      await started.close();
+      process.exit(0);
+    });
     return;
   }
 
