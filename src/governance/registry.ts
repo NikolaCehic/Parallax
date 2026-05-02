@@ -5,6 +5,13 @@ export const DEFAULT_MODEL_REGISTRY = {
     validation_status: "prototype_validated",
     owner: "parallax",
     notes: "Deterministic rule-based council used for replayable local prototype."
+  },
+  "scripted_llm_council_v0": {
+    kind: "llm_provider_harness",
+    version: "0.1.0",
+    validation_status: "prototype_validated",
+    owner: "parallax",
+    notes: "Deterministic scripted stand-in for the LLM council provider path; validates prompts, evidence-only context, cost limits, and red-team failures."
   }
 };
 

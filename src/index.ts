@@ -20,7 +20,10 @@ export async function analyzeThesis({
   intendedUse = "research",
   now = isoNow(),
   audit = false,
-  auditDir = "audits"
+  auditDir = "audits",
+  councilMode = "deterministic",
+  llmScenario = "safe",
+  llmBudget = undefined
 }) {
   const policyReview = reviewProductPolicy({
     symbol,
@@ -34,7 +37,14 @@ export async function analyzeThesis({
   assertEvidenceSnapshot(snapshot);
 
   const toolOutputs = runAnalytics(snapshot, { now });
-  const councilRun = runCouncilProvider({ snapshot, toolOutputs, policyReview });
+  const councilRun = runCouncilProvider({
+    snapshot,
+    toolOutputs,
+    policyReview,
+    councilMode,
+    llmScenario,
+    llmBudget
+  });
   const claimPackets = councilRun.claim_packets;
   const crossExamination = crossExamine(claimPackets);
   const summary = synthesizeDossierSummary({ claimPackets, crossExamination });
@@ -71,7 +81,9 @@ export async function analyzeThesis({
     tool_outputs: toolOutputs,
     council_run: {
       provider: councilRun.provider,
-      eval_report: councilRun.eval_report
+      eval_report: councilRun.eval_report,
+      contexts: councilRun.contexts ?? [],
+      usage: councilRun.usage ?? null
     },
     claim_packets: claimPackets,
     cross_examination: crossExamination,
@@ -93,3 +105,6 @@ export { readAuditBundle, replayAuditBundle, writeAuditBundle } from "./audit.js
 export { evaluateLifecycle } from "./lifecycle/engine.js";
 export { reviewProductPolicy, productPolicySnapshot } from "./product/policy.js";
 export { evaluateClaimPackets, runCouncilProvider } from "./council/provider.js";
+export { promptRegistrySnapshot } from "./llm/registry.js";
+export { runLLMEvalSuite } from "./llm/evals.js";
+export { buildEvidenceOnlyContext } from "./llm/context.js";

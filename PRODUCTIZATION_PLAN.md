@@ -101,7 +101,8 @@ The current repo already has the right skeleton:
 - audit replay;
 - paper-trading helpers;
 - sandbox execution controls;
-- 35 tests;
+- scripted LLM council harness;
+- 40 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -133,7 +134,13 @@ Implemented on 2026-05-02:
 - data freshness status;
 - source viewer payload summaries;
 - Phase 2 artifact bundle;
-- 35 passing tests.
+- LLM provider abstraction;
+- prompt/persona/provider registry;
+- evidence-only LLM context windows;
+- adversarial LLM eval suite;
+- cost controls for model-style runs;
+- Phase 3 artifact bundle;
+- 40 passing tests.
 
 ## Knowledge Gathered
 
@@ -744,9 +751,11 @@ Exit criteria:
 
 ### Phase 3: LLM Council Beta
 
+Status: Complete for local scripted-provider scope.
+
 Goal:
 
-Replace deterministic persona text with validated LLM claim packets.
+Replace deterministic persona text with validated LLM claim packets. The current implementation proves the contract with `scripted_llm_council_v0`; external model adapters can now plug into the same validation boundary.
 
 Deliverables:
 
@@ -759,6 +768,7 @@ Deliverables:
 - hallucination tests;
 - red-team suite;
 - cost controls.
+- CLI `llm-eval` and `prompt-registry` commands.
 
 Exit criteria:
 

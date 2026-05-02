@@ -19,6 +19,7 @@ Parallax tries to sit in the middle:
 - Python calculates the market facts.
 - TypeScript orchestrates the agent workflow.
 - Specialist personas review the thesis from different angles.
+- The Phase 3 LLM council harness can run the same council boundary through evidence-only prompt contexts.
 - Hard gates stop bad data, bad risk, restricted symbols, stale theses, and unsafe escalation.
 - A lifecycle engine keeps every thesis temporary, monitored, and invalidatable.
 
@@ -64,7 +65,7 @@ Example action classes:
 User thesis
   -> Evidence snapshot
   -> Python analytics
-  -> Council personas
+  -> Council personas or LLM council harness
   -> Cross-examination
   -> Synthesis
   -> Decision gate
@@ -74,6 +75,14 @@ User thesis
 ```
 
 The important design choice: generated reasoning does not own the numbers. The Python analytics worker produces the calculations. The council can interpret and challenge those results, but numeric claims must be tied back to tool outputs.
+
+## LLM Council Beta
+
+Phase 3 adds the LLM provider harness without requiring cloud credentials.
+
+The default LLM path is `scripted_llm_council_v0`: a deterministic local stand-in for a future model adapter. It builds evidence-only context windows for each persona, tracks token and cost budgets, validates claim packets, and runs red-team cases against hallucinated references, unsupported calculations, hidden recommendation language, prompt-injection obedience, and budget overruns.
+
+This means the product can test LLM-style behavior while keeping CI deterministic and every output replayable.
 
 ## Current Architecture
 
@@ -85,6 +94,8 @@ TypeScript owns:
 - schemas and contracts;
 - evidence orchestration;
 - council personas;
+- prompt/persona/provider registries;
+- scripted LLM council harness;
 - cross-examination;
 - synthesis;
 - decision gates;
@@ -141,6 +152,30 @@ Show the product boundary:
 
 ```bash
 npm run policy
+```
+
+Run the Phase 3 LLM council safety eval:
+
+```bash
+npm run cli -- llm-eval
+```
+
+Inspect the prompt, persona, and provider registry:
+
+```bash
+npm run cli -- prompt-registry
+```
+
+Run a thesis through the local scripted LLM council harness:
+
+```bash
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --horizon swing \
+  --thesis "post-earnings continuation with controlled risk" \
+  --ceiling watchlist \
+  --council-mode llm-scripted \
+  --now 2026-05-01T14:30:00Z
 ```
 
 By default, Parallax prints a human-readable report with the full workflow:
@@ -377,7 +412,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 35 tests:
+The suite currently includes 40 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -386,6 +421,7 @@ The suite currently includes 35 tests:
 - local workspace tests;
 - Phase 1 local-alpha E2E tests;
 - Phase 2 data-backed research E2E tests;
+- Phase 3 LLM council provider, prompt-registry, adversarial-eval, and CLI smoke tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -417,6 +453,7 @@ src/
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state and trigger engine
   library/        Local dossier library, source view, feedback, export
+  llm/            Prompt registry, evidence-only contexts, scripted provider, eval suite
   paper/          Paper-trading helpers
   product/        Product boundary and prohibited-claim policy
 
@@ -462,7 +499,7 @@ Current intentional limits:
 
 - no live broker integration;
 - no external market data vendor yet;
-- no LLM API integration yet;
+- no external LLM API integration yet; the current LLM path is a local scripted harness;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -485,12 +522,15 @@ Current state:
 - market, fundamentals, news, event, corporate-action, and portfolio adapters;
 - data freshness status;
 - portfolio CSV import;
+- scripted LLM council provider harness;
+- prompt, persona, and provider registry;
+- adversarial LLM eval suite;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 35 passing tests.
+- 40 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

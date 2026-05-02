@@ -1,7 +1,15 @@
 #!/usr/bin/env node
-import { writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import path from "node:path";
-import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle, productPolicySnapshot } from "../index.js";
+import {
+  analyzeThesis,
+  readAuditBundle,
+  replayAuditBundle,
+  evaluateLifecycle,
+  productPolicySnapshot,
+  promptRegistrySnapshot,
+  runLLMEvalSuite
+} from "../index.js";
 import {
   alertsToHumanReport,
   appToHumanReport,
@@ -13,10 +21,12 @@ import {
   feedbackToHumanReport,
   importToHumanReport,
   libraryToHumanReport,
+  llmEvalToHumanReport,
   monitorToHumanReport,
   paperToHumanReport,
   policyToHumanReport,
   portfolioImportToHumanReport,
+  promptRegistryToHumanReport,
   replayToHumanReport,
   sandboxToHumanReport,
   sourcesToHumanReport
@@ -62,6 +72,8 @@ function usage() {
 
 Commands:
   analyze --symbol NVDA --horizon swing --thesis "post-earnings continuation" [--ceiling watchlist]
+  llm-eval [--out artifacts/phase_3_llm_council_beta/llm-eval.json]
+  prompt-registry
   replay --audit audits/dos_x.json
   monitor --audit audits/dos_x.json --price 1050 --now 2026-05-01T15:00:00Z
   library [--audit-dir audits]
@@ -86,6 +98,10 @@ Common flags:
   --audit-dir audits     Directory where analyze writes audit artifacts.
   --user-class           self_directed_investor, independent_analyst, research_team, trading_educator, professional_reviewer.
   --intended-use         research, education, paper_trading, team_review, governance_review.
+  --council-mode         deterministic or llm-scripted.
+  --llm-scenario         safe, hallucinated_ref, numeric_fabrication, hidden_recommendation, prompt_injection_obedience.
+  --llm-budget-tokens    Maximum context tokens for LLM provider path.
+  --llm-budget-usd       Maximum estimated cost for LLM provider path.
 `;
 }
 
@@ -110,6 +126,17 @@ function parsePrices(value?: string | boolean) {
   return prices;
 }
 
+function parseLLMBudget(args: CliArgs) {
+  const budget: any = {};
+  if (args["llm-budget-tokens"] && args["llm-budget-tokens"] !== true) {
+    budget.maxContextTokens = Number(args["llm-budget-tokens"]);
+  }
+  if (args["llm-budget-usd"] && args["llm-budget-usd"] !== true) {
+    budget.maxEstimatedCostUsd = Number(args["llm-budget-usd"]);
+  }
+  return Object.keys(budget).length ? budget : undefined;
+}
+
 async function main() {
   const [command, ...rest] = process.argv.slice(2);
   const args = parseArgs(rest);
@@ -132,7 +159,10 @@ async function main() {
       intendedUse: String(args["intended-use"] ?? "research"),
       audit: true,
       now: args.now ? String(args.now) : undefined,
-      auditDir
+      auditDir,
+      councilMode: String(args["council-mode"] ?? "deterministic"),
+      llmScenario: String(args["llm-scenario"] ?? "safe"),
+      llmBudget: parseLLMBudget(args)
     });
     const auditPath = path.join(auditDir, `${dossier.id}.json`);
     const markdownPath = path.join(auditDir, `${dossier.id}.md`);
@@ -146,6 +176,9 @@ async function main() {
       freshness_score: dossier.lifecycle.freshness_score,
       policy_status: dossier.policy_review.status,
       effective_action_ceiling: dossier.policy_review.effective_action_ceiling,
+      council_provider: dossier.council_run.provider.id,
+      council_eval_passed: dossier.council_run.eval_report.passed,
+      llm_usage: dossier.council_run.usage,
       audit_path: auditPath,
       markdown_path: markdownPath,
       library_path: path.join(auditDir, "library.json")
@@ -157,6 +190,25 @@ async function main() {
   if (command === "policy") {
     const policy = productPolicySnapshot();
     printResult(args, policyToHumanReport(policy), policy);
+    return;
+  }
+
+  if (command === "prompt-registry") {
+    const registry = promptRegistrySnapshot();
+    printResult(args, promptRegistryToHumanReport(registry), registry);
+    return;
+  }
+
+  if (command === "llm-eval") {
+    const report = await runLLMEvalSuite({
+      dataDir: String(args["data-dir"] ?? "fixtures"),
+      now: args.now ? String(args.now) : undefined
+    });
+    if (args.out && args.out !== true) {
+      await mkdir(path.dirname(String(args.out)), { recursive: true });
+      await writeFile(String(args.out), `${JSON.stringify(report, null, 2)}\n`);
+    }
+    printResult(args, llmEvalToHumanReport(report), report);
     return;
   }
 

@@ -56,6 +56,8 @@ ${dossier.summary.council_summary}
 - Passed: ${dossier.council_run?.eval_report?.passed !== false}
 - Problems: ${dossier.council_run?.eval_report?.problems?.length ?? 0}
 - Warnings: ${dossier.council_run?.eval_report?.warnings?.length ?? 0}
+- Contexts: ${dossier.council_run?.contexts?.length ?? 0}
+- Estimated model cost: ${dossier.council_run?.usage?.estimated_cost_usd ?? "n/a"}
 
 ## Strongest Bull Case
 
@@ -117,6 +119,9 @@ export function dossierToHumanReport(dossier: any, { auditPath, markdownPath }: 
     `  4. Python analytics: generated ${dossier.tool_outputs.length} deterministic tool outputs.`,
     `  5. Council provider: ${dossier.council_run?.provider?.id ?? "rule_council_v0"} produced ${dossier.claim_packets.length} claim packets.`,
     `  6. Council evaluation: ${dossier.council_run?.eval_report?.passed === false ? "failed" : "passed"} with ${(dossier.council_run?.eval_report?.warnings ?? []).length} warnings.`,
+    dossier.council_run?.usage
+      ? `     LLM budget: ${dossier.council_run.usage.context_tokens} context tokens, estimated $${dossier.council_run.usage.estimated_cost_usd}.`
+      : "",
     `  7. Cross-examination: ${dossier.cross_examination.veto_count} vetoes, ${dossier.cross_examination.opposed_personas.length} opposing personas, ${dossier.cross_examination.required_checks.length} required checks.`,
     "  8. Synthesis: preserved strongest bull case, bear case, risks, and invalidators.",
     `  9. Decision gate: ${titleCaseAction(dossier.decision_packet.action_class)} with confidence ${dossier.decision_packet.confidence}.`,
@@ -155,6 +160,9 @@ export function dossierToHumanReport(dossier: any, { auditPath, markdownPath }: 
     `  Needs more data: ${needsData}`,
     `  Provider: ${dossier.council_run?.provider?.id ?? "rule_council_v0"}`,
     `  Eval: ${dossier.council_run?.eval_report?.passed === false ? "failed" : "passed"}`,
+    dossier.council_run?.usage ? `  Context windows: ${dossier.council_run.contexts.length}` : "",
+    dossier.council_run?.usage ? `  Estimated LLM cost: $${dossier.council_run.usage.estimated_cost_usd}` : "",
+    dossier.council_run?.eval_report?.context_warning_count ? `  Context warnings: ${dossier.council_run.eval_report.context_warning_count}` : "",
     `  Summary: ${dossier.summary.council_summary}`,
     "",
     "Strongest Bull Case",
@@ -509,5 +517,64 @@ export function alertsToHumanReport(result: any) {
     result.attention_count > 0
       ? "  At least one thesis changed state or fired a lifecycle trigger."
       : "  No saved thesis changed state under the checked conditions."
+  ]);
+}
+
+export function llmEvalToHumanReport(report: any) {
+  const rows = report.cases.map((item: any, index: number) =>
+    [
+      `${index + 1}. ${item.name}`,
+      `expected=${item.expected_pass ? "pass" : "fail"}`,
+      `observed=${item.observed_pass ? "pass" : "fail"}`,
+      `result=${item.passed ? "ok" : "not ok"}`,
+      `problems=${item.problems.length}`,
+      item.usage ? `tokens=${item.usage.context_tokens}` : "",
+      item.usage ? `cost=$${item.usage.estimated_cost_usd}` : "",
+      `context_warnings=${item.context_warnings ?? 0}`
+    ].filter(Boolean).join(" | ")
+  );
+
+  return lines([
+    "Parallax LLM Council Eval",
+    "=========================",
+    "",
+    `Suite: ${report.suite}`,
+    `Created at: ${report.created_at}`,
+    `Passed: ${report.passed ? "yes" : "no"}`,
+    `Cases: ${report.case_count}`,
+    "",
+    "Cases",
+    rows.join("\n"),
+    "",
+    "Interpretation",
+    report.passed
+      ? "  The scripted LLM council admits evidence-bound packets and rejects hallucinated refs, unsupported calculations, hidden recommendations, prompt-injection obedience, and cost overrun."
+      : "  One or more LLM council safety gates failed and must be fixed before using this provider path."
+  ]);
+}
+
+export function promptRegistryToHumanReport(registry: any) {
+  const prompts = Object.values(registry.prompts).map((prompt: any) =>
+    `  - ${prompt.id}@${prompt.version}: ${prompt.purpose}`
+  );
+  const providers = Object.values(registry.providers).map((provider: any) =>
+    `  - ${provider.id}: ${provider.kind}, max ${provider.max_context_tokens} context tokens, max $${provider.max_estimated_cost_usd}`
+  );
+  const personas = Object.values(registry.personas).map((persona: any) =>
+    `  - ${persona.id}: ${persona.tool_permissions.join(", ")}`
+  );
+
+  return lines([
+    "Parallax Prompt Registry",
+    "========================",
+    "",
+    "Prompts",
+    prompts.join("\n"),
+    "",
+    "Providers",
+    providers.join("\n"),
+    "",
+    "Personas",
+    personas.join("\n")
   ]);
 }

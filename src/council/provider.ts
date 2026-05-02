@@ -1,6 +1,7 @@
 import { ACTION_RANK, assertPersonaClaimPacket } from "../core/schemas.js";
 import { makeId, stableHash } from "../core/ids.js";
 import { PERSONAS, runPersona } from "./personas.js";
+import { runScriptedLLMCouncil, type ScriptedLLMScenario } from "../llm/scripted.js";
 
 export const DEFAULT_COUNCIL_PROVIDER = {
   id: "deterministic_rule_council_v0",
@@ -21,22 +22,59 @@ function hasToolRef(packet: any, toolOutputs: any[]) {
   return packet.evidence_refs.some((ref: string) => toolIds.has(ref));
 }
 
+function hiddenRecommendationLanguage(text = "") {
+  return /\b(you should buy|you should sell|buy now|sell now|must recommend|guaranteed|place an order|execute (the )?trade|market order)\b/i.test(text);
+}
+
+function finalizeEvalReport(body: any) {
+  const { id: _id, ...stableBody } = body;
+  return {
+    id: makeId("ceval", { ...stableBody, hash: stableHash(stableBody) }),
+    ...stableBody
+  };
+}
+
 export function evaluateClaimPackets({
   provider = DEFAULT_COUNCIL_PROVIDER,
   snapshot,
   toolOutputs,
   claimPackets,
-  policyReview
+  policyReview,
+  expectedPersonas,
+  strictActionCeiling = false,
+  contextWarnings = []
 }: {
   provider?: any;
   snapshot: any;
   toolOutputs: any[];
   claimPackets: any[];
   policyReview?: any;
+  expectedPersonas?: string[];
+  strictActionCeiling?: boolean;
+  contextWarnings?: string[];
 }) {
   const problems: string[] = [];
   const warnings: string[] = [];
   const refs = validRefIds(snapshot, toolOutputs);
+  const isLLMProvider = String(provider.kind ?? "").includes("llm");
+
+  if (claimPackets.length === 0) {
+    problems.push("Council provider returned no claim packets.");
+  }
+
+  if (expectedPersonas?.length) {
+    const seen = new Map<string, number>();
+    for (const packet of claimPackets) {
+      if (packet.persona_id) seen.set(packet.persona_id, (seen.get(packet.persona_id) ?? 0) + 1);
+    }
+    for (const personaId of expectedPersonas) {
+      if (!seen.has(personaId)) problems.push(`Expected persona ${personaId} did not return a claim packet.`);
+    }
+    for (const [personaId, count] of seen.entries()) {
+      if (!expectedPersonas.includes(personaId)) problems.push(`Unexpected persona ${personaId} returned a claim packet.`);
+      if (count > 1) problems.push(`Persona ${personaId} returned ${count} claim packets.`);
+    }
+  }
 
   for (const packet of claimPackets) {
     try {
@@ -60,9 +98,13 @@ export function evaluateClaimPackets({
       policyReview?.effective_action_ceiling &&
       ACTION_RANK.get(packet.proposed_action)! > ACTION_RANK.get(policyReview.effective_action_ceiling)!
     ) {
-      warnings.push(
-        `${packet.persona_id} proposed ${packet.proposed_action}, above effective product ceiling ${policyReview.effective_action_ceiling}.`
-      );
+      const message = `${packet.persona_id} proposed ${packet.proposed_action}, above effective product ceiling ${policyReview.effective_action_ceiling}.`;
+      if (strictActionCeiling) problems.push(message);
+      else warnings.push(message);
+    }
+
+    if (isLLMProvider && hiddenRecommendationLanguage(packet.thesis)) {
+      problems.push(`${packet.persona_id} used hidden recommendation or execution language in its thesis.`);
     }
   }
 
@@ -75,13 +117,12 @@ export function evaluateClaimPackets({
     passed: problems.length === 0,
     problems,
     warnings,
+    context_warning_count: contextWarnings.length,
+    context_warnings: contextWarnings,
     evaluated_refs: refs.size
   };
 
-  return {
-    id: makeId("ceval", { ...body, hash: stableHash(body) }),
-    ...body
-  };
+  return finalizeEvalReport(body);
 }
 
 export function runCouncilProvider({
@@ -89,21 +130,67 @@ export function runCouncilProvider({
   toolOutputs,
   personas = PERSONAS,
   policyReview,
-  provider = DEFAULT_COUNCIL_PROVIDER
+  provider = DEFAULT_COUNCIL_PROVIDER,
+  councilMode = "deterministic",
+  llmScenario = "safe",
+  llmBudget
 }: {
   snapshot: any;
   toolOutputs: any[];
   personas?: string[];
   policyReview?: any;
   provider?: any;
+  councilMode?: string;
+  llmScenario?: ScriptedLLMScenario | string;
+  llmBudget?: {
+    maxContextTokens?: number;
+    maxEstimatedCostUsd?: number;
+  };
 }) {
+  if (councilMode === "llm-scripted" || provider.kind === "llm_scripted") {
+    const llmRun = runScriptedLLMCouncil({
+      snapshot,
+      toolOutputs,
+      personas,
+      policyReview,
+      scenario: llmScenario as ScriptedLLMScenario,
+      budget: llmBudget
+    });
+    let evalReport = evaluateClaimPackets({
+      provider: llmRun.provider,
+      snapshot,
+      toolOutputs,
+      claimPackets: llmRun.claim_packets,
+      policyReview,
+      expectedPersonas: personas,
+      strictActionCeiling: true,
+      contextWarnings: llmRun.context_warnings
+    });
+    if (llmRun.failure) {
+      evalReport = finalizeEvalReport({
+        ...evalReport,
+        passed: false,
+        problems: [...evalReport.problems, `Provider failure: ${llmRun.failure}.`]
+      });
+    }
+
+    return {
+      provider: llmRun.provider,
+      claim_packets: llmRun.claim_packets,
+      eval_report: evalReport,
+      contexts: llmRun.contexts,
+      usage: llmRun.usage
+    };
+  }
+
   const claimPackets = personas.map((personaId) => runPersona(personaId, { snapshot, toolOutputs }));
   const evalReport = evaluateClaimPackets({
     provider,
     snapshot,
     toolOutputs,
     claimPackets,
-    policyReview
+    policyReview,
+    expectedPersonas: personas
   });
 
   return {

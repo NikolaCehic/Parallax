@@ -1,0 +1,28 @@
+{
+  "dossier_id": "dos_79f820d9cb70",
+  "action_class": "watchlist",
+  "thesis_state": "active",
+  "confidence": 0.63,
+  "freshness_score": 1,
+  "policy_status": "allowed",
+  "effective_action_ceiling": "watchlist",
+  "council_provider": "scripted_llm_council_v0",
+  "council_eval_passed": true,
+  "llm_usage": {
+    "provider_id": "scripted_llm_council_v0",
+    "prompt_ids": [
+      "claim_packet_v0",
+      "critique_packet_v0"
+    ],
+    "context_count": 12,
+    "context_tokens": 25911,
+    "prompt_tokens": 10,
+    "estimated_cost_usd": 0.01296,
+    "max_context_tokens": 50000,
+    "max_estimated_cost_usd": 0.2,
+    "budget_exceeded": false
+  },
+  "audit_path": "artifacts/phase_3_llm_council_beta/audits/dos_79f820d9cb70.json",
+  "markdown_path": "artifacts/phase_3_llm_council_beta/audits/dos_79f820d9cb70.md",
+  "library_path": "artifacts/phase_3_llm_council_beta/audits/library.json"
+}
