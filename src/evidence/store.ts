@@ -1,30 +1,16 @@
-import { readFile } from "node:fs/promises";
-import path from "node:path";
 import { makeId, stableHash, isoNow } from "../core/ids.js";
-import { parseCsv, rowsToCandles } from "./csv.js";
+import {
+  DEFAULT_DEPENDENCIES,
+  loadCorporateActions,
+  loadDataManifest,
+  loadEvents,
+  loadFundamentals,
+  loadMarketData,
+  loadNews,
+  loadPortfolio
+} from "../data/adapters.js";
 
-const DEFAULT_DEPENDENCIES = {
-  NVDA: ["SMH", "QQQ"],
-  AAPL: ["QQQ", "XLK"],
-  TSLA: ["QQQ"]
-};
-
-async function readJsonIfExists(filePath, fallback) {
-  try {
-    return JSON.parse(await readFile(filePath, "utf8"));
-  } catch (error) {
-    if (error.code === "ENOENT") return fallback;
-    throw error;
-  }
-}
-
-async function readCandles(dataDir, symbol) {
-  const filePath = path.join(dataDir, "market", `${symbol}.csv`);
-  const rows = parseCsv(await readFile(filePath, "utf8"));
-  return rowsToCandles(rows);
-}
-
-function evidenceItem({ kind, source, symbol, asOf, retrievedAt, freshnessStatus, license = "internal", payload }) {
+function evidenceItem({ kind, source, symbol, asOf, retrievedAt, freshnessStatus, license = "internal", payload, metadata = {} }) {
   const payloadHash = stableHash(payload);
   const item = {
     id: makeId("ev", { kind, source, symbol, asOf, payloadHash }),
@@ -37,16 +23,24 @@ function evidenceItem({ kind, source, symbol, asOf, retrievedAt, freshnessStatus
     license,
     payload_ref: `inline:${payloadHash}`,
     hash: payloadHash,
-    payload
+    payload,
+    metadata
   };
   return item;
 }
 
-function freshnessForAsOf(asOf, nowIso) {
-  const ageMs = new Date(nowIso).getTime() - new Date(asOf).getTime();
-  if (ageMs < 0) return "unknown";
-  if (ageMs <= 1000 * 60 * 60 * 24 * 7) return "fresh";
-  return "stale";
+function itemFromAdapter(adapterResult, now) {
+  return evidenceItem({
+    kind: adapterResult.kind,
+    source: adapterResult.source,
+    symbol: adapterResult.symbol,
+    asOf: adapterResult.asOf,
+    retrievedAt: now,
+    freshnessStatus: adapterResult.freshnessStatus,
+    license: adapterResult.license,
+    payload: adapterResult.payload,
+    metadata: adapterResult.metadata ?? {}
+  });
 }
 
 export async function buildEvidenceSnapshot({
@@ -57,78 +51,47 @@ export async function buildEvidenceSnapshot({
   now = isoNow(),
   dependencies = DEFAULT_DEPENDENCIES[symbol] ?? []
 }) {
-  const candles = await readCandles(dataDir, symbol);
-  const latest = candles.at(-1);
-  const items = [
-    evidenceItem({
-      kind: "price",
-      source: `fixture:${symbol}.csv`,
-      symbol,
-      asOf: `${latest.date}T20:00:00Z`,
-      retrievedAt: now,
-      freshnessStatus: freshnessForAsOf(`${latest.date}T20:00:00Z`, now),
-      payload: candles
-    })
-  ];
+  const manifest = await loadDataManifest(dataDir);
+  const items = [];
+
+  const corporateActions = await loadCorporateActions({ dataDir, symbol, now, manifest });
+  const market = await loadMarketData({ dataDir, symbol, now, corporateActions: corporateActions.payload, manifest });
+  items.push(itemFromAdapter(market, now));
 
   for (const dependency of dependencies) {
     try {
-      const depCandles = await readCandles(dataDir, dependency);
-      const depLatest = depCandles.at(-1);
-      items.push(evidenceItem({
-        kind: "price",
-        source: `fixture:${dependency}.csv`,
+      const depActions = await loadCorporateActions({ dataDir, symbol: dependency, now, manifest });
+      const depMarket = await loadMarketData({
+        dataDir,
         symbol: dependency,
-        asOf: `${depLatest.date}T20:00:00Z`,
-        retrievedAt: now,
-        freshnessStatus: freshnessForAsOf(`${depLatest.date}T20:00:00Z`, now),
-        payload: depCandles
-      }));
+        now,
+        corporateActions: depActions.payload,
+        manifest
+      });
+      items.push(itemFromAdapter(depMarket, now));
     } catch (error) {
       if (error.code !== "ENOENT") throw error;
     }
   }
 
-  const portfolio = await readJsonIfExists(path.join(dataDir, "portfolio", "default.json"), {
-    account_id: "fixture",
-    cash: 100000,
-    positions: [],
-    constraints: {
-      max_single_name_pct: 0.12,
-      max_sector_pct: 0.35,
-      max_gross_exposure_pct: 1.0,
-      paper_risk_budget_pct: 0.02
-    },
-    restricted_symbols: []
-  });
+  items.push(itemFromAdapter(await loadPortfolio({ dataDir, now, manifest }), now));
+  items.push(itemFromAdapter(await loadEvents({ dataDir, symbol, now, manifest }), now));
+  items.push(itemFromAdapter(corporateActions, now));
 
-  items.push(evidenceItem({
-    kind: "portfolio",
-    source: "fixture:portfolio/default.json",
-    symbol: "PORTFOLIO",
-    asOf: now,
-    retrievedAt: now,
-    freshnessStatus: "fresh",
-    payload: portfolio
-  }));
+  const fundamentals = await loadFundamentals({ dataDir, symbol, now, manifest });
+  if (fundamentals) items.push(itemFromAdapter(fundamentals, now));
 
-  const events = await readJsonIfExists(path.join(dataDir, "events", `${symbol}.json`), []);
-  items.push(evidenceItem({
-    kind: "event",
-    source: `fixture:events/${symbol}.json`,
-    symbol,
-    asOf: now,
-    retrievedAt: now,
-    freshnessStatus: "fresh",
-    payload: events
-  }));
+  const news = await loadNews({ dataDir, symbol, now, manifest });
+  if (news) items.push(itemFromAdapter(news, now));
 
   const question = {
     symbol,
     horizon,
     thesis,
     requested_action: "analyze",
-    dependencies
+    dependencies,
+    data_provider: manifest.provider ?? "local_files",
+    data_license: manifest.license ?? "internal"
   };
 
   const snapshot = {

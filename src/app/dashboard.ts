@@ -4,6 +4,7 @@ import { productPolicySnapshot } from "../product/policy.js";
 import {
   listLibraryEntries,
   monitorWorkspace,
+  sourceViewFromAudit,
   summarizeFeedback
 } from "../library/store.js";
 
@@ -63,6 +64,26 @@ function renderAlertRows(entries: any[]) {
   `).join("");
 }
 
+function renderSourceRows(sourceViews: any[]) {
+  const sources = sourceViews.flatMap((view: any) =>
+    view.sources.map((source: any) => ({ ...source, dossier_id: view.dossier_id }))
+  );
+  if (!sources.length) {
+    return `<tr><td colspan="7" class="empty">No source metadata available.</td></tr>`;
+  }
+  return sources.map((source: any) => `
+    <tr>
+      <td><strong>${escapeHtml(source.kind)}</strong><span>${escapeHtml(source.symbol)}</span></td>
+      <td>${escapeHtml(source.source)}</td>
+      <td>${escapeHtml(source.as_of)}</td>
+      <td>${badge(source.freshness_status)}</td>
+      <td>${badge(source.license)}</td>
+      <td>${escapeHtml(JSON.stringify(source.payload_summary ?? {}))}</td>
+      <td><code>${escapeHtml(source.hash)}</code></td>
+    </tr>
+  `).join("");
+}
+
 function renderFeedback(summary: any) {
   const rows = Object.entries(summary.by_rating)
     .map(([rating, count]) => `<tr><td>${badge(rating)}</td><td>${count}</td></tr>`)
@@ -94,6 +115,16 @@ export async function buildDashboardHtml({
   const alerts = await monitorWorkspace({ auditDir, now, prices });
   const feedback = await summarizeFeedback(auditDir);
   const policy = productPolicySnapshot();
+  const sourceViews = [];
+  for (const entry of library.entries) {
+    if (!entry.audit_path) continue;
+    try {
+      sourceViews.push(await sourceViewFromAudit(entry.audit_path));
+    } catch {
+      // The dashboard should still render if one local audit is missing.
+    }
+  }
+  const sourceCount = sourceViews.reduce((sum, view: any) => sum + view.sources.length, 0);
   const watchlist = library.entries.filter((entry: any) =>
     ["watchlist", "paper_trade_candidate"].includes(entry.action_class) &&
     ["active", "stale"].includes(entry.thesis_state)
@@ -248,6 +279,7 @@ export async function buildDashboardHtml({
       <strong>Workspace</strong>
       <a href="#library">Dossier Library</a>
       <a href="#alerts">Lifecycle Alerts</a>
+      <a href="#sources">Data Freshness</a>
       <a href="#feedback">Alpha Feedback</a>
       <a href="#boundary">Product Boundary</a>
     </aside>
@@ -256,6 +288,7 @@ export async function buildDashboardHtml({
         ${metric("Dossiers", library.entries.length, auditDir)}
         ${metric("Watchlist", watchlist.length, "active or stale")}
         ${metric("Need Attention", alerts.attention_count, alerts.checked_at)}
+        ${metric("Data Sources", sourceCount, "evidence items")}
         ${metric("Feedback", feedback.feedback_count, "local alpha notes")}
       </div>
 
@@ -272,6 +305,14 @@ export async function buildDashboardHtml({
         <table>
           <thead><tr><th>Symbol</th><th>Status</th><th>State Change</th><th>Triggers</th><th>Audit</th></tr></thead>
           <tbody>${renderAlertRows(alerts.entries)}</tbody>
+        </table>
+      </section>
+
+      <section class="section" id="sources">
+        <h2>Data Freshness</h2>
+        <table>
+          <thead><tr><th>Kind</th><th>Source</th><th>As Of</th><th>Freshness</th><th>License</th><th>Payload</th><th>Hash</th></tr></thead>
+          <tbody>${renderSourceRows(sourceViews)}</tbody>
         </table>
       </section>
 
@@ -306,7 +347,7 @@ export async function writeDashboard({
   now?: string;
   prices?: Record<string, number>;
 } = {}) {
-  const html = await buildDashboardHtml({ auditDir, now, prices });
+  const html = (await buildDashboardHtml({ auditDir, now, prices })).replace(/[ \t]+$/gm, "");
   await mkdir(path.dirname(out), { recursive: true });
   await writeFile(out, html);
   return {

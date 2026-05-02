@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, readFile, rm } from "node:fs/promises";
+import { mkdir, mkdtemp, readFile, rm, writeFile } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -182,5 +182,40 @@ test("CLI exposes product policy and local workspace commands", async () => {
     await rm(importedDir, { recursive: true, force: true });
   } finally {
     await rm(auditDir, { recursive: true, force: true });
+  }
+});
+
+test("CLI exposes Phase 2 data-status and portfolio-import commands", async () => {
+  const dataDir = await mkdtemp(path.join(os.tmpdir(), "parallax-cli-data-"));
+  try {
+    await mkdir(path.join(dataDir, "portfolio"), { recursive: true });
+    const brokerCsv = path.join(dataDir, "portfolio", "broker.csv");
+    await writeFile(brokerCsv, [
+      "symbol,quantity,market_value,sector",
+      "NVDA,10,5000,semiconductors",
+      "QQQ,5,2500,broad"
+    ].join("\n") + "\n");
+
+    const imported = runCli([
+      "portfolio-import",
+      "--csv", brokerCsv,
+      "--out", path.join(dataDir, "portfolio", "default.json"),
+      "--account-id", "cli_broker_export",
+      "--cash", "92500"
+    ]);
+    assert.match(imported, /Parallax Portfolio Import/);
+    assert.match(imported, /Positions: 2/);
+
+    const status = runCli([
+      "data-status",
+      "--symbol", "NVDA",
+      "--data-dir", "fixtures",
+      "--now", NOW
+    ]);
+    assert.match(status, /Parallax Data Status/);
+    assert.match(status, /By kind/);
+    assert.match(status, /price/);
+  } finally {
+    await rm(dataDir, { recursive: true, force: true });
   }
 });

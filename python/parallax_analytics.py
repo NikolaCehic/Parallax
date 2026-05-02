@@ -77,8 +77,18 @@ def get_item(snapshot: dict[str, Any], kind: str, symbol: str | None = None) -> 
     raise KeyError(f"Missing evidence item: {kind}/{symbol}")
 
 
+def optional_item(snapshot: dict[str, Any], kind: str, symbol: str | None = None) -> dict[str, Any] | None:
+    for item in snapshot["items"]:
+        if item["kind"] == kind and (symbol is None or item.get("symbol") == symbol):
+            return item
+    return None
+
+
 def parse_iso(value: str) -> datetime:
-    return datetime.fromisoformat(value.replace("Z", "+00:00"))
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    if parsed.tzinfo is None:
+        return parsed.replace(tzinfo=timezone.utc)
+    return parsed
 
 
 def tool(tool_name: str, inputs: list[dict[str, Any]], result: dict[str, Any], status: str = "passed") -> dict[str, Any]:
@@ -95,6 +105,9 @@ def run(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
     price_evidence = get_item(snapshot, "price", symbol)
     portfolio_evidence = get_item(snapshot, "portfolio", "PORTFOLIO")
     event_evidence = get_item(snapshot, "event", symbol)
+    fundamentals_evidence = optional_item(snapshot, "fundamental", symbol)
+    news_evidence = optional_item(snapshot, "news", symbol)
+    corporate_action_evidence = optional_item(snapshot, "corporate_action", symbol)
 
     candles = price_evidence["payload"]
     ret = returns(candles)
@@ -224,7 +237,101 @@ def run(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
         )
     )
 
+    if corporate_action_evidence is not None:
+        actions = corporate_action_evidence["payload"]
+        upcoming_actions = [
+            action
+            for action in actions
+            if parse_iso(action.get("effective_date", action.get("date"))) >= snapshot_time
+        ]
+        outputs.append(
+            tool(
+                "corporate_action_check",
+                [corporate_action_evidence, price_evidence],
+                {
+                    "action_count": len(actions),
+                    "upcoming_action_count": len(upcoming_actions),
+                    "split_count": len([action for action in actions if action.get("type") == "split"]),
+                    "dividend_count": len([action for action in actions if action.get("type") == "dividend"]),
+                    "price_adjustment_applied": bool(price_evidence.get("metadata", {}).get("adjusted_for_corporate_actions")),
+                    "upcoming_actions": upcoming_actions,
+                },
+                "warning" if upcoming_actions else "passed",
+            )
+        )
+
+    if fundamentals_evidence is not None:
+        fundamentals = fundamentals_evidence["payload"]
+        valuation = fundamentals.get("valuation", {})
+        growth = float(fundamentals.get("revenue_growth_yoy", 0) or 0)
+        eps_growth = float(fundamentals.get("eps_growth_yoy", 0) or 0)
+        gross_margin = float(fundamentals.get("gross_margin", 0) or 0)
+        leverage = float(fundamentals.get("net_debt_to_ebitda", 0) or 0)
+        forward_pe = float(valuation.get("forward_pe", 0) or 0)
+        quality_score = max(
+            0.0,
+            min(
+                1.0,
+                0.45
+                + min(growth, 0.4) * 0.5
+                + min(eps_growth, 0.4) * 0.25
+                + min(gross_margin, 0.8) * 0.25
+                - max(leverage - 2.5, 0) * 0.08
+                - max(forward_pe - 45, 0) * 0.004,
+            ),
+        )
+        outputs.append(
+            tool(
+                "fundamentals_check",
+                [fundamentals_evidence],
+                {
+                    "period_end": fundamentals.get("period_end", fundamentals_evidence["as_of"]),
+                    "revenue_growth_yoy": growth,
+                    "eps_growth_yoy": eps_growth,
+                    "gross_margin": gross_margin,
+                    "net_debt_to_ebitda": leverage,
+                    "forward_pe": forward_pe,
+                    "quality_score": quality_score,
+                },
+                "warning" if growth < -0.05 or leverage > 4 or forward_pe > 80 else "passed",
+            )
+        )
+
+    if news_evidence is not None:
+        news_items = news_evidence["payload"]
+        trusted_items = [
+            item for item in news_items if float(item.get("source_reliability", 0.5) or 0.5) >= 0.7
+        ]
+        low_reliability_items = [
+            item for item in news_items if float(item.get("source_reliability", 0.5) or 0.5) < 0.5
+        ]
+        rumor_items = [
+            item
+            for item in news_items
+            if "rumor" in str(item.get("headline", "")).lower() or "unconfirmed" in str(item.get("headline", "")).lower()
+        ]
+        sentiment_values = [
+            float(item.get("sentiment", 0) or 0)
+            for item in news_items
+        ]
+        outputs.append(
+            tool(
+                "news_provenance_check",
+                [news_evidence],
+                {
+                    "item_count": len(news_items),
+                    "trusted_item_count": len(trusted_items),
+                    "low_reliability_count": len(low_reliability_items),
+                    "rumor_count": len(rumor_items),
+                    "average_sentiment": mean(sentiment_values),
+                    "sources": sorted({item.get("source", "unknown") for item in news_items}),
+                },
+                "warning" if low_reliability_items or rumor_items else "passed",
+            )
+        )
+
     stale_items = [item for item in snapshot["items"] if item.get("freshness_status") != "fresh"]
+    restricted_items = [item for item in snapshot["items"] if item.get("license") == "restricted"]
     outputs.append(
         tool(
             "data_quality_check",
@@ -232,11 +339,11 @@ def run(snapshot: dict[str, Any]) -> list[dict[str, Any]]:
             {
                 "stale_item_ids": [item["id"] for item in stale_items],
                 "restricted_license_item_ids": [
-                    item["id"] for item in snapshot["items"] if item.get("license") == "restricted"
+                    item["id"] for item in restricted_items
                 ],
-                "passed": len(stale_items) == 0,
+                "passed": len(stale_items) == 0 and len(restricted_items) == 0,
             },
-            "warning" if stale_items else "passed",
+            "warning" if stale_items or restricted_items else "passed",
         )
     )
 

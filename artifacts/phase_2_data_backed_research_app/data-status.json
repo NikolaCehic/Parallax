@@ -1,0 +1,154 @@
+{
+  "data_dir": "artifacts/phase_2_data_backed_research_app/data",
+  "symbol": "NVDA",
+  "snapshot_id": "snap_500ba1d2b89b",
+  "snapshot_hash": "acc8e102161a346c86a49a7a949e2dd78af91e9afa1409594acec168e48b8c61",
+  "created_at": "2026-05-01T14:30:00Z",
+  "passed": true,
+  "item_count": 8,
+  "by_kind": {
+    "price": 3,
+    "portfolio": 1,
+    "event": 1,
+    "corporate_action": 1,
+    "fundamental": 1,
+    "news": 1
+  },
+  "by_freshness": {
+    "fresh": 8
+  },
+  "by_license": {
+    "internal": 8
+  },
+  "stale_items": [],
+  "restricted_items": [],
+  "sources": [
+    {
+      "id": "ev_4b291fcc1c75",
+      "kind": "price",
+      "symbol": "NVDA",
+      "source": "licensed-local:market/NVDA.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+      "hash": "cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_b04e358d3eeb",
+      "kind": "price",
+      "symbol": "SMH",
+      "source": "licensed-local:market/SMH.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+      "hash": "c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_a5157de61872",
+      "kind": "price",
+      "symbol": "QQQ",
+      "source": "licensed-local:market/QQQ.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+      "hash": "3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_079da6d6a801",
+      "kind": "portfolio",
+      "symbol": "PORTFOLIO",
+      "source": "broker-export:portfolio/default.json",
+      "as_of": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+      "hash": "f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+      "payload_summary": {
+        "keys": [
+          "account_id",
+          "cash",
+          "constraints",
+          "positions",
+          "restricted_symbols",
+          "total_equity"
+        ]
+      }
+    },
+    {
+      "id": "ev_d41c7f3b134f",
+      "kind": "event",
+      "symbol": "NVDA",
+      "source": "licensed-local:events/NVDA.json",
+      "as_of": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "payload_summary": {
+        "rows": 0
+      }
+    },
+    {
+      "id": "ev_4937d48ed413",
+      "kind": "corporate_action",
+      "symbol": "NVDA",
+      "source": "licensed-local:actions/NVDA.json",
+      "as_of": "2026-04-10T13:30:00.000Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+      "hash": "e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+      "payload_summary": {
+        "rows": 1
+      }
+    },
+    {
+      "id": "ev_38928eb130f7",
+      "kind": "fundamental",
+      "symbol": "NVDA",
+      "source": "licensed-local:fundamentals/NVDA.json",
+      "as_of": "2026-04-20T00:00:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+      "hash": "986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+      "payload_summary": {
+        "keys": [
+          "as_of",
+          "eps_growth_yoy",
+          "gross_margin",
+          "net_debt_to_ebitda",
+          "period_end",
+          "revenue_growth_yoy",
+          "valuation"
+        ]
+      }
+    },
+    {
+      "id": "ev_2f39e38d0fad",
+      "kind": "news",
+      "symbol": "NVDA",
+      "source": "licensed-local:news/NVDA.json",
+      "as_of": "2026-04-30T15:00:00.000Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+      "hash": "a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+      "payload_summary": {
+        "rows": 1
+      }
+    }
+  ]
+}

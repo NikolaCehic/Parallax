@@ -1,0 +1,274 @@
+{
+  "dossier_id": "dos_7202c8777de4",
+  "symbol": "NVDA",
+  "evidence_snapshot_id": "snap_752705595d9e",
+  "evidence_hash": "8223fe4e50adcdac53f00885c55c97ca51ae6451bd42cce7f31d60267146e692",
+  "data_provider": "phase2_local_licensed_pack",
+  "data_license": "internal",
+  "freshness_summary": {
+    "item_count": 8,
+    "by_kind": {
+      "price": 3,
+      "portfolio": 1,
+      "event": 1,
+      "corporate_action": 1,
+      "fundamental": 1,
+      "news": 1
+    },
+    "by_freshness": {
+      "fresh": 8
+    },
+    "by_license": {
+      "internal": 8
+    },
+    "stale_items": [],
+    "restricted_items": []
+  },
+  "sources": [
+    {
+      "id": "ev_4b291fcc1c75",
+      "kind": "price",
+      "symbol": "NVDA",
+      "source": "licensed-local:market/NVDA.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+      "hash": "cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+      "metadata": {
+        "adjusted_for_corporate_actions": true,
+        "adjustment_count": 6
+      },
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_b04e358d3eeb",
+      "kind": "price",
+      "symbol": "SMH",
+      "source": "licensed-local:market/SMH.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+      "hash": "c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+      "metadata": {
+        "adjusted_for_corporate_actions": false,
+        "adjustment_count": 0
+      },
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_a5157de61872",
+      "kind": "price",
+      "symbol": "QQQ",
+      "source": "licensed-local:market/QQQ.csv",
+      "as_of": "2026-04-30T20:00:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+      "hash": "3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+      "metadata": {
+        "adjusted_for_corporate_actions": false,
+        "adjustment_count": 0
+      },
+      "payload_summary": {
+        "rows": 26
+      }
+    },
+    {
+      "id": "ev_079da6d6a801",
+      "kind": "portfolio",
+      "symbol": "PORTFOLIO",
+      "source": "broker-export:portfolio/default.json",
+      "as_of": "2026-05-01T14:30:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+      "hash": "f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+      "metadata": {},
+      "payload_summary": {
+        "keys": [
+          "account_id",
+          "cash",
+          "constraints",
+          "positions",
+          "restricted_symbols",
+          "total_equity"
+        ]
+      }
+    },
+    {
+      "id": "ev_d41c7f3b134f",
+      "kind": "event",
+      "symbol": "NVDA",
+      "source": "licensed-local:events/NVDA.json",
+      "as_of": "2026-05-01T14:30:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+      "metadata": {},
+      "payload_summary": {
+        "rows": 0
+      }
+    },
+    {
+      "id": "ev_4937d48ed413",
+      "kind": "corporate_action",
+      "symbol": "NVDA",
+      "source": "licensed-local:actions/NVDA.json",
+      "as_of": "2026-04-10T13:30:00.000Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+      "hash": "e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+      "metadata": {},
+      "payload_summary": {
+        "rows": 1
+      }
+    },
+    {
+      "id": "ev_38928eb130f7",
+      "kind": "fundamental",
+      "symbol": "NVDA",
+      "source": "licensed-local:fundamentals/NVDA.json",
+      "as_of": "2026-04-20T00:00:00Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+      "hash": "986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+      "metadata": {},
+      "payload_summary": {
+        "keys": [
+          "as_of",
+          "eps_growth_yoy",
+          "gross_margin",
+          "net_debt_to_ebitda",
+          "period_end",
+          "revenue_growth_yoy",
+          "valuation"
+        ]
+      }
+    },
+    {
+      "id": "ev_2f39e38d0fad",
+      "kind": "news",
+      "symbol": "NVDA",
+      "source": "licensed-local:news/NVDA.json",
+      "as_of": "2026-04-30T15:00:00.000Z",
+      "retrieved_at": "2026-05-01T14:30:00Z",
+      "freshness_status": "fresh",
+      "license": "internal",
+      "payload_ref": "inline:a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+      "hash": "a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+      "metadata": {},
+      "payload_summary": {
+        "rows": 1
+      }
+    }
+  ],
+  "tool_outputs": [
+    {
+      "id": "tool_eb73a692ee30",
+      "tool_name": "return_summary",
+      "status": "passed",
+      "result_hash": "ddd989b940359a1b92b2600832457aa4660dc2b309bfd89c61725a29f89259ae",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_576f7682a07d",
+      "tool_name": "volatility_check",
+      "status": "warning",
+      "result_hash": "2d586be51cd3dca285bff908914f636a2d7c14401d1d7ddbbd7f3bd677f46b40",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_9e18d5ea4527",
+      "tool_name": "drawdown_check",
+      "status": "passed",
+      "result_hash": "4bb72735e3da5e52f78df679f6eab7198d175be6c84839dfcd0ef29d6c139d39",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_19f95bb8ed56",
+      "tool_name": "liquidity_check",
+      "status": "passed",
+      "result_hash": "c86645cc5f1e32131b875cfc9480664c813f845e6e0ece9139d1b7fe5af5863c",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_c3a804fdec2c",
+      "tool_name": "transaction_cost_model",
+      "status": "passed",
+      "result_hash": "0db24fddd84794d94269b428b3c08e099aa0d195f6f494b2d040c98412dc9c5d",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_3c6015de5d3c",
+      "tool_name": "dependency_correlation",
+      "status": "passed",
+      "result_hash": "0ad5e64ce7a39fa72d6a4b9c2e54eeb388e0074efd65ddf73e499ea2c58ce563",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_c0110f2b4aa1",
+      "tool_name": "dependency_correlation",
+      "status": "passed",
+      "result_hash": "c11947253b0438bb377f4b008f35695372da0f4707eb83d0f61ade50f492b5d7",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_8ae974a0139d",
+      "tool_name": "portfolio_exposure_check",
+      "status": "passed",
+      "result_hash": "b74db5da3d021da063e5c2e430a64ec02a2378ce24105fae0ac1c6c250f4c7c7",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_5239246109e6",
+      "tool_name": "event_calendar_check",
+      "status": "passed",
+      "result_hash": "e47cdcb7bec9cd90cbd3789afe6d14db86cb188a02256fdfca091d3868ca33f2",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_d481df00d158",
+      "tool_name": "corporate_action_check",
+      "status": "passed",
+      "result_hash": "a7edbf66ccd326cead5c5e9b56e4bbdc627b59e795d36cd98d22a5dfcfac7c82",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_67fdd90f2a3a",
+      "tool_name": "fundamentals_check",
+      "status": "passed",
+      "result_hash": "75052df8e0e1388fb24ef3b9fab8172664035408b58b3b518d497cfe084b5edc",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_f03318c053f8",
+      "tool_name": "news_provenance_check",
+      "status": "passed",
+      "result_hash": "2650de41b1cd732845b7b743bcde6180a324324ded15ef02e423118d14694618",
+      "created_at": "2026-05-01T14:30:00Z"
+    },
+    {
+      "id": "tool_0abba0ab6946",
+      "tool_name": "data_quality_check",
+      "status": "passed",
+      "result_hash": "eca4287802712e96f4499e7da78127d90adc649db30cac897e397b8338d95bea",
+      "created_at": "2026-05-01T14:30:00Z"
+    }
+  ]
+}

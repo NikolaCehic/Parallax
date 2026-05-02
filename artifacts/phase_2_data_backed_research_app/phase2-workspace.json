@@ -1,0 +1,2017 @@
+{
+  "schema_version": "0.1.0",
+  "exported_at": "2026-05-02T17:14:44.166Z",
+  "library": {
+    "schema_version": "0.1.0",
+    "audit_dir": "artifacts/phase_2_data_backed_research_app/audits",
+    "entries": [
+      {
+        "id": "dos_7202c8777de4",
+        "title": "NVDA swing thesis dossier",
+        "symbol": "NVDA",
+        "horizon": "swing",
+        "thesis": "phase two data-backed artifact dossier",
+        "created_at": "2026-05-01T14:30:00Z",
+        "action_class": "watchlist",
+        "thesis_state": "active",
+        "confidence": 0.44,
+        "freshness_score": 1,
+        "expires_at": "2026-05-02T14:30:00.000Z",
+        "next_review_trigger": "Volatility regime changes materially.",
+        "veto_count": 0,
+        "required_check_count": 6,
+        "policy_status": "allowed",
+        "policy_ceiling": "paper_trade_candidate",
+        "council_provider": "deterministic_rule_council_v0",
+        "council_eval_passed": true,
+        "audit_path": "artifacts/phase_2_data_backed_research_app/audits/dos_7202c8777de4.json",
+        "markdown_path": "artifacts/phase_2_data_backed_research_app/audits/dos_7202c8777de4.md",
+        "feedback_count": 0
+      }
+    ]
+  },
+  "sources": [
+    {
+      "dossier_id": "dos_7202c8777de4",
+      "symbol": "NVDA",
+      "evidence_snapshot_id": "snap_752705595d9e",
+      "evidence_hash": "8223fe4e50adcdac53f00885c55c97ca51ae6451bd42cce7f31d60267146e692",
+      "data_provider": "phase2_local_licensed_pack",
+      "data_license": "internal",
+      "freshness_summary": {
+        "item_count": 8,
+        "by_kind": {
+          "price": 3,
+          "portfolio": 1,
+          "event": 1,
+          "corporate_action": 1,
+          "fundamental": 1,
+          "news": 1
+        },
+        "by_freshness": {
+          "fresh": 8
+        },
+        "by_license": {
+          "internal": 8
+        },
+        "stale_items": [],
+        "restricted_items": []
+      },
+      "sources": [
+        {
+          "id": "ev_4b291fcc1c75",
+          "kind": "price",
+          "symbol": "NVDA",
+          "source": "licensed-local:market/NVDA.csv",
+          "as_of": "2026-04-30T20:00:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+          "hash": "cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+          "metadata": {
+            "adjusted_for_corporate_actions": true,
+            "adjustment_count": 6
+          },
+          "payload_summary": {
+            "rows": 26
+          }
+        },
+        {
+          "id": "ev_b04e358d3eeb",
+          "kind": "price",
+          "symbol": "SMH",
+          "source": "licensed-local:market/SMH.csv",
+          "as_of": "2026-04-30T20:00:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+          "hash": "c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+          "metadata": {
+            "adjusted_for_corporate_actions": false,
+            "adjustment_count": 0
+          },
+          "payload_summary": {
+            "rows": 26
+          }
+        },
+        {
+          "id": "ev_a5157de61872",
+          "kind": "price",
+          "symbol": "QQQ",
+          "source": "licensed-local:market/QQQ.csv",
+          "as_of": "2026-04-30T20:00:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+          "hash": "3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+          "metadata": {
+            "adjusted_for_corporate_actions": false,
+            "adjustment_count": 0
+          },
+          "payload_summary": {
+            "rows": 26
+          }
+        },
+        {
+          "id": "ev_079da6d6a801",
+          "kind": "portfolio",
+          "symbol": "PORTFOLIO",
+          "source": "broker-export:portfolio/default.json",
+          "as_of": "2026-05-01T14:30:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+          "hash": "f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+          "metadata": {},
+          "payload_summary": {
+            "keys": [
+              "account_id",
+              "cash",
+              "constraints",
+              "positions",
+              "restricted_symbols",
+              "total_equity"
+            ]
+          }
+        },
+        {
+          "id": "ev_d41c7f3b134f",
+          "kind": "event",
+          "symbol": "NVDA",
+          "source": "licensed-local:events/NVDA.json",
+          "as_of": "2026-05-01T14:30:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "metadata": {},
+          "payload_summary": {
+            "rows": 0
+          }
+        },
+        {
+          "id": "ev_4937d48ed413",
+          "kind": "corporate_action",
+          "symbol": "NVDA",
+          "source": "licensed-local:actions/NVDA.json",
+          "as_of": "2026-04-10T13:30:00.000Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+          "hash": "e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+          "metadata": {},
+          "payload_summary": {
+            "rows": 1
+          }
+        },
+        {
+          "id": "ev_38928eb130f7",
+          "kind": "fundamental",
+          "symbol": "NVDA",
+          "source": "licensed-local:fundamentals/NVDA.json",
+          "as_of": "2026-04-20T00:00:00Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+          "hash": "986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+          "metadata": {},
+          "payload_summary": {
+            "keys": [
+              "as_of",
+              "eps_growth_yoy",
+              "gross_margin",
+              "net_debt_to_ebitda",
+              "period_end",
+              "revenue_growth_yoy",
+              "valuation"
+            ]
+          }
+        },
+        {
+          "id": "ev_2f39e38d0fad",
+          "kind": "news",
+          "symbol": "NVDA",
+          "source": "licensed-local:news/NVDA.json",
+          "as_of": "2026-04-30T15:00:00.000Z",
+          "retrieved_at": "2026-05-01T14:30:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+          "hash": "a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+          "metadata": {},
+          "payload_summary": {
+            "rows": 1
+          }
+        }
+      ],
+      "tool_outputs": [
+        {
+          "id": "tool_eb73a692ee30",
+          "tool_name": "return_summary",
+          "status": "passed",
+          "result_hash": "ddd989b940359a1b92b2600832457aa4660dc2b309bfd89c61725a29f89259ae",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_576f7682a07d",
+          "tool_name": "volatility_check",
+          "status": "warning",
+          "result_hash": "2d586be51cd3dca285bff908914f636a2d7c14401d1d7ddbbd7f3bd677f46b40",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_9e18d5ea4527",
+          "tool_name": "drawdown_check",
+          "status": "passed",
+          "result_hash": "4bb72735e3da5e52f78df679f6eab7198d175be6c84839dfcd0ef29d6c139d39",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_19f95bb8ed56",
+          "tool_name": "liquidity_check",
+          "status": "passed",
+          "result_hash": "c86645cc5f1e32131b875cfc9480664c813f845e6e0ece9139d1b7fe5af5863c",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_c3a804fdec2c",
+          "tool_name": "transaction_cost_model",
+          "status": "passed",
+          "result_hash": "0db24fddd84794d94269b428b3c08e099aa0d195f6f494b2d040c98412dc9c5d",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_3c6015de5d3c",
+          "tool_name": "dependency_correlation",
+          "status": "passed",
+          "result_hash": "0ad5e64ce7a39fa72d6a4b9c2e54eeb388e0074efd65ddf73e499ea2c58ce563",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_c0110f2b4aa1",
+          "tool_name": "dependency_correlation",
+          "status": "passed",
+          "result_hash": "c11947253b0438bb377f4b008f35695372da0f4707eb83d0f61ade50f492b5d7",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_8ae974a0139d",
+          "tool_name": "portfolio_exposure_check",
+          "status": "passed",
+          "result_hash": "b74db5da3d021da063e5c2e430a64ec02a2378ce24105fae0ac1c6c250f4c7c7",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_5239246109e6",
+          "tool_name": "event_calendar_check",
+          "status": "passed",
+          "result_hash": "e47cdcb7bec9cd90cbd3789afe6d14db86cb188a02256fdfca091d3868ca33f2",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_d481df00d158",
+          "tool_name": "corporate_action_check",
+          "status": "passed",
+          "result_hash": "a7edbf66ccd326cead5c5e9b56e4bbdc627b59e795d36cd98d22a5dfcfac7c82",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_67fdd90f2a3a",
+          "tool_name": "fundamentals_check",
+          "status": "passed",
+          "result_hash": "75052df8e0e1388fb24ef3b9fab8172664035408b58b3b518d497cfe084b5edc",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_f03318c053f8",
+          "tool_name": "news_provenance_check",
+          "status": "passed",
+          "result_hash": "2650de41b1cd732845b7b743bcde6180a324324ded15ef02e423118d14694618",
+          "created_at": "2026-05-01T14:30:00Z"
+        },
+        {
+          "id": "tool_0abba0ab6946",
+          "tool_name": "data_quality_check",
+          "status": "passed",
+          "result_hash": "eca4287802712e96f4499e7da78127d90adc649db30cac897e397b8338d95bea",
+          "created_at": "2026-05-01T14:30:00Z"
+        }
+      ]
+    }
+  ],
+  "audit_bundles": [
+    {
+      "dossier_id": "dos_7202c8777de4",
+      "file_name": "dos_7202c8777de4.json",
+      "bundle": {
+        "schema_version": "0.1.0",
+        "dossier": {
+          "id": "dos_7202c8777de4",
+          "created_at": "2026-05-01T14:30:00Z",
+          "title": "NVDA swing thesis dossier",
+          "symbol": "NVDA",
+          "horizon": "swing",
+          "thesis": "phase two data-backed artifact dossier",
+          "action_class": "watchlist",
+          "evidence_snapshot": {
+            "id": "snap_752705595d9e",
+            "created_at": "2026-05-01T14:30:00Z",
+            "question": {
+              "symbol": "NVDA",
+              "horizon": "swing",
+              "thesis": "phase two data-backed artifact dossier",
+              "requested_action": "analyze",
+              "dependencies": [
+                "SMH",
+                "QQQ"
+              ],
+              "data_provider": "phase2_local_licensed_pack",
+              "data_license": "internal"
+            },
+            "items": [
+              {
+                "id": "ev_4b291fcc1c75",
+                "kind": "price",
+                "source": "licensed-local:market/NVDA.csv",
+                "symbol": "NVDA",
+                "as_of": "2026-04-30T20:00:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+                "hash": "cdca11b0ddce73fe409d3fe489e45297aeee93186e5ad228d042f97c0dede095",
+                "payload": [
+                  {
+                    "date": "2026-04-05",
+                    "open": 50,
+                    "high": 50.805,
+                    "low": 49.5,
+                    "close": 50.3,
+                    "volume": 16000000
+                  },
+                  {
+                    "date": "2026-04-06",
+                    "open": 50.3,
+                    "high": 51.11,
+                    "low": 49.795,
+                    "close": 50.6,
+                    "volume": 16480000
+                  },
+                  {
+                    "date": "2026-04-07",
+                    "open": 50.6,
+                    "high": 51.415,
+                    "low": 50.095,
+                    "close": 50.905,
+                    "volume": 16960000
+                  },
+                  {
+                    "date": "2026-04-08",
+                    "open": 50.905,
+                    "high": 51.725,
+                    "low": 50.395,
+                    "close": 51.21,
+                    "volume": 17440000
+                  },
+                  {
+                    "date": "2026-04-09",
+                    "open": 51.21,
+                    "high": 52.035,
+                    "low": 50.7,
+                    "close": 51.52,
+                    "volume": 17920000
+                  },
+                  {
+                    "date": "2026-04-10",
+                    "open": 51.52,
+                    "high": 52.345,
+                    "low": 51.005,
+                    "close": 51.825,
+                    "volume": 16000000
+                  },
+                  {
+                    "date": "2026-04-11",
+                    "open": 103.65,
+                    "high": 105.32,
+                    "low": 102.62,
+                    "close": 104.28,
+                    "volume": 8240000
+                  },
+                  {
+                    "date": "2026-04-12",
+                    "open": 104.28,
+                    "high": 105.95,
+                    "low": 103.23,
+                    "close": 104.9,
+                    "volume": 8480000
+                  },
+                  {
+                    "date": "2026-04-13",
+                    "open": 104.9,
+                    "high": 106.59,
+                    "low": 103.85,
+                    "close": 105.53,
+                    "volume": 8720000
+                  },
+                  {
+                    "date": "2026-04-14",
+                    "open": 105.53,
+                    "high": 107.23,
+                    "low": 104.48,
+                    "close": 106.16,
+                    "volume": 8960000
+                  },
+                  {
+                    "date": "2026-04-15",
+                    "open": 106.16,
+                    "high": 107.87,
+                    "low": 105.1,
+                    "close": 106.8,
+                    "volume": 8000000
+                  },
+                  {
+                    "date": "2026-04-16",
+                    "open": 106.8,
+                    "high": 108.52,
+                    "low": 105.73,
+                    "close": 107.44,
+                    "volume": 8240000
+                  },
+                  {
+                    "date": "2026-04-17",
+                    "open": 107.44,
+                    "high": 109.17,
+                    "low": 106.37,
+                    "close": 108.09,
+                    "volume": 8480000
+                  },
+                  {
+                    "date": "2026-04-18",
+                    "open": 108.09,
+                    "high": 109.82,
+                    "low": 107.01,
+                    "close": 108.74,
+                    "volume": 8720000
+                  },
+                  {
+                    "date": "2026-04-19",
+                    "open": 108.74,
+                    "high": 110.48,
+                    "low": 107.65,
+                    "close": 109.39,
+                    "volume": 8960000
+                  },
+                  {
+                    "date": "2026-04-20",
+                    "open": 109.39,
+                    "high": 111.14,
+                    "low": 108.29,
+                    "close": 110.04,
+                    "volume": 8000000
+                  },
+                  {
+                    "date": "2026-04-21",
+                    "open": 110.04,
+                    "high": 111.81,
+                    "low": 108.94,
+                    "close": 110.7,
+                    "volume": 8240000
+                  },
+                  {
+                    "date": "2026-04-22",
+                    "open": 110.7,
+                    "high": 112.48,
+                    "low": 109.6,
+                    "close": 111.37,
+                    "volume": 8480000
+                  },
+                  {
+                    "date": "2026-04-23",
+                    "open": 111.37,
+                    "high": 113.16,
+                    "low": 110.26,
+                    "close": 112.04,
+                    "volume": 8720000
+                  },
+                  {
+                    "date": "2026-04-24",
+                    "open": 112.04,
+                    "high": 113.84,
+                    "low": 110.92,
+                    "close": 112.71,
+                    "volume": 8960000
+                  },
+                  {
+                    "date": "2026-04-25",
+                    "open": 112.71,
+                    "high": 114.52,
+                    "low": 111.58,
+                    "close": 113.39,
+                    "volume": 8000000
+                  },
+                  {
+                    "date": "2026-04-26",
+                    "open": 113.39,
+                    "high": 115.21,
+                    "low": 112.25,
+                    "close": 114.07,
+                    "volume": 8240000
+                  },
+                  {
+                    "date": "2026-04-27",
+                    "open": 114.07,
+                    "high": 115.9,
+                    "low": 112.93,
+                    "close": 114.75,
+                    "volume": 8480000
+                  },
+                  {
+                    "date": "2026-04-28",
+                    "open": 114.75,
+                    "high": 116.59,
+                    "low": 113.6,
+                    "close": 115.44,
+                    "volume": 8720000
+                  },
+                  {
+                    "date": "2026-04-29",
+                    "open": 115.44,
+                    "high": 117.29,
+                    "low": 114.28,
+                    "close": 116.13,
+                    "volume": 8960000
+                  },
+                  {
+                    "date": "2026-04-30",
+                    "open": 116.13,
+                    "high": 118,
+                    "low": 114.97,
+                    "close": 116.83,
+                    "volume": 8000000
+                  }
+                ],
+                "metadata": {
+                  "adjusted_for_corporate_actions": true,
+                  "adjustment_count": 6
+                }
+              },
+              {
+                "id": "ev_b04e358d3eeb",
+                "kind": "price",
+                "source": "licensed-local:market/SMH.csv",
+                "symbol": "SMH",
+                "as_of": "2026-04-30T20:00:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+                "hash": "c11356f5f64310353d4e5d9a7f272b7c8b0eb6d0a47012e8cdc5638834230b60",
+                "payload": [
+                  {
+                    "date": "2026-04-05",
+                    "open": 180,
+                    "high": 182.35,
+                    "low": 178.2,
+                    "close": 180.54,
+                    "volume": 6000000
+                  },
+                  {
+                    "date": "2026-04-06",
+                    "open": 180.54,
+                    "high": 182.89,
+                    "low": 178.73,
+                    "close": 181.08,
+                    "volume": 6180000
+                  },
+                  {
+                    "date": "2026-04-07",
+                    "open": 181.08,
+                    "high": 183.44,
+                    "low": 179.27,
+                    "close": 181.62,
+                    "volume": 6360000
+                  },
+                  {
+                    "date": "2026-04-08",
+                    "open": 181.62,
+                    "high": 183.99,
+                    "low": 179.81,
+                    "close": 182.17,
+                    "volume": 6540000
+                  },
+                  {
+                    "date": "2026-04-09",
+                    "open": 182.17,
+                    "high": 184.54,
+                    "low": 180.35,
+                    "close": 182.72,
+                    "volume": 6720000
+                  },
+                  {
+                    "date": "2026-04-10",
+                    "open": 182.72,
+                    "high": 185.1,
+                    "low": 180.89,
+                    "close": 183.26,
+                    "volume": 6000000
+                  },
+                  {
+                    "date": "2026-04-11",
+                    "open": 183.26,
+                    "high": 185.65,
+                    "low": 181.43,
+                    "close": 183.81,
+                    "volume": 6180000
+                  },
+                  {
+                    "date": "2026-04-12",
+                    "open": 183.81,
+                    "high": 186.21,
+                    "low": 181.98,
+                    "close": 184.37,
+                    "volume": 6360000
+                  },
+                  {
+                    "date": "2026-04-13",
+                    "open": 184.37,
+                    "high": 186.77,
+                    "low": 182.52,
+                    "close": 184.92,
+                    "volume": 6540000
+                  },
+                  {
+                    "date": "2026-04-14",
+                    "open": 184.92,
+                    "high": 187.33,
+                    "low": 183.07,
+                    "close": 185.47,
+                    "volume": 6720000
+                  },
+                  {
+                    "date": "2026-04-15",
+                    "open": 185.47,
+                    "high": 187.89,
+                    "low": 183.62,
+                    "close": 186.03,
+                    "volume": 6000000
+                  },
+                  {
+                    "date": "2026-04-16",
+                    "open": 186.03,
+                    "high": 188.45,
+                    "low": 184.17,
+                    "close": 186.59,
+                    "volume": 6180000
+                  },
+                  {
+                    "date": "2026-04-17",
+                    "open": 186.59,
+                    "high": 189.02,
+                    "low": 184.72,
+                    "close": 187.15,
+                    "volume": 6360000
+                  },
+                  {
+                    "date": "2026-04-18",
+                    "open": 187.15,
+                    "high": 189.59,
+                    "low": 185.28,
+                    "close": 187.71,
+                    "volume": 6540000
+                  },
+                  {
+                    "date": "2026-04-19",
+                    "open": 187.71,
+                    "high": 190.16,
+                    "low": 185.83,
+                    "close": 188.27,
+                    "volume": 6720000
+                  },
+                  {
+                    "date": "2026-04-20",
+                    "open": 188.27,
+                    "high": 190.73,
+                    "low": 186.39,
+                    "close": 188.84,
+                    "volume": 6000000
+                  },
+                  {
+                    "date": "2026-04-21",
+                    "open": 188.84,
+                    "high": 191.3,
+                    "low": 186.95,
+                    "close": 189.4,
+                    "volume": 6180000
+                  },
+                  {
+                    "date": "2026-04-22",
+                    "open": 189.4,
+                    "high": 191.87,
+                    "low": 187.51,
+                    "close": 189.97,
+                    "volume": 6360000
+                  },
+                  {
+                    "date": "2026-04-23",
+                    "open": 189.97,
+                    "high": 192.45,
+                    "low": 188.07,
+                    "close": 190.54,
+                    "volume": 6540000
+                  },
+                  {
+                    "date": "2026-04-24",
+                    "open": 190.54,
+                    "high": 193.02,
+                    "low": 188.64,
+                    "close": 191.11,
+                    "volume": 6720000
+                  },
+                  {
+                    "date": "2026-04-25",
+                    "open": 191.11,
+                    "high": 193.6,
+                    "low": 189.2,
+                    "close": 191.69,
+                    "volume": 6000000
+                  },
+                  {
+                    "date": "2026-04-26",
+                    "open": 191.69,
+                    "high": 194.18,
+                    "low": 189.77,
+                    "close": 192.26,
+                    "volume": 6180000
+                  },
+                  {
+                    "date": "2026-04-27",
+                    "open": 192.26,
+                    "high": 194.77,
+                    "low": 190.34,
+                    "close": 192.84,
+                    "volume": 6360000
+                  },
+                  {
+                    "date": "2026-04-28",
+                    "open": 192.84,
+                    "high": 195.35,
+                    "low": 190.91,
+                    "close": 193.42,
+                    "volume": 6540000
+                  },
+                  {
+                    "date": "2026-04-29",
+                    "open": 193.42,
+                    "high": 195.94,
+                    "low": 191.48,
+                    "close": 194,
+                    "volume": 6720000
+                  },
+                  {
+                    "date": "2026-04-30",
+                    "open": 194,
+                    "high": 196.53,
+                    "low": 192.06,
+                    "close": 194.58,
+                    "volume": 6000000
+                  }
+                ],
+                "metadata": {
+                  "adjusted_for_corporate_actions": false,
+                  "adjustment_count": 0
+                }
+              },
+              {
+                "id": "ev_a5157de61872",
+                "kind": "price",
+                "source": "licensed-local:market/QQQ.csv",
+                "symbol": "QQQ",
+                "as_of": "2026-04-30T20:00:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+                "hash": "3a688aee1bc9823fcd07aed92fbd4176c116880578891fbb1733803dc826f3ec",
+                "payload": [
+                  {
+                    "date": "2026-04-05",
+                    "open": 250,
+                    "high": 253,
+                    "low": 247.5,
+                    "close": 250.5,
+                    "volume": 10000000
+                  },
+                  {
+                    "date": "2026-04-06",
+                    "open": 250.5,
+                    "high": 253.51,
+                    "low": 248,
+                    "close": 251,
+                    "volume": 10300000
+                  },
+                  {
+                    "date": "2026-04-07",
+                    "open": 251,
+                    "high": 254.02,
+                    "low": 248.49,
+                    "close": 251.5,
+                    "volume": 10600000
+                  },
+                  {
+                    "date": "2026-04-08",
+                    "open": 251.5,
+                    "high": 254.53,
+                    "low": 248.99,
+                    "close": 252.01,
+                    "volume": 10900000
+                  },
+                  {
+                    "date": "2026-04-09",
+                    "open": 252.01,
+                    "high": 255.04,
+                    "low": 249.49,
+                    "close": 252.51,
+                    "volume": 11200000
+                  },
+                  {
+                    "date": "2026-04-10",
+                    "open": 252.51,
+                    "high": 255.55,
+                    "low": 249.98,
+                    "close": 253.02,
+                    "volume": 10000000
+                  },
+                  {
+                    "date": "2026-04-11",
+                    "open": 253.02,
+                    "high": 256.06,
+                    "low": 250.48,
+                    "close": 253.52,
+                    "volume": 10300000
+                  },
+                  {
+                    "date": "2026-04-12",
+                    "open": 253.52,
+                    "high": 256.57,
+                    "low": 250.99,
+                    "close": 254.03,
+                    "volume": 10600000
+                  },
+                  {
+                    "date": "2026-04-13",
+                    "open": 254.03,
+                    "high": 257.08,
+                    "low": 251.49,
+                    "close": 254.54,
+                    "volume": 10900000
+                  },
+                  {
+                    "date": "2026-04-14",
+                    "open": 254.54,
+                    "high": 257.6,
+                    "low": 251.99,
+                    "close": 255.05,
+                    "volume": 11200000
+                  },
+                  {
+                    "date": "2026-04-15",
+                    "open": 255.05,
+                    "high": 258.11,
+                    "low": 252.49,
+                    "close": 255.56,
+                    "volume": 10000000
+                  },
+                  {
+                    "date": "2026-04-16",
+                    "open": 255.56,
+                    "high": 258.63,
+                    "low": 253,
+                    "close": 256.07,
+                    "volume": 10300000
+                  },
+                  {
+                    "date": "2026-04-17",
+                    "open": 256.07,
+                    "high": 259.14,
+                    "low": 253.51,
+                    "close": 256.58,
+                    "volume": 10600000
+                  },
+                  {
+                    "date": "2026-04-18",
+                    "open": 256.58,
+                    "high": 259.66,
+                    "low": 254.01,
+                    "close": 257.09,
+                    "volume": 10900000
+                  },
+                  {
+                    "date": "2026-04-19",
+                    "open": 257.09,
+                    "high": 260.18,
+                    "low": 254.52,
+                    "close": 257.61,
+                    "volume": 11200000
+                  },
+                  {
+                    "date": "2026-04-20",
+                    "open": 257.61,
+                    "high": 260.7,
+                    "low": 255.03,
+                    "close": 258.12,
+                    "volume": 10000000
+                  },
+                  {
+                    "date": "2026-04-21",
+                    "open": 258.12,
+                    "high": 261.22,
+                    "low": 255.54,
+                    "close": 258.64,
+                    "volume": 10300000
+                  },
+                  {
+                    "date": "2026-04-22",
+                    "open": 258.64,
+                    "high": 261.75,
+                    "low": 256.05,
+                    "close": 259.15,
+                    "volume": 10600000
+                  },
+                  {
+                    "date": "2026-04-23",
+                    "open": 259.15,
+                    "high": 262.27,
+                    "low": 256.56,
+                    "close": 259.67,
+                    "volume": 10900000
+                  },
+                  {
+                    "date": "2026-04-24",
+                    "open": 259.67,
+                    "high": 262.79,
+                    "low": 257.08,
+                    "close": 260.19,
+                    "volume": 11200000
+                  },
+                  {
+                    "date": "2026-04-25",
+                    "open": 260.19,
+                    "high": 263.32,
+                    "low": 257.59,
+                    "close": 260.71,
+                    "volume": 10000000
+                  },
+                  {
+                    "date": "2026-04-26",
+                    "open": 260.71,
+                    "high": 263.85,
+                    "low": 258.11,
+                    "close": 261.23,
+                    "volume": 10300000
+                  },
+                  {
+                    "date": "2026-04-27",
+                    "open": 261.23,
+                    "high": 264.37,
+                    "low": 258.62,
+                    "close": 261.76,
+                    "volume": 10600000
+                  },
+                  {
+                    "date": "2026-04-28",
+                    "open": 261.76,
+                    "high": 264.9,
+                    "low": 259.14,
+                    "close": 262.28,
+                    "volume": 10900000
+                  },
+                  {
+                    "date": "2026-04-29",
+                    "open": 262.28,
+                    "high": 265.43,
+                    "low": 259.66,
+                    "close": 262.8,
+                    "volume": 11200000
+                  },
+                  {
+                    "date": "2026-04-30",
+                    "open": 262.8,
+                    "high": 265.96,
+                    "low": 260.18,
+                    "close": 263.33,
+                    "volume": 10000000
+                  }
+                ],
+                "metadata": {
+                  "adjusted_for_corporate_actions": false,
+                  "adjustment_count": 0
+                }
+              },
+              {
+                "id": "ev_079da6d6a801",
+                "kind": "portfolio",
+                "source": "broker-export:portfolio/default.json",
+                "symbol": "PORTFOLIO",
+                "as_of": "2026-05-01T14:30:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+                "hash": "f31e20cc4563eaf3bcfbe230752b774cb94e35948826a71bba9dd362f28a815b",
+                "payload": {
+                  "account_id": "phase2_broker_export",
+                  "cash": 86000,
+                  "total_equity": 100000,
+                  "positions": [
+                    {
+                      "symbol": "SMH",
+                      "quantity": 20,
+                      "market_value": 9000,
+                      "sector": "semiconductors"
+                    },
+                    {
+                      "symbol": "QQQ",
+                      "quantity": 10,
+                      "market_value": 5000,
+                      "sector": "broad"
+                    }
+                  ],
+                  "constraints": {
+                    "max_single_name_pct": 0.12,
+                    "max_sector_pct": 0.35,
+                    "max_gross_exposure_pct": 1,
+                    "paper_risk_budget_pct": 0.02
+                  },
+                  "restricted_symbols": []
+                },
+                "metadata": {}
+              },
+              {
+                "id": "ev_d41c7f3b134f",
+                "kind": "event",
+                "source": "licensed-local:events/NVDA.json",
+                "symbol": "NVDA",
+                "as_of": "2026-05-01T14:30:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+                "payload": [],
+                "metadata": {}
+              },
+              {
+                "id": "ev_4937d48ed413",
+                "kind": "corporate_action",
+                "source": "licensed-local:actions/NVDA.json",
+                "symbol": "NVDA",
+                "as_of": "2026-04-10T13:30:00.000Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+                "hash": "e2c4829687190ebc02f32487f9905d19e6115d4955562110ae7e036c6d02f228",
+                "payload": [
+                  {
+                    "type": "split",
+                    "effective_date": "2026-04-10T13:30:00Z",
+                    "ratio": 2,
+                    "description": "Synthetic two-for-one split for adjustment proof"
+                  }
+                ],
+                "metadata": {}
+              },
+              {
+                "id": "ev_38928eb130f7",
+                "kind": "fundamental",
+                "source": "licensed-local:fundamentals/NVDA.json",
+                "symbol": "NVDA",
+                "as_of": "2026-04-20T00:00:00Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+                "hash": "986f4ac281930ee5af0eff256de1fd3e36acebdd3a4c88984f7c8a42017e8d49",
+                "payload": {
+                  "as_of": "2026-04-20T00:00:00Z",
+                  "period_end": "2026-03-31",
+                  "revenue_growth_yoy": 0.22,
+                  "eps_growth_yoy": 0.19,
+                  "gross_margin": 0.72,
+                  "net_debt_to_ebitda": 0.3,
+                  "valuation": {
+                    "forward_pe": 38
+                  }
+                },
+                "metadata": {}
+              },
+              {
+                "id": "ev_2f39e38d0fad",
+                "kind": "news",
+                "source": "licensed-local:news/NVDA.json",
+                "symbol": "NVDA",
+                "as_of": "2026-04-30T15:00:00.000Z",
+                "retrieved_at": "2026-05-01T14:30:00Z",
+                "freshness_status": "fresh",
+                "license": "internal",
+                "payload_ref": "inline:a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+                "hash": "a6be5c7e64d958ce32eef04518be87cdbef2da83e4a74017e7613508504a0fe9",
+                "payload": [
+                  {
+                    "published_at": "2026-04-30T15:00:00Z",
+                    "source": "Phase2 Research Wire",
+                    "source_reliability": 0.92,
+                    "headline": "Data center demand update",
+                    "sentiment": 0.2,
+                    "url": "https://example.test/nvda-demand"
+                  }
+                ],
+                "metadata": {}
+              }
+            ],
+            "hash": "8223fe4e50adcdac53f00885c55c97ca51ae6451bd42cce7f31d60267146e692"
+          },
+          "policy_review": {
+            "id": "pol_b94d652299fa",
+            "product_name": "Parallax",
+            "status": "allowed",
+            "user_class": "self_directed_investor",
+            "intended_use": "research",
+            "requested_action_ceiling": "paper_trade_candidate",
+            "effective_action_ceiling": "paper_trade_candidate",
+            "ceiling_was_capped": false,
+            "positioning": {
+              "public_description": "Parallax is a research accountability platform for trading ideas. It turns a thesis into an evidence-linked dossier, challenges assumptions, surfaces invalidators, and monitors whether the thesis remains defensible.",
+              "legal_posture": "Research support only. Parallax is not a broker, investment adviser, signal service, tax adviser, legal adviser, or live execution system.",
+              "product_rule": "The general product ceiling is no_trade, research_needed, watchlist, or paper_trade_candidate. Live execution is excluded from the general product.",
+              "user_promise": "Make unsupported conviction hard to hide."
+            },
+            "disclosures": [
+              "Parallax output is not investment advice or a recommendation to buy, sell, hold, or short any security.",
+              "The dossier is a research artifact; it can be wrong, stale, incomplete, or based on flawed data.",
+              "Markets change continuously, so every thesis must have freshness, invalidation, and recheck rules.",
+              "Generated text cannot be the source of financial calculations; numeric claims must trace back to tool outputs.",
+              "Paper-trading output is simulation only and must not be marketed as proof of future returns.",
+              "Live execution is not part of the general Parallax product."
+            ],
+            "prohibited_claims": [
+              "Parallax predicts markets.",
+              "Parallax guarantees profit or avoids loss.",
+              "Parallax tells users what to buy or sell.",
+              "Parallax replaces a financial adviser, broker, risk manager, or compliance reviewer.",
+              "Parallax can safely execute live trades without explicit human and regulated partner controls.",
+              "Paper-trading or backtest outcomes prove future live performance."
+            ],
+            "matches": [],
+            "controls": [
+              {
+                "id": "research_boundary",
+                "status": "passed",
+                "message": "Request is inside the research-support product boundary."
+              }
+            ],
+            "can_answer_as_research": true,
+            "can_escalate_to_paper": true
+          },
+          "tool_outputs": [
+            {
+              "id": "tool_eb73a692ee30",
+              "tool_name": "return_summary",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "latest_close": 116.83,
+                "one_day_return": 0.006027727546714913,
+                "momentum_20": 1.2543174143753013,
+                "sample_size": 26
+              },
+              "result_hash": "ddd989b940359a1b92b2600832457aa4660dc2b309bfd89c61725a29f89259ae"
+            },
+            {
+              "id": "tool_576f7682a07d",
+              "tool_name": "volatility_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "warning",
+              "result": {
+                "daily_volatility_20": 0.21928690264165343,
+                "annualized_volatility_20": 3.481071660980687,
+                "high_volatility": true
+              },
+              "result_hash": "2d586be51cd3dca285bff908914f636a2d7c14401d1d7ddbbd7f3bd677f46b40"
+            },
+            {
+              "id": "tool_9e18d5ea4527",
+              "tool_name": "drawdown_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "max_drawdown": 0,
+                "severe_drawdown": false
+              },
+              "result_hash": "4bb72735e3da5e52f78df679f6eab7198d175be6c84839dfcd0ef29d6c139d39"
+            },
+            {
+              "id": "tool_19f95bb8ed56",
+              "tool_name": "liquidity_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "average_volume_20": 8480000,
+                "latest_volume": 8000000,
+                "relative_volume": 0.9433962264150944,
+                "range_pct": 0.025935119404262613,
+                "liquidity_score": 0.8660494815320893
+              },
+              "result_hash": "c86645cc5f1e32131b875cfc9480664c813f845e6e0ece9139d1b7fe5af5863c"
+            },
+            {
+              "id": "tool_c3a804fdec2c",
+              "tool_name": "transaction_cost_model",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "estimated_spread_bps": 31,
+                "estimated_slippage_bps": 23,
+                "cost_model": "python_range_proxy_v0"
+              },
+              "result_hash": "0db24fddd84794d94269b428b3c08e099aa0d195f6f494b2d040c98412dc9c5d"
+            },
+            {
+              "id": "tool_3c6015de5d3c",
+              "tool_name": "dependency_correlation",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75",
+                "ev_b04e358d3eeb"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "dependency": "SMH",
+                "correlation_60": 0.009978742178424397
+              },
+              "result_hash": "0ad5e64ce7a39fa72d6a4b9c2e54eeb388e0074efd65ddf73e499ea2c58ce563"
+            },
+            {
+              "id": "tool_c0110f2b4aa1",
+              "tool_name": "dependency_correlation",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75",
+                "ev_a5157de61872"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "dependency": "QQQ",
+                "correlation_60": -0.310957071281432
+              },
+              "result_hash": "c11947253b0438bb377f4b008f35695372da0f4707eb83d0f61ade50f492b5d7"
+            },
+            {
+              "id": "tool_8ae974a0139d",
+              "tool_name": "portfolio_exposure_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_079da6d6a801"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "total_equity": 100000,
+                "existing_symbol_exposure_pct": 0,
+                "semiconductor_exposure_pct": 0.09,
+                "max_single_name_pct": 0.12,
+                "max_sector_pct": 0.35,
+                "paper_risk_budget_pct": 0.02,
+                "concentration_breach": false
+              },
+              "result_hash": "b74db5da3d021da063e5c2e430a64ec02a2378ce24105fae0ac1c6c250f4c7c7"
+            },
+            {
+              "id": "tool_5239246109e6",
+              "tool_name": "event_calendar_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_d41c7f3b134f"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "upcoming_events": [],
+                "material_event_count": 0
+              },
+              "result_hash": "e47cdcb7bec9cd90cbd3789afe6d14db86cb188a02256fdfca091d3868ca33f2"
+            },
+            {
+              "id": "tool_d481df00d158",
+              "tool_name": "corporate_action_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4937d48ed413",
+                "ev_4b291fcc1c75"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "action_count": 1,
+                "upcoming_action_count": 0,
+                "split_count": 1,
+                "dividend_count": 0,
+                "price_adjustment_applied": true,
+                "upcoming_actions": []
+              },
+              "result_hash": "a7edbf66ccd326cead5c5e9b56e4bbdc627b59e795d36cd98d22a5dfcfac7c82"
+            },
+            {
+              "id": "tool_67fdd90f2a3a",
+              "tool_name": "fundamentals_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_38928eb130f7"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "period_end": "2026-03-31",
+                "revenue_growth_yoy": 0.22,
+                "eps_growth_yoy": 0.19,
+                "gross_margin": 0.72,
+                "net_debt_to_ebitda": 0.3,
+                "forward_pe": 38,
+                "quality_score": 0.7875000000000001
+              },
+              "result_hash": "75052df8e0e1388fb24ef3b9fab8172664035408b58b3b518d497cfe084b5edc"
+            },
+            {
+              "id": "tool_f03318c053f8",
+              "tool_name": "news_provenance_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_2f39e38d0fad"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "item_count": 1,
+                "trusted_item_count": 1,
+                "low_reliability_count": 0,
+                "rumor_count": 0,
+                "average_sentiment": 0.2,
+                "sources": [
+                  "Phase2 Research Wire"
+                ]
+              },
+              "result_hash": "2650de41b1cd732845b7b743bcde6180a324324ded15ef02e423118d14694618"
+            },
+            {
+              "id": "tool_0abba0ab6946",
+              "tool_name": "data_quality_check",
+              "tool_version": "0.1.0",
+              "inputs": [
+                "ev_4b291fcc1c75",
+                "ev_b04e358d3eeb",
+                "ev_a5157de61872",
+                "ev_079da6d6a801",
+                "ev_d41c7f3b134f",
+                "ev_4937d48ed413",
+                "ev_38928eb130f7",
+                "ev_2f39e38d0fad"
+              ],
+              "created_at": "2026-05-01T14:30:00Z",
+              "status": "passed",
+              "result": {
+                "stale_item_ids": [],
+                "restricted_license_item_ids": [],
+                "passed": true
+              },
+              "result_hash": "eca4287802712e96f4499e7da78127d90adc649db30cac897e397b8338d95bea"
+            }
+          ],
+          "council_run": {
+            "provider": {
+              "id": "deterministic_rule_council_v0",
+              "kind": "deterministic",
+              "model_registry_ref": "rule_council_v0",
+              "version": "0.1.0"
+            },
+            "eval_report": {
+              "id": "ceval_854d22409d8a",
+              "provider_id": "deterministic_rule_council_v0",
+              "provider_kind": "deterministic",
+              "model_registry_ref": "rule_council_v0",
+              "provider_version": "0.1.0",
+              "claim_packet_count": 12,
+              "passed": true,
+              "problems": [],
+              "warnings": [],
+              "evaluated_refs": 21
+            }
+          },
+          "claim_packets": [
+            {
+              "id": "claim_866dc3c21b02",
+              "persona_id": "regime_cartographer",
+              "stance": "oppose",
+              "confidence": 0.54,
+              "claim_type": "inference",
+              "thesis": "NVDA is in a high-volatility state; continuation theses need tighter freshness and smaller action class.",
+              "evidence_refs": [
+                "tool_576f7682a07d",
+                "tool_3c6015de5d3c"
+              ],
+              "assumptions": [
+                "Regime proxy uses realized volatility and dependency correlation."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Volatility regime changes materially."
+              ],
+              "risks": [
+                "Regime transition risk",
+                "Signal decay risk"
+              ],
+              "required_checks": [],
+              "proposed_action": "research_needed",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_b8a86c3f232b",
+              "persona_id": "quant_researcher",
+              "stance": "needs_more_data",
+              "confidence": 0.47,
+              "claim_type": "calculation",
+              "thesis": "The 20-period momentum is positive, but the edge remains conditional on costs, volatility, and confirmation.",
+              "evidence_refs": [
+                "tool_eb73a692ee30",
+                "tool_576f7682a07d",
+                "tool_9e18d5ea4527"
+              ],
+              "assumptions": [
+                "Momentum proxy is a first-pass signal, not a validated strategy."
+              ],
+              "base_rates": [
+                "Backtest/walk-forward module is required before paper escalation."
+              ],
+              "invalidators": [
+                "Momentum turns negative.",
+                "Volatility expands beyond threshold."
+              ],
+              "risks": [
+                "Overfitting risk",
+                "Momentum reversal risk"
+              ],
+              "required_checks": [
+                "Walk-forward validation before production use."
+              ],
+              "proposed_action": "research_needed",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_044212bb89b3",
+              "persona_id": "fundamental_analyst",
+              "stance": "support",
+              "confidence": 0.74,
+              "claim_type": "inference",
+              "thesis": "Fundamental data is present for NVDA; quality score is 0.79 and must remain tied to the source snapshot.",
+              "evidence_refs": [
+                "tool_5239246109e6",
+                "tool_67fdd90f2a3a"
+              ],
+              "assumptions": [
+                "Fundamental data is adapter-provided and must carry source, freshness, and license metadata."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "New filing, guidance, or earnings event changes the premise."
+              ],
+              "risks": [
+                "Fundamental data revision risk"
+              ],
+              "required_checks": [
+                "Confirm fundamentals vendor license before public beta."
+              ],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_4bfadd3d05cf",
+              "persona_id": "technical_microstructure_analyst",
+              "stance": "support",
+              "confidence": 0.64,
+              "claim_type": "inference",
+              "thesis": "Technical conditions are constructive, with positive latest return and acceptable liquidity proxy.",
+              "evidence_refs": [
+                "tool_eb73a692ee30",
+                "tool_19f95bb8ed56",
+                "tool_c3a804fdec2c"
+              ],
+              "assumptions": [
+                "Technical analysis uses simple price/volume proxies in v0."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Price loses the trigger level.",
+                "Liquidity deteriorates.",
+                "Cost estimate widens."
+              ],
+              "risks": [
+                "False breakout",
+                "Adverse selection near volatile opens"
+              ],
+              "required_checks": [],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_4805071f0d0e",
+              "persona_id": "macro_cross_asset_analyst",
+              "stance": "abstain",
+              "confidence": 0.44,
+              "claim_type": "inference",
+              "thesis": "Cross-asset context is approximated through dependency correlations; macro evidence is not yet rich enough for strong claims.",
+              "evidence_refs": [
+                "tool_3c6015de5d3c",
+                "tool_c0110f2b4aa1"
+              ],
+              "assumptions": [
+                "Dependency correlation is a proxy for cross-asset sensitivity."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Sector ETF or benchmark breaks correlation regime."
+              ],
+              "risks": [
+                "Hidden factor concentration",
+                "Macro surprise risk"
+              ],
+              "required_checks": [
+                "Rates, FX, and macro calendar adapters."
+              ],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_0c95a187a270",
+              "persona_id": "sentiment_news_analyst",
+              "stance": "support",
+              "confidence": 0.56,
+              "claim_type": "inference",
+              "thesis": "News provenance is present with 1/1 trusted items and average sentiment 0.20.",
+              "evidence_refs": [
+                "tool_5239246109e6",
+                "tool_f03318c053f8"
+              ],
+              "assumptions": [
+                "Event calendar is a proxy until news ingestion is connected."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Material news arrives.",
+                "Source reliability changes."
+              ],
+              "risks": [
+                "Narrative crowding",
+                "Deceptive source risk"
+              ],
+              "required_checks": [
+                "Confirm news provenance and licensing before public beta."
+              ],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_9ec84df91464",
+              "persona_id": "data_quality_officer",
+              "stance": "support",
+              "confidence": 0.8,
+              "claim_type": "fact",
+              "thesis": "Evidence snapshot passes v0 freshness checks.",
+              "evidence_refs": [
+                "tool_0abba0ab6946"
+              ],
+              "assumptions": [],
+              "base_rates": [],
+              "invalidators": [
+                "Any central data item becomes stale, missing, restricted, or conflicting."
+              ],
+              "risks": [
+                "Vendor caveats still apply."
+              ],
+              "required_checks": [],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_6d1c467b3622",
+              "persona_id": "portfolio_risk_manager",
+              "stance": "oppose",
+              "confidence": 0.68,
+              "claim_type": "risk",
+              "thesis": "Portfolio risk allows watchlist-level consideration, subject to sizing and freshness.",
+              "evidence_refs": [
+                "tool_8ae974a0139d",
+                "tool_576f7682a07d",
+                "tool_9e18d5ea4527"
+              ],
+              "assumptions": [
+                "Risk limits come from fixture portfolio profile."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Exposure increases.",
+                "Drawdown or volatility breaches threshold."
+              ],
+              "risks": [
+                "Concentration risk",
+                "Correlation clustering",
+                "Gap risk"
+              ],
+              "required_checks": [],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_32b392587d0e",
+              "persona_id": "execution_specialist",
+              "stance": "support",
+              "confidence": 0.61,
+              "claim_type": "risk",
+              "thesis": "Execution proxy is acceptable for watchlist or paper-trade analysis.",
+              "evidence_refs": [
+                "tool_19f95bb8ed56",
+                "tool_c3a804fdec2c",
+                "tool_d481df00d158"
+              ],
+              "assumptions": [
+                "Execution model is a range-based proxy until venue/order-book data exists."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Spread widens.",
+                "Relative volume collapses.",
+                "Slippage estimate rises.",
+                "Corporate action changes price comparability."
+              ],
+              "risks": [
+                "Slippage",
+                "Poor fill assumptions"
+              ],
+              "required_checks": [],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_f2a0a1e58ff1",
+              "persona_id": "compliance_conflicts_officer",
+              "stance": "support",
+              "confidence": 0.75,
+              "claim_type": "fact",
+              "thesis": "No fixture restricted-list conflict is present.",
+              "evidence_refs": [
+                "ev_079da6d6a801"
+              ],
+              "assumptions": [
+                "Fixture restricted list represents the active mandate for this prototype."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Restricted list changes.",
+                "Mandate constraints change."
+              ],
+              "risks": [
+                "Compliance data must stay fresh."
+              ],
+              "required_checks": [],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_55dcdc12d52a",
+              "persona_id": "model_validator",
+              "stance": "support",
+              "confidence": 0.7,
+              "claim_type": "fact",
+              "thesis": "The v0 deterministic rule council is registered as a prototype model and is replayable from audit bundles.",
+              "evidence_refs": [
+                "tool_0abba0ab6946"
+              ],
+              "assumptions": [
+                "This is a prototype validator; production requires a model registry and validation report."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Unregistered model or prompt configuration is used.",
+                "Replay fails."
+              ],
+              "risks": [
+                "Prototype validation scope"
+              ],
+              "required_checks": [
+                "Governance phase validation before production deployment."
+              ],
+              "proposed_action": "watchlist",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            },
+            {
+              "id": "claim_0748e505086b",
+              "persona_id": "red_team_skeptic",
+              "stance": "oppose",
+              "confidence": 0.76,
+              "claim_type": "invalidator",
+              "thesis": "The strongest countercase is that this thesis is chasing already-visible price action without enough validated edge.",
+              "evidence_refs": [
+                "tool_eb73a692ee30",
+                "tool_576f7682a07d",
+                "tool_5239246109e6",
+                "tool_8ae974a0139d"
+              ],
+              "assumptions": [
+                "Red-team role intentionally stresses downside and overconfidence."
+              ],
+              "base_rates": [],
+              "invalidators": [
+                "Confirmation fails.",
+                "Event risk changes premise.",
+                "Portfolio exposure worsens."
+              ],
+              "risks": [
+                "Headline chasing",
+                "Crowded trade",
+                "Unvalidated edge"
+              ],
+              "required_checks": [
+                "Define confirmation and kill conditions before action."
+              ],
+              "proposed_action": "research_needed",
+              "veto": {
+                "active": false,
+                "reason": ""
+              }
+            }
+          ],
+          "cross_examination": {
+            "veto_count": 0,
+            "opposed_personas": [
+              "regime_cartographer",
+              "portfolio_risk_manager",
+              "red_team_skeptic"
+            ],
+            "required_checks": [
+              "Walk-forward validation before production use.",
+              "Confirm fundamentals vendor license before public beta.",
+              "Rates, FX, and macro calendar adapters.",
+              "Confirm news provenance and licensing before public beta.",
+              "Governance phase validation before production deployment.",
+              "Define confirmation and kill conditions before action."
+            ],
+            "red_team_summary": "The strongest countercase is that this thesis is chasing already-visible price action without enough validated edge.",
+            "unresolved_dissent": true
+          },
+          "summary": {
+            "council_summary": "7 support, 3 oppose, 1 need more data.",
+            "strongest_bull_case": "Fundamental data is present for NVDA; quality score is 0.79 and must remain tied to the source snapshot.",
+            "strongest_bear_case": "The strongest countercase is that this thesis is chasing already-visible price action without enough validated edge.",
+            "dissent": [
+              "regime_cartographer",
+              "portfolio_risk_manager",
+              "red_team_skeptic"
+            ],
+            "required_checks": [
+              "Walk-forward validation before production use.",
+              "Confirm fundamentals vendor license before public beta.",
+              "Rates, FX, and macro calendar adapters.",
+              "Confirm news provenance and licensing before public beta.",
+              "Governance phase validation before production deployment.",
+              "Define confirmation and kill conditions before action."
+            ],
+            "assumptions": [
+              "Regime proxy uses realized volatility and dependency correlation.",
+              "Momentum proxy is a first-pass signal, not a validated strategy.",
+              "Fundamental data is adapter-provided and must carry source, freshness, and license metadata.",
+              "Technical analysis uses simple price/volume proxies in v0.",
+              "Dependency correlation is a proxy for cross-asset sensitivity.",
+              "Event calendar is a proxy until news ingestion is connected.",
+              "Risk limits come from fixture portfolio profile.",
+              "Execution model is a range-based proxy until venue/order-book data exists.",
+              "Fixture restricted list represents the active mandate for this prototype.",
+              "This is a prototype validator; production requires a model registry and validation report.",
+              "Red-team role intentionally stresses downside and overconfidence."
+            ],
+            "invalidators": [
+              "Volatility regime changes materially.",
+              "Momentum turns negative.",
+              "Volatility expands beyond threshold.",
+              "New filing, guidance, or earnings event changes the premise.",
+              "Price loses the trigger level.",
+              "Liquidity deteriorates.",
+              "Cost estimate widens.",
+              "Sector ETF or benchmark breaks correlation regime.",
+              "Material news arrives.",
+              "Source reliability changes.",
+              "Any central data item becomes stale, missing, restricted, or conflicting.",
+              "Exposure increases.",
+              "Drawdown or volatility breaches threshold.",
+              "Spread widens.",
+              "Relative volume collapses.",
+              "Slippage estimate rises.",
+              "Corporate action changes price comparability.",
+              "Restricted list changes.",
+              "Mandate constraints change.",
+              "Unregistered model or prompt configuration is used.",
+              "Replay fails.",
+              "Confirmation fails.",
+              "Event risk changes premise.",
+              "Portfolio exposure worsens."
+            ],
+            "risks": [
+              "Regime transition risk",
+              "Signal decay risk",
+              "Overfitting risk",
+              "Momentum reversal risk",
+              "Fundamental data revision risk",
+              "False breakout",
+              "Adverse selection near volatile opens",
+              "Hidden factor concentration",
+              "Macro surprise risk",
+              "Narrative crowding",
+              "Deceptive source risk",
+              "Vendor caveats still apply.",
+              "Concentration risk",
+              "Correlation clustering",
+              "Gap risk",
+              "Slippage",
+              "Poor fill assumptions",
+              "Compliance data must stay fresh.",
+              "Prototype validation scope",
+              "Headline chasing",
+              "Crowded trade",
+              "Unvalidated edge"
+            ]
+          },
+          "decision_packet": {
+            "id": "dp_e997fd157ed3",
+            "dossier_id": "dos_7202c8777de4",
+            "action_class": "watchlist",
+            "thesis_state": "active",
+            "confidence": 0.44,
+            "freshness_score": 1,
+            "confidence_cap_reason": "unresolved_dissent",
+            "vetoes": [],
+            "dissent": [
+              "regime_cartographer",
+              "portfolio_risk_manager",
+              "red_team_skeptic"
+            ],
+            "invalidators": [
+              "Volatility regime changes materially.",
+              "Momentum turns negative.",
+              "Volatility expands beyond threshold.",
+              "New filing, guidance, or earnings event changes the premise.",
+              "Price loses the trigger level.",
+              "Liquidity deteriorates.",
+              "Cost estimate widens.",
+              "Sector ETF or benchmark breaks correlation regime.",
+              "Material news arrives.",
+              "Source reliability changes.",
+              "Any central data item becomes stale, missing, restricted, or conflicting.",
+              "Exposure increases.",
+              "Drawdown or volatility breaches threshold.",
+              "Spread widens.",
+              "Relative volume collapses.",
+              "Slippage estimate rises.",
+              "Corporate action changes price comparability.",
+              "Restricted list changes.",
+              "Mandate constraints change.",
+              "Unregistered model or prompt configuration is used.",
+              "Replay fails.",
+              "Confirmation fails.",
+              "Event risk changes premise.",
+              "Portfolio exposure worsens."
+            ],
+            "next_review_trigger": "Volatility regime changes materially.",
+            "audit_bundle_ref": "artifacts/phase_2_data_backed_research_app/audits/dos_7202c8777de4.json",
+            "policy_review_ref": "pol_b94d652299fa",
+            "council_eval_ref": "ceval_854d22409d8a"
+          },
+          "lifecycle": {
+            "dossier_id": "dos_7202c8777de4",
+            "state": "active",
+            "valid_as_of": "2026-05-01T14:30:00Z",
+            "expires_at": "2026-05-02T14:30:00.000Z",
+            "freshness_score": 1,
+            "dependency_refs": [
+              "NVDA",
+              "SMH",
+              "QQQ"
+            ],
+            "triggers": [
+              {
+                "id": "trig_0d06408bcf37",
+                "kind": "invalidate",
+                "condition_type": "price",
+                "condition": "last_price < 52.78",
+                "human_rationale": "Price moved below the thesis invalidation band.",
+                "linked_assumption": "price_structure_holds"
+              },
+              {
+                "id": "trig_c9cbd8f072d6",
+                "kind": "recheck",
+                "condition_type": "price",
+                "condition": "last_price > 180.88",
+                "human_rationale": "Price moved enough to require a new risk/reward check.",
+                "linked_assumption": "entry_quality_remains_reasonable"
+              },
+              {
+                "id": "trig_12efd2b20a1a",
+                "kind": "downgrade",
+                "condition_type": "volatility",
+                "condition": "annualized_volatility_20 > 5.222",
+                "human_rationale": "Volatility expanded beyond the allowed thesis envelope.",
+                "linked_assumption": "volatility_regime_stable"
+              },
+              {
+                "id": "trig_58039a2357b5",
+                "kind": "downgrade",
+                "condition_type": "time",
+                "condition": "now > 2026-05-02T14:30:00.000Z",
+                "human_rationale": "Evidence snapshot expired for this horizon.",
+                "linked_assumption": "evidence_still_fresh"
+              }
+            ],
+            "last_revalidated_at": "2026-05-01T14:30:00Z"
+          }
+        },
+        "hash": "f7fe8223143fe2d28a436d56ab57464a4556ae87ffda60a25e7d61a849c15eac"
+      }
+    }
+  ],
+  "markdown_documents": [
+    {
+      "dossier_id": "dos_7202c8777de4",
+      "file_name": "dos_7202c8777de4.md",
+      "markdown": "# NVDA swing thesis dossier\n\nGenerated: 2026-05-01T14:30:00Z\n\n## Decision\n\n- Action class: watchlist\n- Thesis state: active\n- Confidence: 0.44\n- Freshness: 1\n- Next trigger: Volatility regime changes materially.\n\n## Thesis\n\nphase two data-backed artifact dossier\n\n## Product Boundary\n\n- Status: allowed\n- Effective action ceiling: paper_trade_candidate\n- Legal posture: Research support only. Parallax is not a broker, investment adviser, signal service, tax adviser, legal adviser, or live execution system.\n\n## Council Summary\n\n7 support, 3 oppose, 1 need more data.\n\n## Council Evaluation\n\n- Provider: deterministic_rule_council_v0\n- Passed: true\n- Problems: 0\n- Warnings: 0\n\n## Strongest Bull Case\n\nFundamental data is present for NVDA; quality score is 0.79 and must remain tied to the source snapshot.\n\n## Strongest Bear Case\n\nThe strongest countercase is that this thesis is chasing already-visible price action without enough validated edge.\n\n## Dissent\n\n- regime_cartographer\n- portfolio_risk_manager\n- red_team_skeptic\n\n## Vetoes\n\nNone.\n\n## Invalidators\n\n- Volatility regime changes materially.\n- Momentum turns negative.\n- Volatility expands beyond threshold.\n- New filing, guidance, or earnings event changes the premise.\n- Price loses the trigger level.\n- Liquidity deteriorates.\n- Cost estimate widens.\n- Sector ETF or benchmark breaks correlation regime.\n- Material news arrives.\n- Source reliability changes.\n- Any central data item becomes stale, missing, restricted, or conflicting.\n- Exposure increases.\n- Drawdown or volatility breaches threshold.\n- Spread widens.\n- Relative volume collapses.\n- Slippage estimate rises.\n- Corporate action changes price comparability.\n- Restricted list changes.\n- Mandate constraints change.\n- Unregistered model or prompt configuration is used.\n- Replay fails.\n- Confirmation fails.\n- Event risk changes premise.\n- Portfolio exposure worsens.\n\n## Lifecycle Triggers\n\n- invalidate/price: `last_price < 52.78` - Price moved below the thesis invalidation band.\n- recheck/price: `last_price > 180.88` - Price moved enough to require a new risk/reward check.\n- downgrade/volatility: `annualized_volatility_20 > 5.222` - Volatility expanded beyond the allowed thesis envelope.\n- downgrade/time: `now > 2026-05-02T14:30:00.000Z` - Evidence snapshot expired for this horizon.\n\n## Audit\n\n- Dossier ID: dos_7202c8777de4\n- Evidence snapshot: snap_752705595d9e\n- Tool outputs: 13\n- Claim packets: 12\n"
+    }
+  ],
+  "feedback": []
+}

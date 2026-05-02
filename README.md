@@ -244,6 +244,51 @@ npm run app -- \
 
 The local workspace is intentionally file-based. It is easy to inspect, easy to delete, and does not require a cloud account.
 
+## Data-Backed Research
+
+Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
+
+Expected local data layout:
+
+```text
+data/
+  manifest.json
+  market/NVDA.csv
+  fundamentals/NVDA.json
+  events/NVDA.json
+  news/NVDA.json
+  actions/NVDA.json
+  portfolio/default.json
+```
+
+Check data freshness and licensing:
+
+```bash
+npm run data-status -- \
+  --symbol NVDA \
+  --data-dir data \
+  --now 2026-05-01T14:30:00Z
+```
+
+Import a broker-style portfolio CSV:
+
+```bash
+npm run cli -- portfolio-import \
+  --csv broker.csv \
+  --out data/portfolio/default.json \
+  --account-id local_broker_export
+```
+
+Run a data-backed dossier:
+
+```bash
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --thesis "data-backed continuation thesis" \
+  --data-dir data \
+  --ceiling paper_trade_candidate
+```
+
 If you need a specific Python interpreter:
 
 ```bash
@@ -332,7 +377,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 32 tests:
+The suite currently includes 35 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -340,6 +385,7 @@ The suite currently includes 32 tests:
 - council-provider evaluation tests;
 - local workspace tests;
 - Phase 1 local-alpha E2E tests;
+- Phase 2 data-backed research E2E tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -359,17 +405,18 @@ More detail: [E2E_TESTING.md](E2E_TESTING.md)
 
 ```text
 src/
+  app/            Static local alpha dashboard generator
   analytics/      TypeScript bridge to Python analytics
   cli/            Parallax CLI
   core/           IDs, schemas, shared contracts
   council/        Personas and council runner
+  data/           Local data adapters, portfolio import, freshness status
   decision/       Decision gate
   evidence/       Evidence loading and snapshots
   execution/      Sandbox execution controls
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state and trigger engine
   library/        Local dossier library, source view, feedback, export
-  app/            Static local alpha dashboard generator
   paper/          Paper-trading helpers
   product/        Product boundary and prohibited-claim policy
 
@@ -435,12 +482,15 @@ Current state:
 - workspace lifecycle alerts;
 - portable workspace import/export;
 - local dashboard generator;
+- market, fundamentals, news, event, corporate-action, and portfolio adapters;
+- data freshness status;
+- portfolio CSV import;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 32 passing tests.
+- 35 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

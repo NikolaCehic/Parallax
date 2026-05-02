@@ -101,7 +101,7 @@ The current repo already has the right skeleton:
 - audit replay;
 - paper-trading helpers;
 - sandbox execution controls;
-- 32 tests;
+- 35 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -127,7 +127,13 @@ Implemented on 2026-05-02:
 - portable workspace import/export;
 - static local dashboard;
 - Phase 1 artifact bundle;
-- 32 passing tests.
+- local licensed data-pack adapters;
+- fundamentals/news/corporate-action analytics;
+- portfolio CSV import;
+- data freshness status;
+- source viewer payload summaries;
+- Phase 2 artifact bundle;
+- 35 passing tests.
 
 ## Knowledge Gathered
 

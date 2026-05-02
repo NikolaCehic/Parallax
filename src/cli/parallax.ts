@@ -5,6 +5,7 @@ import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle, p
 import {
   alertsToHumanReport,
   appToHumanReport,
+  dataStatusToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
   exportToHumanReport,
@@ -15,6 +16,7 @@ import {
   monitorToHumanReport,
   paperToHumanReport,
   policyToHumanReport,
+  portfolioImportToHumanReport,
   replayToHumanReport,
   sandboxToHumanReport,
   sourcesToHumanReport
@@ -33,6 +35,8 @@ import {
   upsertLibraryEntry
 } from "../library/store.js";
 import { writeDashboard } from "../app/dashboard.js";
+import { buildDataStatus } from "../data/status.js";
+import { writePortfolioJson } from "../data/portfolio.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -63,12 +67,14 @@ Commands:
   library [--audit-dir audits]
   watchlist [--audit-dir audits]
   alerts [--audit-dir audits] [--prices NVDA=111,TSLA=240]
+  data-status --symbol NVDA [--data-dir fixtures]
   sources --audit audits/dos_x.json
   feedback --audit audits/dos_x.json --rating useful [--notes "..."]
   feedback-summary [--audit-dir audits]
   export --audit-dir audits --out parallax-workspace.json
   import --in parallax-workspace.json --audit-dir imported-audits
   app --audit-dir audits [--out audits/parallax-dashboard.html]
+  portfolio-import --csv broker.csv --out fixtures/portfolio/default.json
   policy
   paper --audit audits/dos_x.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
@@ -192,6 +198,33 @@ async function main() {
     if (!args.audit) throw new Error("sources requires --audit");
     const view = await sourceViewFromAudit(String(args.audit));
     printResult(args, sourcesToHumanReport(view), view);
+    return;
+  }
+
+  if (command === "data-status") {
+    if (!args.symbol) throw new Error("data-status requires --symbol");
+    const status = await buildDataStatus({
+      dataDir: String(args["data-dir"] ?? "fixtures"),
+      symbol: String(args.symbol),
+      horizon: String(args.horizon ?? "swing"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, dataStatusToHumanReport(status), status);
+    return;
+  }
+
+  if (command === "portfolio-import") {
+    if (!args.csv) throw new Error("portfolio-import requires --csv");
+    if (!args.out) throw new Error("portfolio-import requires --out");
+    const imported = await writePortfolioJson({
+      csvPath: String(args.csv),
+      out: String(args.out),
+      accountId: args["account-id"] ? String(args["account-id"]) : undefined,
+      cash: args.cash ? Number(args.cash) : undefined,
+      totalEquity: args["total-equity"] ? Number(args["total-equity"]) : undefined,
+      restrictedSymbols: args.restricted ? String(args.restricted).split(",").filter(Boolean) : []
+    });
+    printResult(args, portfolioImportToHumanReport(imported), imported);
     return;
   }
 

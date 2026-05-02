@@ -3,6 +3,7 @@ import path from "node:path";
 import { makeId, isoNow } from "../core/ids.js";
 import { readAuditBundle } from "../audit.js";
 import { evaluateLifecycle } from "../lifecycle/engine.js";
+import { summarizeEvidenceItems } from "../data/status.js";
 
 export const LIBRARY_FILE = "library.json";
 
@@ -169,11 +170,22 @@ export async function listLibraryEntries({
 export async function sourceViewFromAudit(auditPath: string) {
   const bundle = await readAuditBundle(auditPath);
   const dossier = bundle.dossier;
+  const summary = summarizeEvidenceItems(dossier.evidence_snapshot.items);
   return {
     dossier_id: dossier.id,
     symbol: dossier.symbol,
     evidence_snapshot_id: dossier.evidence_snapshot.id,
     evidence_hash: dossier.evidence_snapshot.hash,
+    data_provider: dossier.evidence_snapshot.question?.data_provider ?? "unknown",
+    data_license: dossier.evidence_snapshot.question?.data_license ?? "unknown",
+    freshness_summary: {
+      item_count: summary.item_count,
+      by_kind: summary.by_kind,
+      by_freshness: summary.by_freshness,
+      by_license: summary.by_license,
+      stale_items: summary.stale_items,
+      restricted_items: summary.restricted_items
+    },
     sources: dossier.evidence_snapshot.items.map((item: any) => ({
       id: item.id,
       kind: item.kind,
@@ -184,7 +196,9 @@ export async function sourceViewFromAudit(auditPath: string) {
       freshness_status: item.freshness_status,
       license: item.license,
       payload_ref: item.payload_ref,
-      hash: item.hash
+      hash: item.hash,
+      metadata: item.metadata ?? {},
+      payload_summary: summary.sources.find((source: any) => source.id === item.id)?.payload_summary ?? {}
     })),
     tool_outputs: dossier.tool_outputs.map((output: any) => ({
       id: output.id,

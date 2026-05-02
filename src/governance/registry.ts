@@ -17,6 +17,9 @@ export const DEFAULT_TOOL_REGISTRY = {
   dependency_correlation: { version: "0.1.0", validation_status: "prototype_validated" },
   portfolio_exposure_check: { version: "0.1.0", validation_status: "prototype_validated" },
   event_calendar_check: { version: "0.1.0", validation_status: "prototype_validated" },
+  corporate_action_check: { version: "0.1.0", validation_status: "prototype_validated" },
+  fundamentals_check: { version: "0.1.0", validation_status: "prototype_validated" },
+  news_provenance_check: { version: "0.1.0", validation_status: "prototype_validated" },
   data_quality_check: { version: "0.1.0", validation_status: "prototype_validated" }
 };
 

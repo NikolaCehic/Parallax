@@ -133,6 +133,8 @@ node dist/src/cli/parallax.js library --audit-dir audits
 node dist/src/cli/parallax.js watchlist --audit-dir audits
 node dist/src/cli/parallax.js alerts --audit-dir audits --prices NVDA=111
 node dist/src/cli/parallax.js sources --audit audits/dos_x.json
+node dist/src/cli/parallax.js data-status --symbol NVDA --data-dir data
+node dist/src/cli/parallax.js portfolio-import --csv broker.csv --out data/portfolio/default.json
 node dist/src/cli/parallax.js feedback --audit audits/dos_x.json --rating useful
 node dist/src/cli/parallax.js feedback-summary --audit-dir audits
 node dist/src/cli/parallax.js export --audit-dir audits --out parallax-workspace.json

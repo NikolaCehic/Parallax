@@ -1,0 +1,12 @@
+{
+  "dossier_id": "dos_7202c8777de4",
+  "action_class": "watchlist",
+  "thesis_state": "active",
+  "confidence": 0.44,
+  "freshness_score": 1,
+  "policy_status": "allowed",
+  "effective_action_ceiling": "paper_trade_candidate",
+  "audit_path": "artifacts/phase_2_data_backed_research_app/audits/dos_7202c8777de4.json",
+  "markdown_path": "artifacts/phase_2_data_backed_research_app/audits/dos_7202c8777de4.md",
+  "library_path": "artifacts/phase_2_data_backed_research_app/audits/library.json"
+}

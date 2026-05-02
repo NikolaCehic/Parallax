@@ -1,0 +1,30 @@
+{
+  "provider": "phase2_local_licensed_pack",
+  "license": "internal",
+  "sources": {
+    "market:NVDA": {
+      "source": "licensed-local:market/NVDA.csv"
+    },
+    "market:SMH": {
+      "source": "licensed-local:market/SMH.csv"
+    },
+    "market:QQQ": {
+      "source": "licensed-local:market/QQQ.csv"
+    },
+    "fundamentals:NVDA": {
+      "source": "licensed-local:fundamentals/NVDA.json"
+    },
+    "news:NVDA": {
+      "source": "licensed-local:news/NVDA.json"
+    },
+    "actions:NVDA": {
+      "source": "licensed-local:actions/NVDA.json"
+    },
+    "events:NVDA": {
+      "source": "licensed-local:events/NVDA.json"
+    },
+    "portfolio:default": {
+      "source": "broker-export:portfolio/default.json"
+    }
+  }
+}

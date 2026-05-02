@@ -337,6 +337,14 @@ export function sourcesToHumanReport(view: any) {
     `Symbol: ${view.symbol}`,
     `Evidence snapshot: ${view.evidence_snapshot_id}`,
     `Evidence hash: ${view.evidence_hash}`,
+    `Data provider: ${view.data_provider}`,
+    `Data license: ${view.data_license}`,
+    "",
+    "Freshness",
+    `  Items: ${view.freshness_summary?.item_count ?? view.sources.length}`,
+    `  By kind: ${JSON.stringify(view.freshness_summary?.by_kind ?? {})}`,
+    `  By freshness: ${JSON.stringify(view.freshness_summary?.by_freshness ?? {})}`,
+    `  By license: ${JSON.stringify(view.freshness_summary?.by_license ?? {})}`,
     "",
     "Evidence",
     view.sources.map((source: any) =>
@@ -346,7 +354,8 @@ export function sourcesToHumanReport(view: any) {
         `as_of=${source.as_of}`,
         `freshness=${source.freshness_status}`,
         `license=${source.license}`,
-        `hash=${source.hash}`
+        `hash=${source.hash}`,
+        `payload=${JSON.stringify(source.payload_summary ?? {})}`
       ].join(" | ")
     ).join("\n"),
     "",
@@ -354,6 +363,49 @@ export function sourcesToHumanReport(view: any) {
     view.tool_outputs.map((output: any) =>
       `  - ${output.tool_name} | status=${output.status} | hash=${output.result_hash}`
     ).join("\n")
+  ]);
+}
+
+export function dataStatusToHumanReport(status: any) {
+  return lines([
+    "Parallax Data Status",
+    "====================",
+    "",
+    `Data dir: ${status.data_dir}`,
+    `Symbol: ${status.symbol}`,
+    `Snapshot: ${status.snapshot_id}`,
+    `Passed: ${status.passed ? "yes" : "no"}`,
+    "",
+    "Summary",
+    `  Items: ${status.item_count}`,
+    `  By kind: ${JSON.stringify(status.by_kind)}`,
+    `  By freshness: ${JSON.stringify(status.by_freshness)}`,
+    `  By license: ${JSON.stringify(status.by_license)}`,
+    "",
+    "Sources",
+    status.sources.map((source: any) =>
+      [
+        `  - ${source.kind}/${source.symbol}`,
+        `source=${source.source}`,
+        `as_of=${source.as_of}`,
+        `freshness=${source.freshness_status}`,
+        `license=${source.license}`,
+        `payload=${JSON.stringify(source.payload_summary)}`
+      ].join(" | ")
+    ).join("\n")
+  ]);
+}
+
+export function portfolioImportToHumanReport(result: any) {
+  return lines([
+    "Parallax Portfolio Import",
+    "=========================",
+    "",
+    `Output: ${result.out}`,
+    `Account: ${result.account_id}`,
+    `Positions: ${result.positions}`,
+    `Total equity: ${result.total_equity}`,
+    `Restricted symbols: ${result.restricted_symbols}`
   ]);
 }
 

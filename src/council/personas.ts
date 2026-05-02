@@ -65,6 +65,9 @@ export function runPersona(personaId, { snapshot, toolOutputs }) {
   const exposure = toolByName(toolOutputs, "portfolio_exposure_check");
   const event = toolByName(toolOutputs, "event_calendar_check");
   const dataQuality = toolByName(toolOutputs, "data_quality_check");
+  const fundamentals = toolByName(toolOutputs, "fundamentals_check");
+  const news = toolByName(toolOutputs, "news_provenance_check");
+  const actions = toolByName(toolOutputs, "corporate_action_check");
   const corr = toolOutputs.filter((output) => output.tool_name === "dependency_correlation");
 
   const symbol = snapshot.question.symbol;
@@ -76,6 +79,10 @@ export function runPersona(personaId, { snapshot, toolOutputs }) {
   const staleData = dataQuality.status !== "passed";
   const highEventRisk = event.result.material_event_count > 0;
   const expensiveTrade = costs.result.estimated_spread_bps + costs.result.estimated_slippage_bps > 90;
+  const fundamentalQuality = fundamentals?.result?.quality_score ?? 0;
+  const weakFundamentals = fundamentals && fundamentals.status !== "passed";
+  const weakNewsProvenance = news && news.status !== "passed";
+  const corporateActionRisk = actions && actions.status !== "passed";
 
   switch (personaId) {
     case "regime_cartographer":
@@ -112,17 +119,23 @@ export function runPersona(personaId, { snapshot, toolOutputs }) {
     case "fundamental_analyst":
       return claim({
         personaId,
-        stance: highEventRisk ? "needs_more_data" : "abstain",
-        confidence: highEventRisk ? 0.55 : 0.38,
+        stance: highEventRisk || weakFundamentals
+          ? "needs_more_data"
+          : fundamentals && fundamentalQuality > 0.55
+            ? "support"
+            : "abstain",
+        confidence: fundamentals ? Math.max(0.42, Math.min(0.74, fundamentalQuality)) : highEventRisk ? 0.55 : 0.38,
         thesis: highEventRisk
           ? `Material scheduled events exist for ${symbol}; fundamental interpretation must wait for the event or include event-specific scenarios.`
-          : `No high-materiality event is present in the fixture snapshot; fundamental evidence is limited in v0.`,
-        evidenceRefs: refs(event),
-        assumptions: ["Fixture fundamental data is intentionally minimal."],
+          : fundamentals
+            ? `Fundamental data is present for ${symbol}; quality score is ${fundamentalQuality.toFixed(2)} and must remain tied to the source snapshot.`
+            : `No high-materiality event is present in the fixture snapshot; fundamental evidence is limited in v0.`,
+        evidenceRefs: refs(event, fundamentals),
+        assumptions: ["Fundamental data is adapter-provided and must carry source, freshness, and license metadata."],
         invalidators: ["New filing, guidance, or earnings event changes the premise."],
-        risks: ["Fundamental data sparsity"],
-        requiredChecks: ["Add filings/earnings adapter before stronger fundamental claims."],
-        proposedAction: highEventRisk ? "research_needed" : "watchlist"
+        risks: fundamentals ? ["Fundamental data revision risk"] : ["Fundamental data sparsity"],
+        requiredChecks: fundamentals ? ["Confirm fundamentals vendor license before public beta."] : ["Add filings/earnings adapter before stronger fundamental claims."],
+        proposedAction: highEventRisk || weakFundamentals ? "research_needed" : "watchlist"
       });
     case "technical_microstructure_analyst":
       return claim({
@@ -154,17 +167,21 @@ export function runPersona(personaId, { snapshot, toolOutputs }) {
     case "sentiment_news_analyst":
       return claim({
         personaId,
-        stance: highEventRisk ? "needs_more_data" : "abstain",
-        confidence: 0.42,
-        thesis: highEventRisk
+        stance: weakNewsProvenance || highEventRisk ? "needs_more_data" : news ? "support" : "abstain",
+        confidence: news ? 0.56 : 0.42,
+        thesis: weakNewsProvenance
+          ? `News is present for ${symbol}, but provenance quality is not clean enough for escalation.`
+          : highEventRisk
           ? `Event risk is present; news monitoring should be active before any escalation.`
-          : `News and sentiment are not deeply integrated in v0, so no strong sentiment claim is made.`,
-        evidenceRefs: refs(event),
+          : news
+            ? `News provenance is present with ${news.result.trusted_item_count}/${news.result.item_count} trusted items and average sentiment ${news.result.average_sentiment.toFixed(2)}.`
+            : `News and sentiment are not deeply integrated in v0, so no strong sentiment claim is made.`,
+        evidenceRefs: refs(event, news),
         assumptions: ["Event calendar is a proxy until news ingestion is connected."],
         invalidators: ["Material news arrives.", "Source reliability changes."],
-        risks: ["Narrative crowding", "Deceptive source risk"],
-        requiredChecks: ["News provenance adapter."],
-        proposedAction: highEventRisk ? "research_needed" : "watchlist"
+        risks: weakNewsProvenance ? ["Deceptive source risk", "Rumor risk"] : ["Narrative crowding", "Deceptive source risk"],
+        requiredChecks: news ? ["Confirm news provenance and licensing before public beta."] : ["News provenance adapter."],
+        proposedAction: weakNewsProvenance || highEventRisk ? "research_needed" : "watchlist"
       });
     case "data_quality_officer":
       return claim({
@@ -203,12 +220,14 @@ export function runPersona(personaId, { snapshot, toolOutputs }) {
         claimType: "risk",
         thesis: expensiveTrade
           ? "Cost and liquidity proxy is too expensive for escalation."
+          : corporateActionRisk
+            ? "Upcoming corporate actions can distort execution assumptions; entry planning needs recheck."
           : "Execution proxy is acceptable for watchlist or paper-trade analysis.",
-        evidenceRefs: refs(liquidity, costs),
+        evidenceRefs: refs(liquidity, costs, actions),
         assumptions: ["Execution model is a range-based proxy until venue/order-book data exists."],
-        invalidators: ["Spread widens.", "Relative volume collapses.", "Slippage estimate rises."],
-        risks: ["Slippage", "Poor fill assumptions"],
-        proposedAction: expensiveTrade ? "research_needed" : "watchlist"
+        invalidators: ["Spread widens.", "Relative volume collapses.", "Slippage estimate rises.", "Corporate action changes price comparability."],
+        risks: corporateActionRisk ? ["Corporate action adjustment risk", "Slippage", "Poor fill assumptions"] : ["Slippage", "Poor fill assumptions"],
+        proposedAction: expensiveTrade || corporateActionRisk ? "research_needed" : "watchlist"
       });
     case "compliance_conflicts_officer": {
       const portfolioItem = snapshot.items.find((item) => item.kind === "portfolio");

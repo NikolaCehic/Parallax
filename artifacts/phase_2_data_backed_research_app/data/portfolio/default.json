@@ -1,0 +1,26 @@
+{
+  "account_id": "phase2_broker_export",
+  "cash": 86000,
+  "total_equity": 100000,
+  "positions": [
+    {
+      "symbol": "SMH",
+      "quantity": 20,
+      "market_value": 9000,
+      "sector": "semiconductors"
+    },
+    {
+      "symbol": "QQQ",
+      "quantity": 10,
+      "market_value": 5000,
+      "sector": "broad"
+    }
+  ],
+  "constraints": {
+    "max_single_name_pct": 0.12,
+    "max_sector_pct": 0.35,
+    "max_gross_exposure_pct": 1,
+    "paper_risk_budget_pct": 0.02
+  },
+  "restricted_symbols": []
+}
