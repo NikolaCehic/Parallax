@@ -4,10 +4,13 @@ import path from "node:path";
 import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle, productPolicySnapshot } from "../index.js";
 import {
   alertsToHumanReport,
+  appToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
   exportToHumanReport,
+  feedbackSummaryToHumanReport,
   feedbackToHumanReport,
+  importToHumanReport,
   libraryToHumanReport,
   monitorToHumanReport,
   paperToHumanReport,
@@ -21,12 +24,15 @@ import { ApprovalStore, SandboxBroker, KillSwitch } from "../execution/sandbox.j
 import {
   exportWorkspace,
   filterWatchlistEntries,
+  importWorkspace,
   listLibraryEntries,
   monitorWorkspace,
   recordFeedback,
+  summarizeFeedback,
   sourceViewFromAudit,
   upsertLibraryEntry
 } from "../library/store.js";
+import { writeDashboard } from "../app/dashboard.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -59,7 +65,10 @@ Commands:
   alerts [--audit-dir audits] [--prices NVDA=111,TSLA=240]
   sources --audit audits/dos_x.json
   feedback --audit audits/dos_x.json --rating useful [--notes "..."]
+  feedback-summary [--audit-dir audits]
   export --audit-dir audits --out parallax-workspace.json
+  import --in parallax-workspace.json --audit-dir imported-audits
+  app --audit-dir audits [--out audits/parallax-dashboard.html]
   policy
   paper --audit audits/dos_x.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
@@ -200,6 +209,12 @@ async function main() {
     return;
   }
 
+  if (command === "feedback-summary") {
+    const summary = await summarizeFeedback(String(args["audit-dir"] ?? "audits"));
+    printResult(args, feedbackSummaryToHumanReport(summary), summary);
+    return;
+  }
+
   if (command === "export") {
     if (!args.out) throw new Error("export requires --out");
     const exported = await exportWorkspace({
@@ -207,6 +222,27 @@ async function main() {
       out: String(args.out)
     });
     printResult(args, exportToHumanReport(exported), exported);
+    return;
+  }
+
+  if (command === "import") {
+    if (!args.in) throw new Error("import requires --in");
+    const imported = await importWorkspace({
+      input: String(args.in),
+      auditDir: String(args["audit-dir"] ?? "audits")
+    });
+    printResult(args, importToHumanReport(imported), imported);
+    return;
+  }
+
+  if (command === "app") {
+    const app = await writeDashboard({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      out: args.out ? String(args.out) : undefined,
+      now: args.now ? String(args.now) : undefined,
+      prices: parsePrices(args.prices)
+    });
+    printResult(args, appToHumanReport(app), app);
     return;
   }
 

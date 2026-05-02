@@ -124,6 +124,7 @@ Every analysis now creates a local workspace entry:
 - `library.json`
 - optional feedback JSONL
 - optional workspace export
+- optional static dashboard HTML
 
 Useful commands:
 
@@ -133,7 +134,10 @@ node dist/src/cli/parallax.js watchlist --audit-dir audits
 node dist/src/cli/parallax.js alerts --audit-dir audits --prices NVDA=111
 node dist/src/cli/parallax.js sources --audit audits/dos_x.json
 node dist/src/cli/parallax.js feedback --audit audits/dos_x.json --rating useful
+node dist/src/cli/parallax.js feedback-summary --audit-dir audits
 node dist/src/cli/parallax.js export --audit-dir audits --out parallax-workspace.json
+node dist/src/cli/parallax.js import --in parallax-workspace.json --audit-dir imported-audits
+node dist/src/cli/parallax.js app --audit-dir audits --out audits/parallax-dashboard.html
 ```
 
 The local workspace is the first productized surface: it gives alpha users a repeatable research loop without adding cloud data risk.

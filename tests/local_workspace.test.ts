@@ -7,12 +7,15 @@ import { analyzeThesis, writeAuditBundle } from "../src/index.js";
 import {
   exportWorkspace,
   filterWatchlistEntries,
+  importWorkspace,
   listLibraryEntries,
   monitorWorkspace,
   recordFeedback,
   sourceViewFromAudit,
+  summarizeFeedback,
   upsertLibraryEntry
 } from "../src/library/store.js";
+import { writeDashboard } from "../src/app/dashboard.js";
 
 const NOW = "2026-05-01T14:30:00Z";
 
@@ -69,12 +72,39 @@ test("local workspace indexes dossiers, filters watchlists, records feedback, an
     assert.equal(updatedLibrary.entries[0].feedback_count, 1);
     assert.equal(updatedLibrary.entries[0].latest_feedback_rating, "useful");
 
+    const feedbackSummary = await summarizeFeedback(auditDir);
+    assert.equal(feedbackSummary.feedback_count, 1);
+    assert.equal(feedbackSummary.by_rating.useful, 1);
+
     const out = path.join(auditDir, "workspace-export.json");
     const exported = await exportWorkspace({ auditDir, out });
     assert.equal(exported.dossier_count, 1);
     assert.equal(exported.source_view_count, 1);
+    assert.equal(exported.audit_bundle_count, 1);
+    assert.equal(exported.feedback_count, 1);
     const exportedJson = JSON.parse(await readFile(out, "utf8"));
     assert.equal(exportedJson.library.entries[0].id, dossier.id);
+    assert.equal(exportedJson.audit_bundles[0].dossier_id, dossier.id);
+
+    const importedDir = await mkdtemp(path.join(os.tmpdir(), "parallax-workspace-import-"));
+    const imported = await importWorkspace({ input: out, auditDir: importedDir });
+    assert.equal(imported.dossier_count, 1);
+    const importedLibrary = await listLibraryEntries({ auditDir: importedDir });
+    assert.equal(importedLibrary.entries[0].id, dossier.id);
+    assert.equal(importedLibrary.entries[0].feedback_count, 1);
+
+    const dashboard = await writeDashboard({
+      auditDir,
+      out: path.join(auditDir, "parallax-dashboard.html"),
+      now: "2026-05-01T15:00:00Z",
+      prices: { NVDA: 1 }
+    });
+    assert.ok(dashboard.bytes > 1000);
+    const dashboardHtml = await readFile(dashboard.out, "utf8");
+    assert.match(dashboardHtml, /Parallax Local Alpha/);
+    assert.match(dashboardHtml, /Dossier Library/);
+    assert.match(dashboardHtml, /Lifecycle Alerts/);
+    await rm(importedDir, { recursive: true, force: true });
   } finally {
     await rm(auditDir, { recursive: true, force: true });
   }

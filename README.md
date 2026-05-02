@@ -220,6 +220,28 @@ npm run cli -- export \
   --out parallax-workspace.json
 ```
 
+Import a portable workspace:
+
+```bash
+npm run cli -- import \
+  --in parallax-workspace.json \
+  --audit-dir imported-audits
+```
+
+Summarize alpha feedback:
+
+```bash
+npm run cli -- feedback-summary --audit-dir audits
+```
+
+Generate a local dashboard:
+
+```bash
+npm run app -- \
+  --audit-dir audits \
+  --out audits/parallax-dashboard.html
+```
+
 The local workspace is intentionally file-based. It is easy to inspect, easy to delete, and does not require a cloud account.
 
 If you need a specific Python interpreter:
@@ -310,13 +332,14 @@ Run:
 npm test
 ```
 
-The suite currently includes 31 tests:
+The suite currently includes 32 tests:
 
 - CLI human-output tests;
 - JSON output tests;
 - product-boundary tests;
 - council-provider evaluation tests;
 - local workspace tests;
+- Phase 1 local-alpha E2E tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -346,6 +369,7 @@ src/
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state and trigger engine
   library/        Local dossier library, source view, feedback, export
+  app/            Static local alpha dashboard generator
   paper/          Paper-trading helpers
   product/        Product boundary and prohibited-claim policy
 
@@ -409,12 +433,14 @@ Current state:
 - local dossier library;
 - source viewer;
 - workspace lifecycle alerts;
+- portable workspace import/export;
+- local dashboard generator;
 - alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 31 passing tests.
+- 32 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

@@ -20,6 +20,23 @@ async function writeJson(filePath: string, value: any) {
   await writeFile(filePath, `${JSON.stringify(value, null, 2)}\n`);
 }
 
+async function readTextIfExists(filePath: string) {
+  try {
+    return await readFile(filePath, "utf8");
+  } catch (error: any) {
+    if (error.code === "ENOENT") return undefined;
+    throw error;
+  }
+}
+
+function parseJsonLines(text = "") {
+  return text
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean)
+    .map((line) => JSON.parse(line));
+}
+
 function entryFromDossier(dossier: any, {
   auditPath,
   markdownPath
@@ -229,6 +246,38 @@ export async function recordFeedback({
   return feedback;
 }
 
+export async function readFeedback(auditDir = "audits") {
+  const feedback: any[] = [];
+  try {
+    const files = await readdir(auditDir);
+    for (const file of files) {
+      if (!file.endsWith(".feedback.jsonl")) continue;
+      const text = await readFile(path.join(auditDir, file), "utf8");
+      feedback.push(...parseJsonLines(text));
+    }
+  } catch (error: any) {
+    if (error.code !== "ENOENT") throw error;
+  }
+  return feedback.sort((a, b) => String(b.created_at).localeCompare(String(a.created_at)));
+}
+
+export async function summarizeFeedback(auditDir = "audits") {
+  const feedback = await readFeedback(auditDir);
+  const byRating: Record<string, number> = {};
+  const byDossier: Record<string, number> = {};
+  for (const item of feedback) {
+    byRating[item.rating] = (byRating[item.rating] ?? 0) + 1;
+    byDossier[item.dossier_id] = (byDossier[item.dossier_id] ?? 0) + 1;
+  }
+  return {
+    audit_dir: auditDir,
+    feedback_count: feedback.length,
+    by_rating: byRating,
+    by_dossier: byDossier,
+    latest: feedback.slice(0, 5)
+  };
+}
+
 export async function exportWorkspace({
   auditDir = "audits",
   out
@@ -238,10 +287,29 @@ export async function exportWorkspace({
 }) {
   const library = await loadLibrary(auditDir);
   const sources = [];
+  const auditBundles = [];
+  const markdownDocuments = [];
   for (const entry of library.entries) {
     if (!entry.audit_path) continue;
     try {
-      sources.push(await sourceViewFromAudit(entry.audit_path));
+      const sourceView = await sourceViewFromAudit(entry.audit_path);
+      sources.push(sourceView);
+      const bundle = await readAuditBundle(entry.audit_path);
+      auditBundles.push({
+        dossier_id: bundle.dossier.id,
+        file_name: `${bundle.dossier.id}.json`,
+        bundle
+      });
+      if (entry.markdown_path) {
+        const markdown = await readTextIfExists(entry.markdown_path);
+        if (markdown !== undefined) {
+          markdownDocuments.push({
+            dossier_id: bundle.dossier.id,
+            file_name: `${bundle.dossier.id}.md`,
+            markdown
+          });
+        }
+      }
     } catch {
       sources.push({
         dossier_id: entry.id,
@@ -249,18 +317,84 @@ export async function exportWorkspace({
       });
     }
   }
+  const feedback = await readFeedback(auditDir);
 
   const body = {
     schema_version: "0.1.0",
     exported_at: isoNow(),
     library,
-    sources
+    sources,
+    audit_bundles: auditBundles,
+    markdown_documents: markdownDocuments,
+    feedback
   };
   await writeJson(out, body);
   return {
     out,
     dossier_count: library.entries.length,
-    source_view_count: sources.length
+    source_view_count: sources.length,
+    audit_bundle_count: auditBundles.length,
+    feedback_count: feedback.length
+  };
+}
+
+export async function importWorkspace({
+  input,
+  auditDir = "audits"
+}: {
+  input: string;
+  auditDir?: string;
+}) {
+  const imported = JSON.parse(await readFile(input, "utf8"));
+  await mkdir(auditDir, { recursive: true });
+
+  const entries = [];
+  for (const item of imported.audit_bundles ?? []) {
+    const dossier = item.bundle.dossier;
+    const auditPath = path.join(auditDir, `${dossier.id}.json`);
+    const markdownPath = path.join(auditDir, `${dossier.id}.md`);
+    await writeJson(auditPath, item.bundle);
+    entries.push(entryFromDossier(dossier, { auditPath, markdownPath }));
+  }
+
+  for (const item of imported.markdown_documents ?? []) {
+    await writeFile(path.join(auditDir, `${item.dossier_id}.md`), item.markdown);
+  }
+
+  const feedbackByDossier = new Map<string, any[]>();
+  for (const item of imported.feedback ?? []) {
+    const current = feedbackByDossier.get(item.dossier_id) ?? [];
+    current.push(item);
+    feedbackByDossier.set(item.dossier_id, current);
+  }
+  for (const [dossierId, items] of feedbackByDossier.entries()) {
+    const text = items.map((item) => JSON.stringify(item)).join("\n") + "\n";
+    await writeFile(path.join(auditDir, `${dossierId}.feedback.jsonl`), text);
+  }
+
+  const existingLibrary = await loadLibrary(auditDir);
+  const mergedEntries = mergeEntries(existingLibrary.entries, entries).map((entry) => {
+    const feedbackItems = feedbackByDossier.get(entry.id) ?? [];
+    if (!feedbackItems.length) return entry;
+    return {
+      ...entry,
+      feedback_count: feedbackItems.length,
+      latest_feedback_rating: feedbackItems[0].rating
+    };
+  });
+
+  await writeJson(path.join(auditDir, LIBRARY_FILE), {
+    schema_version: "0.1.0",
+    imported_at: isoNow(),
+    audit_dir: auditDir,
+    entries: mergedEntries
+  });
+
+  return {
+    input,
+    audit_dir: auditDir,
+    dossier_count: entries.length,
+    feedback_count: imported.feedback?.length ?? 0
   };
 }
 

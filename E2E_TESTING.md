@@ -1,6 +1,6 @@
 # Parallax E2E Testing
 
-The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, portfolio, event, lifecycle, paper-trading, governance, and sandbox-execution data.
+The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, portfolio, event, lifecycle, paper-trading, governance, local-alpha workspace, and sandbox-execution data.
 
 It does not use one static happy-path fixture. Each E2E scenario creates its own temporary market data, event data, and portfolio constraints, then runs:
 
@@ -11,7 +11,7 @@ Evidence Snapshot
   -> Cross-Examination
   -> Decision Gate
   -> Lifecycle Assignment
-  -> Audit/Governance/Paper/Sandbox paths where relevant
+  -> Audit/Governance/Workspace/Paper/Sandbox paths where relevant
 ```
 
 Run:
@@ -33,7 +33,8 @@ The E2E suite currently proves:
 7. past material events do not create future event risk;
 8. lifecycle triggers invalidate, recheck, and expire theses correctly;
 9. paper trading records ticket, fill, close, attribution, and calibration;
-10. sandbox execution cannot bypass approval, approval expiry, kill switch, or risk controls.
+10. sandbox execution cannot bypass approval, approval expiry, kill switch, or risk controls;
+11. Phase 1 local-alpha workspace can analyze, block unsafe framing, collect feedback, export, import, and generate a dashboard.
 
 ## Issues Found By E2E
 
@@ -50,13 +51,12 @@ The current E2E suite supports the project exit condition:
 
 > I do not know how to improve the system any more and I do not know what is wrong with the current solution.
 
-Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, concentration risk, high volatility, event timing, lifecycle decay, paper trading discipline, audit replay, governance validation, approval bypass, kill switch, and pre-trade controls.
+Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, concentration risk, high volatility, event timing, lifecycle decay, paper trading discipline, audit replay, governance validation, local workspace portability, dashboard generation, approval bypass, kill switch, and pre-trade controls.
 
 The remaining improvements are productionization choices, not known architectural defects:
 
 - external data vendors;
 - richer Python quant analytics;
 - real model adapters;
-- UI;
-- deployment;
+- cloud deployment;
 - regulated live execution review.

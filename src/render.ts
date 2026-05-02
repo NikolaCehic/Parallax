@@ -373,6 +373,27 @@ export function feedbackToHumanReport(feedback: any) {
   ]);
 }
 
+export function feedbackSummaryToHumanReport(summary: any) {
+  const rows = Object.entries(summary.by_rating)
+    .map(([rating, count]) => `  - ${rating}: ${count}`)
+    .join("\n");
+  return lines([
+    "Parallax Feedback Summary",
+    "=========================",
+    "",
+    `Audit dir: ${summary.audit_dir}`,
+    `Feedback count: ${summary.feedback_count}`,
+    "",
+    "Ratings",
+    rows || "  None.",
+    "",
+    "Latest Notes",
+    summary.latest.length
+      ? summary.latest.map((item: any) => `  - ${item.rating} / ${item.dossier_id}: ${compact(item.notes)}`).join("\n")
+      : "  None."
+  ]);
+}
+
 export function exportToHumanReport(result: any) {
   return lines([
     "Parallax Workspace Export",
@@ -380,7 +401,32 @@ export function exportToHumanReport(result: any) {
     "",
     `Output: ${result.out}`,
     `Dossiers: ${result.dossier_count}`,
-    `Source views: ${result.source_view_count}`
+    `Source views: ${result.source_view_count}`,
+    `Audit bundles: ${result.audit_bundle_count ?? 0}`,
+    `Feedback: ${result.feedback_count ?? 0}`
+  ]);
+}
+
+export function importToHumanReport(result: any) {
+  return lines([
+    "Parallax Workspace Import",
+    "=========================",
+    "",
+    `Input: ${result.input}`,
+    `Audit dir: ${result.audit_dir}`,
+    `Dossiers: ${result.dossier_count}`,
+    `Feedback: ${result.feedback_count}`
+  ]);
+}
+
+export function appToHumanReport(result: any) {
+  return lines([
+    "Parallax Local App",
+    "==================",
+    "",
+    `Dashboard: ${result.out}`,
+    `Audit dir: ${result.audit_dir}`,
+    `Bytes: ${result.bytes}`
   ]);
 }
 

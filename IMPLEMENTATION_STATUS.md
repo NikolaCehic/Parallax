@@ -8,7 +8,7 @@ TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision 
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, workspace export, and alpha feedback capture.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, and alpha feedback capture.
 
 ## Phase Completion Map
 
@@ -22,9 +22,17 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 5 Governance Hardening | Complete for prototype scope | Model/tool registry, release validation, calibration report |
 | 6 Permissioned Execution | Complete for sandbox scope | Approval store, pre-trade controls, kill switch, sandbox broker |
 
+## Productization Phase Map
+
+| Phase | Status | Evidence |
+|---:|---|---|
+| 0 Product-Legal Definition | Complete for prototype scope | Product policy, prohibited claims, action ceiling, product boundaries |
+| 1 Local Alpha | Complete | Local dashboard, library, watchlist, alerts, feedback, portable import/export, phase artifacts |
+| 2 Data-Backed Research App | Next | Market/fundamental/news/event adapters, freshness dashboard, source viewer upgrades |
+
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 31 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, and local workspace tests.
+- `npm test` builds TypeScript and runs 32 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, and Phase 1 local-alpha E2E tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -32,7 +40,8 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Invalid future LLM-style claim packets can fail before the decision gate through the council evaluation boundary.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
-- The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, and export the workspace.
+- The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
+- Phase 1 artifacts live under `artifacts/phase_1_local_alpha/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.

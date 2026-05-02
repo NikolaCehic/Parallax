@@ -1,7 +1,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import { execFileSync } from "node:child_process";
-import { mkdtemp, rm } from "node:fs/promises";
+import { mkdtemp, readFile, rm } from "node:fs/promises";
 import os from "node:os";
 import path from "node:path";
 
@@ -154,6 +154,32 @@ test("CLI exposes product policy and local workspace commands", async () => {
     ]);
     assert.match(feedback, /Parallax Alpha Feedback/);
     assert.match(feedback, /Rating: useful/);
+
+    const feedbackSummary = runCli(["feedback-summary", "--audit-dir", auditDir]);
+    assert.match(feedbackSummary, /Parallax Feedback Summary/);
+    assert.match(feedbackSummary, /useful: 1/);
+
+    const dashboardPath = path.join(auditDir, "dashboard.html");
+    const app = runCli([
+      "app",
+      "--audit-dir", auditDir,
+      "--out", dashboardPath,
+      "--prices", "NVDA=1",
+      "--now", "2026-05-01T15:00:00Z"
+    ]);
+    assert.match(app, /Parallax Local App/);
+    assert.match(await readFile(dashboardPath, "utf8"), /Parallax Local Alpha/);
+
+    const exportPath = path.join(auditDir, "workspace-export.json");
+    const exported = runCli(["export", "--audit-dir", auditDir, "--out", exportPath]);
+    assert.match(exported, /Parallax Workspace Export/);
+    assert.match(exported, /Audit bundles: 1/);
+
+    const importedDir = await mkdtemp(path.join(os.tmpdir(), "parallax-cli-import-"));
+    const imported = runCli(["import", "--in", exportPath, "--audit-dir", importedDir]);
+    assert.match(imported, /Parallax Workspace Import/);
+    assert.match(imported, /Dossiers: 1/);
+    await rm(importedDir, { recursive: true, force: true });
   } finally {
     await rm(auditDir, { recursive: true, force: true });
   }

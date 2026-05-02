@@ -101,7 +101,7 @@ The current repo already has the right skeleton:
 - audit replay;
 - paper-trading helpers;
 - sandbox execution controls;
-- 31 tests;
+- 32 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -123,8 +123,11 @@ Implemented on 2026-05-02:
 - workspace lifecycle alerts;
 - evidence/source viewer;
 - alpha feedback capture;
-- workspace export;
-- 31 passing tests.
+- feedback summary;
+- portable workspace import/export;
+- static local dashboard;
+- Phase 1 artifact bundle;
+- 32 passing tests.
 
 ## Knowledge Gathered
 

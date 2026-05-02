@@ -14,6 +14,7 @@
     "policy": "npm run build --silent && node dist/src/cli/parallax.js policy",
     "library": "npm run build --silent && node dist/src/cli/parallax.js library",
     "watchlist": "npm run build --silent && node dist/src/cli/parallax.js watchlist",
+    "app": "npm run build --silent && node dist/src/cli/parallax.js app",
     "test": "npm run build --silent && node --test dist/tests/*.test.js",
     "demo": "npm run build --silent && node dist/src/cli/parallax.js analyze --symbol NVDA --horizon swing --thesis \"post-earnings continuation with controlled risk\" --ceiling watchlist"
   },
