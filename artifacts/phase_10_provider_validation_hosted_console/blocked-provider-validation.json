@@ -1,0 +1,447 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-02T21:09:00.000Z",
+  "root_dir": "artifacts/phase_10_provider_validation_hosted_console/invalid-managed-saas",
+  "config_path": "artifacts/phase_10_provider_validation_hosted_console/invalid-managed-saas/managed-saas.json",
+  "status": "blocked",
+  "summary": {
+    "provider_count": 6,
+    "contract_validated_count": 5,
+    "required_failure_count": 1,
+    "warning_count": 0,
+    "missing_required_kinds": [],
+    "managed_saas_status": "ready_for_managed_beta_scaffold",
+    "production_provider_count": 0
+  },
+  "controls": [
+    {
+      "id": "managed_saas_ready",
+      "passed": true,
+      "detail": "Managed SaaS scaffold readiness passed.",
+      "severity": "required"
+    },
+    {
+      "id": "required_provider_manifests",
+      "passed": true,
+      "detail": "Required provider manifests exist.",
+      "severity": "required"
+    },
+    {
+      "id": "provider_contracts_validated",
+      "passed": false,
+      "detail": "Provider contract checks passed.",
+      "severity": "required"
+    },
+    {
+      "id": "no_production_providers",
+      "passed": true,
+      "detail": "No external provider is enabled for production.",
+      "severity": "required"
+    },
+    {
+      "id": "secret_refs_sanitized",
+      "passed": true,
+      "detail": "Provider report exposes secret names and hashes only.",
+      "severity": "required"
+    },
+    {
+      "id": "external_production_validation_pending",
+      "passed": true,
+      "detail": "External providers remain pending production validation.",
+      "severity": "warning"
+    }
+  ],
+  "providers": [
+    {
+      "id": "provider_val_3ea7b79f3a5a",
+      "integration_id": "integration_44881b64238c",
+      "kind": "identity_provider",
+      "name": "OIDC Contract",
+      "provider": "enterprise_oidc",
+      "manifest_status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref_name": "IDENTITY_PROVIDER",
+      "secret_ref_hash": "ff89b716e63b254c150823a1e848ff20ee50d3eafc91849ebdab54a5bce50705",
+      "raw_secret_stored": false,
+      "status": "contract_validated",
+      "required_failure_count": 0,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "oidc_endpoint_https",
+          "passed": true,
+          "detail": "Identity provider endpoint is HTTPS.",
+          "severity": "required"
+        },
+        {
+          "id": "sso_not_live",
+          "passed": true,
+          "detail": "SSO is not treated as live production.",
+          "severity": "required"
+        }
+      ]
+    },
+    {
+      "id": "provider_val_d3eb4c49d8fc",
+      "integration_id": "integration_e61dbc41b6ff",
+      "kind": "market_data_vendor",
+      "name": "Licensed Market Data Contract",
+      "provider": "licensed_us_equities_vendor",
+      "manifest_status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "alpha_research",
+      "secret_ref_name": "MARKET_DATA_VENDOR",
+      "secret_ref_hash": "1c39fe23174016bcf88ac43191bc5b59f4ee30ca0e6a2683254ac282b13c50f4",
+      "raw_secret_stored": false,
+      "status": "contract_validated",
+      "required_failure_count": 0,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "data_license_declared",
+          "passed": true,
+          "detail": "Market-data license status is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "market_data_not_live",
+          "passed": true,
+          "detail": "Market-data vendor is not treated as production live.",
+          "severity": "required"
+        }
+      ]
+    },
+    {
+      "id": "provider_val_ab25f2e0b150",
+      "integration_id": "integration_e63485ee9cc0",
+      "kind": "llm_provider",
+      "name": "Model Gateway Contract",
+      "provider": "model_gateway",
+      "manifest_status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref_name": "LLM_PROVIDER",
+      "secret_ref_hash": "7687a53a23d10e3df4cff816bf786f8eac5dce69fa201bcdeef24b5a5daa9ba1",
+      "raw_secret_stored": false,
+      "status": "contract_validated",
+      "required_failure_count": 0,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "llm_provider_not_live",
+          "passed": true,
+          "detail": "External LLM provider is not treated as production live.",
+          "severity": "required"
+        },
+        {
+          "id": "llm_notes_present",
+          "passed": true,
+          "detail": "LLM manifest records validation or local-harness notes.",
+          "severity": "warning"
+        }
+      ]
+    },
+    {
+      "id": "provider_val_5c79520ac5fe",
+      "integration_id": "integration_e11b96b8cf40",
+      "kind": "regulated_partner",
+      "name": "Regulated Partner Contract",
+      "provider": "regulated_execution_partner",
+      "manifest_status": "disabled_until_legal_approval",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref_name": "REGULATED_PARTNER",
+      "secret_ref_hash": "67534ee47c026f289ad5ad35da349724070be1afc7fa5bd268d4b6dd85015ab0",
+      "raw_secret_stored": false,
+      "status": "contract_validated",
+      "required_failure_count": 0,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "production_partner_locked",
+          "passed": true,
+          "detail": "Regulated partner production adapter is locked.",
+          "severity": "required"
+        },
+        {
+          "id": "legal_approval_not_assumed",
+          "passed": true,
+          "detail": "Legal/compliance approval is not assumed from the manifest.",
+          "severity": "required"
+        }
+      ]
+    },
+    {
+      "id": "provider_val_ff263ac9762c",
+      "integration_id": "integration_0b5518b4b841",
+      "kind": "observability",
+      "name": "Managed Logs Contract",
+      "provider": "managed_logs_metrics",
+      "manifest_status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref_name": "OBSERVABILITY_VENDOR",
+      "secret_ref_hash": "ac632518299dec45ab6858fbec29b7d3c2d60da42e551cdb8c821c7587a08ba2",
+      "raw_secret_stored": false,
+      "status": "contract_validated",
+      "required_failure_count": 0,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "observability_events_present",
+          "passed": true,
+          "detail": "At least one managed observability event exists.",
+          "severity": "required"
+        },
+        {
+          "id": "pii_not_logged_by_policy",
+          "passed": true,
+          "detail": "Observability scaffold stores local events only and blocks secret-like metadata.",
+          "severity": "required"
+        }
+      ]
+    },
+    {
+      "id": "provider_val_41964074bd5a",
+      "integration_id": "integration_a79c82edb526",
+      "kind": "market_data_vendor",
+      "name": "Unlicensed Market Data",
+      "provider": "unlicensed_vendor",
+      "manifest_status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref_name": "MARKET_DATA_VENDOR",
+      "secret_ref_hash": "1c39fe23174016bcf88ac43191bc5b59f4ee30ca0e6a2683254ac282b13c50f4",
+      "raw_secret_stored": false,
+      "status": "blocked",
+      "required_failure_count": 1,
+      "checks": [
+        {
+          "id": "manifest_present",
+          "passed": true,
+          "detail": "Integration manifest is present.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_named",
+          "passed": true,
+          "detail": "Provider name is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_reference_registered",
+          "passed": true,
+          "detail": "External secret reference is registered.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_secret_not_stored",
+          "passed": true,
+          "detail": "No raw secret is stored in the manifest or secret registry.",
+          "severity": "required"
+        },
+        {
+          "id": "validation_status_declared",
+          "passed": true,
+          "detail": "Validation status is explicit.",
+          "severity": "required"
+        },
+        {
+          "id": "production_not_enabled_by_manifest",
+          "passed": true,
+          "detail": "Provider is not enabled for production by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "data_license_declared",
+          "passed": false,
+          "detail": "Market-data license status is declared.",
+          "severity": "required"
+        },
+        {
+          "id": "market_data_not_live",
+          "passed": true,
+          "detail": "Market-data vendor is not treated as production live.",
+          "severity": "required"
+        }
+      ]
+    }
+  ],
+  "validation_path": ""
+}

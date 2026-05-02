@@ -1,0 +1,7 @@
+{
+  "control_plane_id": "saas_cp_dbb8b8d6d61a",
+  "tenant": "alpha_research",
+  "secret_ref_count": 5,
+  "integration_count": 5,
+  "observability_path": "artifacts/phase_10_provider_validation_hosted_console/managed-saas/observability-events.jsonl"
+}

@@ -1,0 +1,25 @@
+Parallax Provider Validation
+============================
+
+Status: ready_for_provider_contract_beta
+Root dir: artifacts/phase_10_provider_validation_hosted_console/managed-saas
+Providers: 5
+Contract validated: 5
+Required failures: 0
+Warnings: 0
+Validation path: artifacts/phase_10_provider_validation_hosted_console/managed-saas/provider-validation.json
+
+Providers
+  - identity_provider | OIDC Contract | contract_validated | manifest=disabled_until_configured | validation=not_validated | failures=0
+  - market_data_vendor | Licensed Market Data Contract | contract_validated | manifest=disabled_until_configured | validation=not_validated | failures=0
+  - llm_provider | Model Gateway Contract | contract_validated | manifest=disabled_until_configured | validation=not_validated | failures=0
+  - regulated_partner | Regulated Partner Contract | contract_validated | manifest=disabled_until_legal_approval | validation=not_validated | failures=0
+  - observability | Managed Logs Contract | contract_validated | manifest=disabled_until_configured | validation=not_validated | failures=0
+
+Controls
+  - managed_saas_ready | passed | required | Managed SaaS scaffold readiness passed.
+  - required_provider_manifests | passed | required | Required provider manifests exist.
+  - provider_contracts_validated | passed | required | Provider contract checks passed.
+  - no_production_providers | passed | required | No external provider is enabled for production.
+  - secret_refs_sanitized | passed | required | Provider report exposes secret names and hashes only.
+  - external_production_validation_pending | passed | warning | External providers remain pending production validation.

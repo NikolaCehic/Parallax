@@ -25,6 +25,7 @@ import {
   exportToHumanReport,
   feedbackSummaryToHumanReport,
   feedbackToHumanReport,
+  hostedConsoleToHumanReport,
   importToHumanReport,
   libraryToHumanReport,
   lifecycleNotificationsToHumanReport,
@@ -49,6 +50,7 @@ import {
   partnerTicketToHumanReport,
   policyToHumanReport,
   portfolioImportToHumanReport,
+  providerValidationToHumanReport,
   promptRegistryToHumanReport,
   replayToHumanReport,
   saasExportToHumanReport,
@@ -97,6 +99,7 @@ import {
   updateAlertPreferences
 } from "../lifecycle/workspace.js";
 import { writeDashboard } from "../app/dashboard.js";
+import { writeHostedConsole } from "../app/hosted_console.js";
 import { buildDataStatus } from "../data/status.js";
 import { writePortfolioJson } from "../data/portfolio.js";
 import {
@@ -139,6 +142,10 @@ import {
   registerExternalIntegration,
   registerSecretReference
 } from "../saas/managed.js";
+import {
+  providerValidationPath,
+  validateProviderContracts
+} from "../providers/validation.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -220,6 +227,9 @@ Commands:
   saas-readiness [--root-dir managed-saas]
   saas-status [--root-dir managed-saas]
   saas-export --root-dir managed-saas --out managed-saas-package.json
+  provider-validate [--root-dir managed-saas] [--out managed-saas/provider-validation.json]
+  provider-status [--root-dir managed-saas]
+  hosted-console [--root-dir managed-saas] [--out managed-saas/parallax-hosted-console.html]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1071,6 +1081,42 @@ async function main() {
       out: String(args.out)
     });
     printResult(args, saasExportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "provider-validate") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await validateProviderContracts({
+      rootDir,
+      configPath,
+      out: args.out && args.out !== true ? String(args.out) : providerValidationPath(rootDir),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, providerValidationToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "provider-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await validateProviderContracts({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, providerValidationToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "hosted-console") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await writeHostedConsole({
+      rootDir,
+      configPath,
+      validationPath: providerValidationPath(rootDir),
+      out: args.out && args.out !== true ? String(args.out) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, hostedConsoleToHumanReport(result), result);
     return;
   }
 

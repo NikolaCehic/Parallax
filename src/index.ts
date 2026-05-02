@@ -174,3 +174,12 @@ export {
   registerExternalIntegration,
   registerSecretReference
 } from "./saas/managed.js";
+export {
+  loadProviderValidationReport,
+  providerValidationPath,
+  validateProviderContracts
+} from "./providers/validation.js";
+export {
+  buildHostedConsoleHtml,
+  writeHostedConsole
+} from "./app/hosted_console.js";

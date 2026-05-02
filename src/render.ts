@@ -1083,6 +1083,58 @@ export function saasExportToHumanReport(result: any) {
   ]);
 }
 
+export function providerValidationToHumanReport(report: any) {
+  const providerRows = report.providers.map((provider: any) =>
+    [
+      `  - ${provider.kind}`,
+      provider.name,
+      provider.status,
+      `manifest=${provider.manifest_status}`,
+      `validation=${provider.validation_status}`,
+      `failures=${provider.required_failure_count}`
+    ].join(" | ")
+  );
+  const controlRows = report.controls.map((control: any) =>
+    [
+      `  - ${control.id}`,
+      control.passed ? "passed" : "failed",
+      control.severity,
+      control.detail
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Provider Validation",
+    "============================",
+    "",
+    `Status: ${report.status}`,
+    `Root dir: ${report.root_dir}`,
+    `Providers: ${report.summary.provider_count}`,
+    `Contract validated: ${report.summary.contract_validated_count}`,
+    `Required failures: ${report.summary.required_failure_count}`,
+    `Warnings: ${report.summary.warning_count}`,
+    `Validation path: ${compact(report.validation_path)}`,
+    "",
+    "Providers",
+    providerRows.length ? providerRows.join("\n") : "No provider manifests.",
+    "",
+    "Controls",
+    controlRows.length ? controlRows.join("\n") : "No controls."
+  ]);
+}
+
+export function hostedConsoleToHumanReport(result: any) {
+  return lines([
+    "Parallax Hosted Console",
+    "=======================",
+    "",
+    `Output: ${result.out}`,
+    `Root dir: ${result.root_dir}`,
+    `Provider validation: ${result.validation_path}`,
+    `Bytes: ${result.bytes}`,
+    `Generated at: ${result.generated_at}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

@@ -108,7 +108,9 @@ The current repo already has the right skeleton:
 - partner execution ledger;
 - beta deployment/API layer;
 - managed SaaS control-plane scaffold;
-- 52 tests;
+- provider contract validation harness;
+- hosted console foundation;
+- 54 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -185,7 +187,10 @@ Implemented on 2026-05-02:
 - managed observability event log;
 - managed SaaS readiness/status/export package;
 - Phase 9 artifact bundle;
-- 52 passing tests.
+- provider contract validation report;
+- hosted console generator;
+- Phase 10 artifact bundle;
+- 54 passing tests.
 
 ## Knowledge Gathered
 
@@ -1003,6 +1008,35 @@ Exit criteria:
 - readiness reports external integration gaps explicitly;
 - production execution remains locked;
 - export package reconstructs managed readiness evidence.
+
+### Phase 10: Provider Validation And Hosted Console
+
+Status: Complete for provider-contract beta scope.
+
+Goal:
+
+Turn external-provider manifests into explicit local contract checks and give operators a hosted-product console foundation before any real vendor is connected.
+
+Deliverables:
+
+- provider contract validator;
+- sanitized provider validation report;
+- SSO endpoint contract checks;
+- market-data license contract checks;
+- LLM provider production-lock checks;
+- regulated-partner legal/production-lock checks;
+- observability event checks;
+- blocked-manifest test case;
+- hosted console HTML generator;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- provider validation cannot expose raw secret references;
+- missing licenses or invalid contracts block readiness;
+- production providers remain locked by manifest;
+- hosted console renders tenants, providers, controls, and production boundaries;
+- external vendors remain manifests until credentials, licenses, legal review, and production validation are complete.
 
 ## Team Needed
 

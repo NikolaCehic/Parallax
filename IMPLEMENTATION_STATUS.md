@@ -8,7 +8,7 @@ TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision 
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, and managed SaaS readiness.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, managed SaaS readiness, provider contract validation, and the hosted console foundation.
 
 ## Phase Completion Map
 
@@ -36,10 +36,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 7 Regulated/Partner Execution | Complete for partner sandbox handoff and locked production-adapter scope | Regulated partner registry, legal/compliance approval, market-access review, persistent partner tickets, human approval, kill switch, partner sandbox handoff, production lock, post-trade review, phase artifacts |
 | 8 Product Beta And Deployment | Complete for local beta deployment scope | Hashed API token config, readiness report, authenticated beta API, dashboard endpoint, Docker scaffold, beta export package, phase artifacts |
 | 9 Managed SaaS And External Integrations | Complete for managed beta scaffold scope | Tenant isolation, external secret references, external provider manifests, observability event log, readiness/export package, phase artifacts |
+| 10 Provider Validation And Hosted Console | Complete for provider-contract beta scope | Provider contract checks, sanitized validation report, blocked-manifest checks, hosted console HTML, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 52 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, and Phase 9 managed-SaaS tests.
+- `npm test` builds TypeScript and runs 54 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, Phase 9 managed-SaaS tests, and Phase 10 provider/hosted-console tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -79,6 +80,9 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `integration-add` records disabled-until-configured external provider manifests for identity, market data, LLM, regulated partner, storage, and observability.
 - `observability-record` appends managed control-plane events to a JSONL audit stream.
 - `saas-readiness`, `saas-status`, and `saas-export` report and package managed readiness evidence.
+- `provider-validate` writes a sanitized provider contract validation report.
+- `provider-status` computes provider contract status without persisting a report.
+- `hosted-console` writes a static managed-beta console backed by SaaS readiness and provider validation.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -95,6 +99,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Phase 7 artifacts live under `artifacts/phase_7_regulated_partner_execution/`.
 - Phase 8 artifacts live under `artifacts/phase_8_product_beta_deployment/`.
 - Phase 9 artifacts live under `artifacts/phase_9_managed_saas_external_integrations/`.
+- Phase 10 artifacts live under `artifacts/phase_10_provider_validation_hosted_console/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -121,6 +126,7 @@ It covers:
 - sandbox approval, expiry, kill switch, and risk-control enforcement;
 - partner legal approval, market-access review, human approval, kill switch, production-adapter lock, post-trade review, and workspace portability.
 - managed SaaS tenant isolation, secret-reference hygiene, external provider manifests, observability events, readiness status, and export packaging.
+- provider contract validation, blocked provider manifests, raw-secret redaction, hosted-console generation, and CLI smoke coverage.
 
 The suite exposed and fixed two issues: past events were previously counted as future event risk, and boolean lifecycle trigger expressions were not evaluated correctly.
 
@@ -128,10 +134,10 @@ The suite exposed and fixed two issues: past events were previously counted as f
 
 - No direct live broker integration.
 - Partner production adapter is locked by default and requires a separately approved regulated partner implementation.
-- No external market data vendor API yet; Phase 2 supports local licensed data packs, and Phase 9 records external vendor manifests.
-- No external LLM API integration yet; the current LLM path is a deterministic local harness that exercises the production contract.
-- No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold, and Phase 9 provides a local managed SaaS control-plane scaffold.
-- No external SSO provider yet; beta auth uses bearer tokens and stores only token hashes, while Phase 9 records identity-provider manifests.
+- No external market data vendor API yet; Phase 2 supports local licensed data packs, Phase 9 records external vendor manifests, and Phase 10 validates those manifests locally.
+- No external LLM API integration yet; the current LLM path is a deterministic local harness, while Phase 10 validates external model-provider manifests locally.
+- No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold, Phase 9 provides a local managed SaaS control-plane scaffold, and Phase 10 provides a static hosted console foundation.
+- No external SSO provider yet; beta auth uses bearer tokens and stores only token hashes, while Phase 10 validates identity-provider manifests locally.
 - No legal/compliance claim beyond prototype controls.
 - No claim of trading profitability.
 

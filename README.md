@@ -28,6 +28,7 @@ Parallax tries to sit in the middle:
 - Phase 7 partner execution adds legal approval, market-access review, human approval, kill switch, post-trade review, and a locked production-adapter boundary.
 - Phase 8 beta deployment adds an authenticated local API, readiness checks, deployment config, Docker scaffold, and beta export package.
 - Phase 9 managed SaaS scaffolding adds tenant isolation, external secret references, provider manifests, observability events, and readiness/export checks for a future hosted product.
+- Phase 10 provider validation adds contract checks for external manifests and a static hosted console for managed-beta review.
 
 Instead of asking:
 
@@ -112,6 +113,7 @@ TypeScript owns:
 - sandbox and partner execution controls.
 - beta API and deployment readiness.
 - managed SaaS control-plane scaffolding.
+- provider contract validation and hosted console generation.
 
 Python owns:
 
@@ -559,6 +561,16 @@ npm run saas-export -- \
   --out managed-saas-package.json
 ```
 
+Validate provider contracts and write the hosted console:
+
+```bash
+npm run provider-validate -- --root-dir managed-saas
+
+npm run hosted-console -- \
+  --root-dir managed-saas \
+  --out managed-saas/parallax-hosted-console.html
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -728,7 +740,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 52 tests:
+The suite currently includes 54 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -744,6 +756,7 @@ The suite currently includes 52 tests:
 - Phase 7 partner-execution legal approval, market-access review, human approval, kill switch, production lock, post-trade review, export/import, dashboard, and CLI tests;
 - Phase 8 beta-deployment readiness, authenticated API, analysis endpoint, dashboard endpoint, export, and CLI tests;
 - Phase 9 managed-SaaS tenant isolation, secret-reference hygiene, provider manifest, observability, export, and CLI tests;
+- Phase 10 provider-contract validation, hosted-console generation, raw-secret redaction, blocking checks, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -780,6 +793,7 @@ src/
   paper/          Paper-trading helpers
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
+  providers/      External provider contract validation and sanitized reports
   saas/           Managed SaaS tenancy, secret-reference, provider-manifest, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
@@ -792,7 +806,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -825,10 +839,10 @@ Current intentional limits:
 
 - no direct live broker integration;
 - partner production adapter is locked by default;
-- no external market data vendor API yet; Phase 9 records manifests only;
-- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 9 records manifests only;
-- no external SSO provider yet; Phase 9 records identity-provider manifests but does not connect one;
-- no hosted cloud tenancy yet; Phase 9 proves local tenant isolation and managed-readiness evidence only;
+- no external market data vendor API yet; Phase 10 validates manifests only;
+- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 10 validates manifests only;
+- no external SSO provider yet; Phase 10 validates identity-provider manifests but does not connect one;
+- no hosted cloud tenancy yet; Phase 10 writes a static hosted console and local readiness evidence only;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -889,7 +903,9 @@ Current state:
 - external provider manifest registry;
 - managed observability event log;
 - managed SaaS readiness and export package;
-- 52 passing tests.
+- provider contract validation report;
+- static hosted console generator;
+- 54 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 
