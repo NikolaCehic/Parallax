@@ -1,17 +1,32 @@
 #!/usr/bin/env node
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
-import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle } from "../index.js";
+import { analyzeThesis, readAuditBundle, replayAuditBundle, evaluateLifecycle, productPolicySnapshot } from "../index.js";
 import {
+  alertsToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
+  exportToHumanReport,
+  feedbackToHumanReport,
+  libraryToHumanReport,
   monitorToHumanReport,
   paperToHumanReport,
+  policyToHumanReport,
   replayToHumanReport,
-  sandboxToHumanReport
+  sandboxToHumanReport,
+  sourcesToHumanReport
 } from "../render.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import { ApprovalStore, SandboxBroker, KillSwitch } from "../execution/sandbox.js";
+import {
+  exportWorkspace,
+  filterWatchlistEntries,
+  listLibraryEntries,
+  monitorWorkspace,
+  recordFeedback,
+  sourceViewFromAudit,
+  upsertLibraryEntry
+} from "../library/store.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -39,6 +54,13 @@ Commands:
   analyze --symbol NVDA --horizon swing --thesis "post-earnings continuation" [--ceiling watchlist]
   replay --audit audits/dos_x.json
   monitor --audit audits/dos_x.json --price 1050 --now 2026-05-01T15:00:00Z
+  library [--audit-dir audits]
+  watchlist [--audit-dir audits]
+  alerts [--audit-dir audits] [--prices NVDA=111,TSLA=240]
+  sources --audit audits/dos_x.json
+  feedback --audit audits/dos_x.json --rating useful [--notes "..."]
+  export --audit-dir audits --out parallax-workspace.json
+  policy
   paper --audit audits/dos_x.json
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
@@ -47,6 +69,8 @@ Common flags:
   --format json|human    Same as --json, but explicit.
   --data-dir fixtures    Directory containing market/events/portfolio fixture data.
   --audit-dir audits     Directory where analyze writes audit artifacts.
+  --user-class           self_directed_investor, independent_analyst, research_team, trading_educator, professional_reviewer.
+  --intended-use         research, education, paper_trading, team_review, governance_review.
 `;
 }
 
@@ -57,6 +81,18 @@ function wantsJson(args: CliArgs) {
 function printResult(args: CliArgs, human: string, json: any) {
   if (wantsJson(args)) console.log(JSON.stringify(json, null, 2));
   else console.log(human);
+}
+
+function parsePrices(value?: string | boolean) {
+  const prices: Record<string, number> = {};
+  if (!value || value === true) return prices;
+  for (const part of String(value).split(",")) {
+    const [symbol, rawPrice] = part.split("=");
+    if (!symbol || !rawPrice) continue;
+    const price = Number(rawPrice);
+    if (!Number.isNaN(price)) prices[symbol.toUpperCase()] = price;
+  }
+  return prices;
 }
 
 async function main() {
@@ -70,29 +106,107 @@ async function main() {
 
   if (command === "analyze") {
     if (!args.symbol || !args.thesis) throw new Error("analyze requires --symbol and --thesis");
+    const auditDir = String(args["audit-dir"] ?? "audits");
     const dossier = await analyzeThesis({
       symbol: String(args.symbol),
       horizon: String(args.horizon ?? "swing"),
       thesis: String(args.thesis),
       dataDir: String(args["data-dir"] ?? "fixtures"),
       actionCeiling: String(args.ceiling ?? "watchlist"),
+      userClass: String(args["user-class"] ?? "self_directed_investor"),
+      intendedUse: String(args["intended-use"] ?? "research"),
       audit: true,
       now: args.now ? String(args.now) : undefined,
-      auditDir: String(args["audit-dir"] ?? "audits")
+      auditDir
     });
-    const auditPath = path.join(String(args["audit-dir"] ?? "audits"), `${dossier.id}.json`);
-    const markdownPath = path.join(String(args["audit-dir"] ?? "audits"), `${dossier.id}.md`);
+    const auditPath = path.join(auditDir, `${dossier.id}.json`);
+    const markdownPath = path.join(auditDir, `${dossier.id}.md`);
     await writeFile(markdownPath, dossierToMarkdown(dossier));
+    await upsertLibraryEntry({ auditDir, dossier, auditPath, markdownPath });
     const result = {
       dossier_id: dossier.id,
       action_class: dossier.decision_packet.action_class,
       thesis_state: dossier.lifecycle.state,
       confidence: dossier.decision_packet.confidence,
       freshness_score: dossier.lifecycle.freshness_score,
+      policy_status: dossier.policy_review.status,
+      effective_action_ceiling: dossier.policy_review.effective_action_ceiling,
       audit_path: auditPath,
-      markdown_path: markdownPath
+      markdown_path: markdownPath,
+      library_path: path.join(auditDir, "library.json")
     };
     printResult(args, dossierToHumanReport(dossier, { auditPath, markdownPath }), result);
+    return;
+  }
+
+  if (command === "policy") {
+    const policy = productPolicySnapshot();
+    printResult(args, policyToHumanReport(policy), policy);
+    return;
+  }
+
+  if (command === "library") {
+    const library = await listLibraryEntries({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      symbol: args.symbol ? String(args.symbol) : undefined,
+      state: args.state ? String(args.state) : undefined,
+      action: args.action ? String(args.action) : undefined
+    });
+    printResult(args, libraryToHumanReport(library), library);
+    return;
+  }
+
+  if (command === "watchlist") {
+    const library = await listLibraryEntries({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      symbol: args.symbol ? String(args.symbol) : undefined
+    });
+    const watchlist = {
+      ...library,
+      entries: filterWatchlistEntries(library.entries)
+    };
+    printResult(args, libraryToHumanReport(watchlist, { title: "Parallax Watchlist" }), watchlist);
+    return;
+  }
+
+  if (command === "alerts") {
+    const alerts = await monitorWorkspace({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      now: args.now ? String(args.now) : undefined,
+      prices: parsePrices(args.prices)
+    });
+    printResult(args, alertsToHumanReport(alerts), alerts);
+    return;
+  }
+
+  if (command === "sources") {
+    if (!args.audit) throw new Error("sources requires --audit");
+    const view = await sourceViewFromAudit(String(args.audit));
+    printResult(args, sourcesToHumanReport(view), view);
+    return;
+  }
+
+  if (command === "feedback") {
+    if (!args.audit) throw new Error("feedback requires --audit");
+    if (!args.rating) throw new Error("feedback requires --rating");
+    const feedback = await recordFeedback({
+      auditPath: String(args.audit),
+      rating: String(args.rating),
+      notes: args.notes ? String(args.notes) : "",
+      reviewer: args.reviewer ? String(args.reviewer) : "local_alpha_user",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, feedbackToHumanReport(feedback), feedback);
+    return;
+  }
+
+  if (command === "export") {
+    if (!args.out) throw new Error("export requires --out");
+    const exported = await exportWorkspace({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      out: String(args.out)
+    });
+    printResult(args, exportToHumanReport(exported), exported);
     return;
   }
 

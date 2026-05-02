@@ -26,8 +26,25 @@ export function validateGovernedRelease({
   dossier
 }) {
   const problems = [];
-  if (!modelRegistry.rule_council_v0 || !modelRegistry.rule_council_v0.validation_status.includes("validated")) {
-    problems.push("Council model is not validated.");
+  const councilModelRef = dossier.council_run?.provider?.model_registry_ref ?? "rule_council_v0";
+  const councilModel = modelRegistry[councilModelRef];
+  if (!councilModel) {
+    problems.push(`Council model ${councilModelRef} is not registered.`);
+  } else if (!councilModel.validation_status.includes("validated")) {
+    problems.push(`Council model ${councilModelRef} is not validated.`);
+  }
+  if (!dossier.policy_review) {
+    problems.push("Product policy review is missing.");
+  } else {
+    if (dossier.policy_review.status === "blocked" && dossier.decision_packet.action_class !== "no_trade") {
+      problems.push("Blocked product-policy request did not resolve to no_trade.");
+    }
+    if (dossier.decision_packet.action_class === "order_ticket_candidate") {
+      problems.push("General product release cannot emit order_ticket_candidate.");
+    }
+  }
+  if (dossier.council_run?.eval_report && !dossier.council_run.eval_report.passed) {
+    problems.push("Council claim-packet evaluation did not pass.");
   }
   for (const output of dossier.tool_outputs) {
     const registered = toolRegistry[output.tool_name];

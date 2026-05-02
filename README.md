@@ -137,6 +137,12 @@ npm run analyze --silent -- \
   --now 2026-05-01T14:30:00Z
 ```
 
+Show the product boundary:
+
+```bash
+npm run policy
+```
+
 By default, Parallax prints a human-readable report with the full workflow:
 
 ```text
@@ -166,6 +172,55 @@ npm run analyze --silent -- \
   --thesis "post-earnings continuation with controlled risk" \
   --json
 ```
+
+## Local Alpha Workspace
+
+Every CLI analysis writes an audit bundle, markdown dossier, and local library entry.
+
+List saved dossiers:
+
+```bash
+npm run cli -- library --audit-dir audits
+```
+
+Show active watchlist and paper-trade candidates:
+
+```bash
+npm run cli -- watchlist --audit-dir audits
+```
+
+Scan the workspace for theses that need attention:
+
+```bash
+npm run cli -- alerts \
+  --audit-dir audits \
+  --prices NVDA=111,TSLA=240
+```
+
+Inspect the exact evidence and tool-output hashes behind a dossier:
+
+```bash
+npm run cli -- sources --audit audits/dos_x.json
+```
+
+Record alpha feedback:
+
+```bash
+npm run cli -- feedback \
+  --audit audits/dos_x.json \
+  --rating useful \
+  --notes "clear invalidators"
+```
+
+Export the local workspace:
+
+```bash
+npm run cli -- export \
+  --audit-dir audits \
+  --out parallax-workspace.json
+```
+
+The local workspace is intentionally file-based. It is easy to inspect, easy to delete, and does not require a cloud account.
 
 If you need a specific Python interpreter:
 
@@ -255,10 +310,13 @@ Run:
 npm test
 ```
 
-The suite currently includes 23 tests:
+The suite currently includes 31 tests:
 
 - CLI human-output tests;
 - JSON output tests;
+- product-boundary tests;
+- council-provider evaluation tests;
+- local workspace tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -287,7 +345,9 @@ src/
   execution/      Sandbox execution controls
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state and trigger engine
+  library/        Local dossier library, source view, feedback, export
   paper/          Paper-trading helpers
+  product/        Product boundary and prohibited-claim policy
 
 python/
   parallax_analytics.py
@@ -298,7 +358,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, paper, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -311,6 +371,7 @@ TradeAgent/
 - [Implementation Status](IMPLEMENTATION_STATUS.md)
 - [E2E Testing](E2E_TESTING.md)
 - [Productization Plan](PRODUCTIZATION_PLAN.md)
+- [Product Boundaries](PRODUCT_BOUNDARIES.md)
 - [Best Solution Notes](TradeAgent/best_solution.md)
 
 ## Safety Boundaries
@@ -343,11 +404,17 @@ Current state:
 - TypeScript + Python prototype;
 - human-readable CLI;
 - machine-readable JSON mode;
+- product-boundary policy;
+- council provider/evaluation boundary;
+- local dossier library;
+- source viewer;
+- workspace lifecycle alerts;
+- alpha feedback capture;
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
 - paper and sandbox paths;
-- 23 passing tests.
+- 31 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

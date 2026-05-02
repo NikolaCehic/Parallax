@@ -1,12 +1,14 @@
 # Implementation Status
 
-Status date: 2026-05-01
+Status date: 2026-05-02
 
-Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of all documented phases, with live execution intentionally limited to sandbox-only approval workflows.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with live execution intentionally limited to sandbox-only approval workflows. The first productization slice is now implemented: product-boundary enforcement plus a local alpha workspace.
 
 TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, and sandbox execution controls.
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
+
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, workspace export, and alpha feedback capture.
 
 ## Phase Completion Map
 
@@ -22,9 +24,15 @@ Python owns deterministic quant-style analytics through `python/parallax_analyti
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 23 tests, including 10 full E2E synthetic scenarios and CLI human-output coverage.
+- `npm test` builds TypeScript and runs 31 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, and local workspace tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
+- Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
+- Every analysis records a `council_run` with provider metadata and a claim-packet evaluation report.
+- Invalid future LLM-style claim packets can fail before the decision gate through the council evaluation boundary.
+- The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
+- CLI analyses now upsert a local `library.json` entry.
+- The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, and export the workspace.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -57,6 +65,7 @@ The suite exposed and fixed two issues: past events were previously counted as f
 - No live broker integration.
 - No external market data vendor yet.
 - No LLM API integration yet; personas are deterministic and replayable.
+- No cloud workspace yet.
 - No legal/compliance claim beyond prototype controls.
 - No claim of trading profitability.
 

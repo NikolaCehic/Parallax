@@ -13,6 +13,8 @@ export function applyDecisionGate({
   claimPackets,
   toolOutputs,
   summary,
+  policyReview,
+  councilEval,
   actionCeiling = "watchlist",
   auditBundleRef = "pending"
 }) {
@@ -28,7 +30,20 @@ export function applyDecisionGate({
     .filter((output) => output.tool_name === "data_quality_check" && output.status !== "passed")
     .map((output) => ({ tool_name: output.tool_name, reason: "Data quality warning." }));
 
-  const vetoes = [...activeVetoes, ...failedTools, ...dataWarnings];
+  const policyVetoes = policyReview?.status === "blocked"
+    ? policyReview.controls
+      .filter((control) => control.status === "blocked")
+      .map((control) => ({ policy_id: control.id, reason: control.message }))
+    : [];
+
+  const councilEvalVetoes = councilEval && !councilEval.passed
+    ? [{
+      model_id: councilEval.provider_id,
+      reason: `Council evaluation failed: ${councilEval.problems.join(" ")}`
+    }]
+    : [];
+
+  const vetoes = [...activeVetoes, ...failedTools, ...dataWarnings, ...policyVetoes, ...councilEvalVetoes];
   const supportCount = claimPackets.filter((packet) => packet.stance === "support").length;
   const opposeCount = claimPackets.filter((packet) => packet.stance === "oppose").length;
   const needsDataCount = claimPackets.filter((packet) => packet.stance === "needs_more_data").length;
@@ -42,7 +57,8 @@ export function applyDecisionGate({
   ) {
     proposed = "paper_trade_candidate";
   }
-  const actionClass = capActionClass(proposed, actionCeiling);
+  const effectiveCeiling = policyReview?.effective_action_ceiling ?? actionCeiling;
+  const actionClass = capActionClass(proposed, effectiveCeiling);
 
   let confidence = 0.45 + supportCount * 0.04 - opposeCount * 0.06 - needsDataCount * 0.03;
   if (summary.required_checks.length > 0) confidence -= 0.08;
@@ -68,7 +84,9 @@ export function applyDecisionGate({
     dissent: summary.dissent,
     invalidators: summary.invalidators,
     next_review_trigger: summary.invalidators[0] ?? "time_expiry",
-    audit_bundle_ref: auditBundleRef
+    audit_bundle_ref: auditBundleRef,
+    policy_review_ref: policyReview?.id ?? "none",
+    council_eval_ref: councilEval?.id ?? "none"
   };
 
   return {

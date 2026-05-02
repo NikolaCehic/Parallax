@@ -3,10 +3,12 @@ import path from "node:path";
 import { assertDecisionPacket, assertEvidenceSnapshot, assertThesisLifecycle, assertTradeThesisDossier } from "./core/schemas.js";
 import { buildEvidenceSnapshot } from "./evidence/store.js";
 import { runAnalytics } from "./analytics/run.js";
-import { runCouncil, crossExamine, synthesizeDossierSummary } from "./council/runner.js";
+import { crossExamine, synthesizeDossierSummary } from "./council/runner.js";
+import { runCouncilProvider } from "./council/provider.js";
 import { applyDecisionGate } from "./decision/gate.js";
 import { assignLifecycle } from "./lifecycle/engine.js";
 import { writeAuditBundle } from "./audit.js";
+import { reviewProductPolicy } from "./product/policy.js";
 
 export async function analyzeThesis({
   symbol,
@@ -14,15 +16,26 @@ export async function analyzeThesis({
   thesis,
   dataDir = "fixtures",
   actionCeiling = "watchlist",
+  userClass = "self_directed_investor",
+  intendedUse = "research",
   now = isoNow(),
   audit = false,
   auditDir = "audits"
 }) {
+  const policyReview = reviewProductPolicy({
+    symbol,
+    thesis,
+    actionCeiling,
+    userClass,
+    intendedUse
+  });
+
   const snapshot = await buildEvidenceSnapshot({ symbol, horizon, thesis, dataDir, now });
   assertEvidenceSnapshot(snapshot);
 
   const toolOutputs = runAnalytics(snapshot, { now });
-  const claimPackets = runCouncil({ snapshot, toolOutputs });
+  const councilRun = runCouncilProvider({ snapshot, toolOutputs, policyReview });
+  const claimPackets = councilRun.claim_packets;
   const crossExamination = crossExamine(claimPackets);
   const summary = synthesizeDossierSummary({ claimPackets, crossExamination });
 
@@ -33,7 +46,9 @@ export async function analyzeThesis({
     claimPackets,
     toolOutputs,
     summary,
-    actionCeiling,
+    policyReview,
+    councilEval: councilRun.eval_report,
+    actionCeiling: policyReview.effective_action_ceiling,
     auditBundleRef
   });
 
@@ -52,7 +67,12 @@ export async function analyzeThesis({
     thesis,
     action_class: decisionPacket.action_class,
     evidence_snapshot: snapshot,
+    policy_review: policyReview,
     tool_outputs: toolOutputs,
+    council_run: {
+      provider: councilRun.provider,
+      eval_report: councilRun.eval_report
+    },
     claim_packets: claimPackets,
     cross_examination: crossExamination,
     summary,
@@ -71,3 +91,5 @@ export async function analyzeThesis({
 
 export { readAuditBundle, replayAuditBundle, writeAuditBundle } from "./audit.js";
 export { evaluateLifecycle } from "./lifecycle/engine.js";
+export { reviewProductPolicy, productPolicySnapshot } from "./product/policy.js";
+export { evaluateClaimPackets, runCouncilProvider } from "./council/provider.js";

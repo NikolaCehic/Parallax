@@ -101,3 +101,60 @@ test("CLI replay, monitor, and paper commands produce human-readable reports", a
     await rm(auditDir, { recursive: true, force: true });
   }
 });
+
+test("CLI exposes product policy and local workspace commands", async () => {
+  const auditDir = await mkdtemp(path.join(os.tmpdir(), "parallax-cli-workspace-"));
+  try {
+    const policy = runCli(["policy"]);
+    assert.match(policy, /Parallax Product Boundary/);
+    assert.match(policy, /Allowed Action Classes/);
+    assert.match(policy, /Excluded Action Classes/);
+
+    const analyzeOutput = runCli([
+      "analyze",
+      "--symbol", "NVDA",
+      "--horizon", "swing",
+      "--thesis", "CLI workspace flow",
+      "--ceiling", "paper_trade_candidate",
+      "--now", NOW,
+      "--audit-dir", auditDir,
+      "--json"
+    ]);
+    const { audit_path: auditPath, library_path: libraryPath } = JSON.parse(analyzeOutput);
+    assert.match(libraryPath, /library\.json$/);
+
+    const library = runCli(["library", "--audit-dir", auditDir]);
+    assert.match(library, /Parallax Dossier Library/);
+    assert.match(library, /NVDA/);
+
+    const watchlist = runCli(["watchlist", "--audit-dir", auditDir]);
+    assert.match(watchlist, /Parallax Watchlist/);
+    assert.match(watchlist, /paper_trade_candidate/);
+
+    const alerts = runCli([
+      "alerts",
+      "--audit-dir", auditDir,
+      "--prices", "NVDA=1",
+      "--now", "2026-05-01T15:00:00Z"
+    ]);
+    assert.match(alerts, /Parallax Workspace Alerts/);
+    assert.match(alerts, /Need attention: 1/);
+
+    const sources = runCli(["sources", "--audit", auditPath]);
+    assert.match(sources, /Parallax Source View/);
+    assert.match(sources, /Evidence/);
+    assert.match(sources, /Tool Outputs/);
+
+    const feedback = runCli([
+      "feedback",
+      "--audit", auditPath,
+      "--rating", "useful",
+      "--notes", "CLI flow is readable",
+      "--now", NOW
+    ]);
+    assert.match(feedback, /Parallax Alpha Feedback/);
+    assert.match(feedback, /Rating: useful/);
+  } finally {
+    await rm(auditDir, { recursive: true, force: true });
+  }
+});

@@ -19,6 +19,10 @@ function bullet(items: string[], empty = "None.") {
   return items.map((item) => `  - ${item}`).join("\n");
 }
 
+function compact(value: any) {
+  return value === undefined || value === null || value === "" ? "n/a" : String(value);
+}
+
 export function dossierToMarkdown(dossier: any) {
   return `# ${dossier.title}
 
@@ -36,9 +40,22 @@ Generated: ${dossier.created_at}
 
 ${dossier.thesis}
 
+## Product Boundary
+
+- Status: ${dossier.policy_review?.status ?? "unknown"}
+- Effective action ceiling: ${dossier.policy_review?.effective_action_ceiling ?? "unknown"}
+- Legal posture: ${dossier.policy_review?.positioning?.legal_posture ?? "Research support only."}
+
 ## Council Summary
 
 ${dossier.summary.council_summary}
+
+## Council Evaluation
+
+- Provider: ${dossier.council_run?.provider?.id ?? "rule_council_v0"}
+- Passed: ${dossier.council_run?.eval_report?.passed !== false}
+- Problems: ${dossier.council_run?.eval_report?.problems?.length ?? 0}
+- Warnings: ${dossier.council_run?.eval_report?.warnings?.length ?? 0}
 
 ## Strongest Bull Case
 
@@ -96,13 +113,15 @@ export function dossierToHumanReport(dossier: any, { auditPath, markdownPath }: 
     "Pipeline Steps",
     `  1. Intake: normalized ${dossier.symbol} as a ${dossier.horizon} thesis.`,
     `  2. Evidence snapshot: froze ${dossier.evidence_snapshot.items.length} evidence items as ${dossier.evidence_snapshot.id}.`,
-    `  3. Python analytics: generated ${dossier.tool_outputs.length} deterministic tool outputs.`,
-    `  4. Council: collected ${dossier.claim_packets.length} persona claim packets.`,
-    `  5. Cross-examination: ${dossier.cross_examination.veto_count} vetoes, ${dossier.cross_examination.opposed_personas.length} opposing personas, ${dossier.cross_examination.required_checks.length} required checks.`,
-    "  6. Synthesis: preserved strongest bull case, bear case, risks, and invalidators.",
-    `  7. Decision gate: ${titleCaseAction(dossier.decision_packet.action_class)} with confidence ${dossier.decision_packet.confidence}.`,
-    `  8. Lifecycle: thesis is ${dossier.lifecycle.state} until ${dossier.lifecycle.expires_at}.`,
-    `  9. Artifacts: audit and markdown dossier written${auditPath ? ` to ${auditPath}` : ""}.`,
+    `  3. Product boundary: ${dossier.policy_review?.status ?? "unknown"} with ceiling ${dossier.policy_review?.effective_action_ceiling ?? "unknown"}.`,
+    `  4. Python analytics: generated ${dossier.tool_outputs.length} deterministic tool outputs.`,
+    `  5. Council provider: ${dossier.council_run?.provider?.id ?? "rule_council_v0"} produced ${dossier.claim_packets.length} claim packets.`,
+    `  6. Council evaluation: ${dossier.council_run?.eval_report?.passed === false ? "failed" : "passed"} with ${(dossier.council_run?.eval_report?.warnings ?? []).length} warnings.`,
+    `  7. Cross-examination: ${dossier.cross_examination.veto_count} vetoes, ${dossier.cross_examination.opposed_personas.length} opposing personas, ${dossier.cross_examination.required_checks.length} required checks.`,
+    "  8. Synthesis: preserved strongest bull case, bear case, risks, and invalidators.",
+    `  9. Decision gate: ${titleCaseAction(dossier.decision_packet.action_class)} with confidence ${dossier.decision_packet.confidence}.`,
+    `  10. Lifecycle: thesis is ${dossier.lifecycle.state} until ${dossier.lifecycle.expires_at}.`,
+    `  11. Artifacts: audit, markdown dossier, and local library entry written${auditPath ? ` to ${auditPath}` : ""}.`,
     "",
     "Decision",
     `  Action class: ${titleCaseAction(dossier.decision_packet.action_class)}`,
@@ -111,6 +130,13 @@ export function dossierToHumanReport(dossier: any, { auditPath, markdownPath }: 
     `  Freshness: ${dossier.lifecycle.freshness_score}`,
     `  Confidence cap: ${dossier.decision_packet.confidence_cap_reason}`,
     `  Next review trigger: ${dossier.decision_packet.next_review_trigger}`,
+    "",
+    "Product Boundary",
+    `  Status: ${dossier.policy_review?.status ?? "unknown"}`,
+    `  User class: ${dossier.policy_review?.user_class ?? "unknown"}`,
+    `  Intended use: ${dossier.policy_review?.intended_use ?? "unknown"}`,
+    `  Effective ceiling: ${dossier.policy_review?.effective_action_ceiling ?? "unknown"}`,
+    dossier.policy_review?.controls?.map((control: any) => `  - ${control.status}: ${control.message}`).join("\n") ?? "",
     "",
     "Key Numbers",
     returns ? `  Latest close: ${returns.result.latest_close}` : "",
@@ -127,6 +153,8 @@ export function dossierToHumanReport(dossier: any, { auditPath, markdownPath }: 
     `  Support: ${support}`,
     `  Oppose: ${oppose}`,
     `  Needs more data: ${needsData}`,
+    `  Provider: ${dossier.council_run?.provider?.id ?? "rule_council_v0"}`,
+    `  Eval: ${dossier.council_run?.eval_report?.passed === false ? "failed" : "passed"}`,
     `  Summary: ${dossier.summary.council_summary}`,
     "",
     "Strongest Bull Case",
@@ -243,5 +271,145 @@ export function sandboxToHumanReport(submitted: any) {
     "  Approval was required.",
     "  Pre-trade controls passed.",
     "  Submission remained sandbox-only."
+  ]);
+}
+
+export function policyToHumanReport(policy: any) {
+  return lines([
+    "Parallax Product Boundary",
+    "==========================",
+    "",
+    policy.positioning.public_description,
+    "",
+    "Legal Posture",
+    `  ${policy.positioning.legal_posture}`,
+    "",
+    "Allowed Action Classes",
+    policy.allowed_action_classes.map((action: string) => `  - ${titleCaseAction(action)}`).join("\n"),
+    "",
+    "Excluded Action Classes",
+    policy.excluded_action_classes.map((action: string) => `  - ${titleCaseAction(action)}`).join("\n"),
+    "",
+    "Disclosures",
+    bullet(policy.disclosures),
+    "",
+    "Prohibited Claims",
+    bullet(policy.prohibited_claims)
+  ]);
+}
+
+export function libraryToHumanReport(library: any, { title = "Parallax Dossier Library" }: any = {}) {
+  const rows = library.entries.map((entry: any, index: number) =>
+    [
+      `${index + 1}. ${entry.symbol}`,
+      entry.action_class,
+      entry.thesis_state,
+      `conf ${entry.confidence}`,
+      `fresh ${entry.freshness_score}`,
+      `policy ${entry.policy_status}`,
+      `council ${entry.council_eval_passed === false ? "failed" : "passed"}`,
+      entry.audit_path
+    ].join(" | ")
+  );
+
+  return lines([
+    title,
+    "=".repeat(title.length),
+    "",
+    `Audit dir: ${library.audit_dir}`,
+    `Dossiers: ${library.entries.length}`,
+    "",
+    rows.length ? rows.join("\n") : "No dossiers found.",
+    "",
+    "Next Commands",
+    "  Analyze:   npm run analyze -- --symbol NVDA --thesis \"your thesis\"",
+    "  Sources:   node dist/src/cli/parallax.js sources --audit <audit_path>",
+    "  Feedback:  node dist/src/cli/parallax.js feedback --audit <audit_path> --rating useful"
+  ]);
+}
+
+export function sourcesToHumanReport(view: any) {
+  return lines([
+    "Parallax Source View",
+    "====================",
+    "",
+    `Dossier ID: ${view.dossier_id}`,
+    `Symbol: ${view.symbol}`,
+    `Evidence snapshot: ${view.evidence_snapshot_id}`,
+    `Evidence hash: ${view.evidence_hash}`,
+    "",
+    "Evidence",
+    view.sources.map((source: any) =>
+      [
+        `  - ${source.kind}/${source.symbol}`,
+        `source=${source.source}`,
+        `as_of=${source.as_of}`,
+        `freshness=${source.freshness_status}`,
+        `license=${source.license}`,
+        `hash=${source.hash}`
+      ].join(" | ")
+    ).join("\n"),
+    "",
+    "Tool Outputs",
+    view.tool_outputs.map((output: any) =>
+      `  - ${output.tool_name} | status=${output.status} | hash=${output.result_hash}`
+    ).join("\n")
+  ]);
+}
+
+export function feedbackToHumanReport(feedback: any) {
+  return lines([
+    "Parallax Alpha Feedback",
+    "=======================",
+    "",
+    `Feedback ID: ${feedback.id}`,
+    `Dossier ID: ${feedback.dossier_id}`,
+    `Rating: ${feedback.rating}`,
+    `Reviewer: ${feedback.reviewer}`,
+    `Created at: ${feedback.created_at}`,
+    "",
+    "Notes",
+    `  ${compact(feedback.notes)}`
+  ]);
+}
+
+export function exportToHumanReport(result: any) {
+  return lines([
+    "Parallax Workspace Export",
+    "=========================",
+    "",
+    `Output: ${result.out}`,
+    `Dossiers: ${result.dossier_count}`,
+    `Source views: ${result.source_view_count}`
+  ]);
+}
+
+export function alertsToHumanReport(result: any) {
+  const rows = result.entries.map((entry: any, index: number) =>
+    [
+      `${index + 1}. ${entry.symbol}`,
+      `status=${entry.status}`,
+      `${entry.previous_state}->${entry.current_state}`,
+      `price=${compact(entry.checked_price)}`,
+      `triggers=${entry.fired_triggers?.length ?? 0}`,
+      entry.audit_path
+    ].join(" | ")
+  );
+
+  return lines([
+    "Parallax Workspace Alerts",
+    "=========================",
+    "",
+    `Checked at: ${result.checked_at}`,
+    `Audit dir: ${result.audit_dir}`,
+    `Dossiers: ${result.dossier_count}`,
+    `Need attention: ${result.attention_count}`,
+    "",
+    rows.length ? rows.join("\n") : "No dossiers found.",
+    "",
+    "Interpretation",
+    result.attention_count > 0
+      ? "  At least one thesis changed state or fired a lifecycle trigger."
+      : "  No saved thesis changed state under the checked conditions."
   ]);
 }

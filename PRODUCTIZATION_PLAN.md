@@ -101,10 +101,30 @@ The current repo already has the right skeleton:
 - audit replay;
 - paper-trading helpers;
 - sandbox execution controls;
-- 23 tests;
+- 31 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
+
+## Implementation Progress
+
+Implemented on 2026-05-02:
+
+- product-boundary policy module;
+- prohibited-claim detection;
+- effective action-ceiling enforcement before the decision gate;
+- policy vetoes for blocked live-execution or guaranteed-return framing;
+- `policy_review` in every dossier;
+- council provider/evaluation boundary;
+- `council_run` in every dossier;
+- CLI `policy` command;
+- local dossier library;
+- watchlist view;
+- workspace lifecycle alerts;
+- evidence/source viewer;
+- alpha feedback capture;
+- workspace export;
+- 31 passing tests.
 
 ## Knowledge Gathered
 
