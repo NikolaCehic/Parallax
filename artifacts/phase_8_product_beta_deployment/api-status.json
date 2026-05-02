@@ -1,0 +1,215 @@
+{
+  "status": 200,
+  "body": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-02T20:27:44.521Z",
+    "readiness": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-02T20:27:44.521Z",
+      "status": "ready_for_local_beta",
+      "config_path": "artifacts/phase_8_product_beta_deployment/audits/beta-deployment.json",
+      "deployment": {
+        "deployment_id": "beta_dep_6fb38eb8fbed",
+        "deployment_mode": "local_beta",
+        "workspace_name": "Phase Eight Beta",
+        "public_base_url": "http://127.0.0.1:8787",
+        "audit_dir": "artifacts/phase_8_product_beta_deployment/audits"
+      },
+      "summary": {
+        "dossier_count": 1,
+        "release_ready_count": 0,
+        "paper_trade_count": 0,
+        "partner_submission_count": 0,
+        "production_submission_count": 0,
+        "required_failed_count": 0,
+        "warning_count": 3
+      },
+      "controls": [
+        {
+          "id": "api_auth",
+          "passed": true,
+          "detail": "Bearer API auth is configured.",
+          "severity": "required"
+        },
+        {
+          "id": "raw_token_not_stored",
+          "passed": true,
+          "detail": "Deployment config stores only a token hash.",
+          "severity": "required"
+        },
+        {
+          "id": "product_boundary",
+          "passed": true,
+          "detail": "General product boundary excludes order tickets.",
+          "severity": "required"
+        },
+        {
+          "id": "external_market_data_disabled",
+          "passed": true,
+          "detail": "External market data vendor remains explicit and disabled until credentials/license are configured.",
+          "severity": "warning"
+        },
+        {
+          "id": "external_llm_disabled",
+          "passed": true,
+          "detail": "External LLM provider remains explicit and disabled until validation/credentials are configured.",
+          "severity": "warning"
+        },
+        {
+          "id": "sso_disabled_but_declared",
+          "passed": true,
+          "detail": "SSO is declared as a future public-beta dependency.",
+          "severity": "warning"
+        },
+        {
+          "id": "production_partner_locked",
+          "passed": true,
+          "detail": "Production partner adapter is locked by default.",
+          "severity": "required"
+        },
+        {
+          "id": "no_production_submissions",
+          "passed": true,
+          "detail": "No production partner submissions exist in the beta workspace.",
+          "severity": "required"
+        },
+        {
+          "id": "dashboard_available",
+          "passed": true,
+          "detail": "Dashboard can be generated from the same workspace state.",
+          "severity": "required"
+        },
+        {
+          "id": "registry_available",
+          "passed": true,
+          "detail": "Prompt/persona/provider registry is available for review.",
+          "severity": "required"
+        },
+        {
+          "id": "workspace_export_available",
+          "passed": true,
+          "detail": "Workspace export is available for backup and review.",
+          "severity": "required"
+        }
+      ],
+      "warnings": [
+        {
+          "id": "external_market_data_disabled",
+          "passed": true,
+          "detail": "External market data vendor remains explicit and disabled until credentials/license are configured.",
+          "severity": "warning"
+        },
+        {
+          "id": "external_llm_disabled",
+          "passed": true,
+          "detail": "External LLM provider remains explicit and disabled until validation/credentials are configured.",
+          "severity": "warning"
+        },
+        {
+          "id": "sso_disabled_but_declared",
+          "passed": true,
+          "detail": "SSO is declared as a future public-beta dependency.",
+          "severity": "warning"
+        }
+      ],
+      "external_providers": {
+        "identity_provider": {
+          "mode": "local_api_token",
+          "sso_status": "disabled_until_configured",
+          "required_for_public_beta": true
+        },
+        "market_data_vendor": {
+          "mode": "local_licensed_data_pack",
+          "external_vendor_status": "disabled_until_configured",
+          "required_for_public_beta": true
+        },
+        "llm_provider": {
+          "mode": "scripted_llm_council_v0",
+          "external_provider_status": "disabled_until_configured",
+          "required_for_public_beta": true
+        },
+        "regulated_partner": {
+          "mode": "partner_sandbox_or_locked_production_adapter",
+          "production_status": "locked_by_default",
+          "required_for_live_beta": true
+        }
+      },
+      "beta_boundaries": {
+        "investment_advice": false,
+        "direct_broker_connection": false,
+        "live_execution_default": "locked",
+        "production_partner_adapter_default": "locked",
+        "external_credentials_required_for_local_beta": false
+      },
+      "endpoints": [
+        "GET /healthz",
+        "GET /readyz",
+        "GET /api/status",
+        "GET /api/library",
+        "POST /api/analyze",
+        "GET /api/governance",
+        "GET /api/partner",
+        "GET /dashboard"
+      ]
+    },
+    "library_summary": {
+      "dossier_count": 1,
+      "action_classes": {
+        "watchlist": 1
+      }
+    },
+    "governance_summary": {
+      "audit_dir": "artifacts/phase_8_product_beta_deployment/audits",
+      "workspace_id": "team_ws_1aed509aa67b",
+      "workspace_name": "Parallax Team Workspace",
+      "member_count": 0,
+      "dossier_count": 1,
+      "assignment_count": 0,
+      "open_assignment_count": 0,
+      "comment_count": 0,
+      "approval_count": 0,
+      "release_ready_count": 0,
+      "blocked_release_count": 0
+    },
+    "partner_execution_summary": {
+      "audit_dir": "artifacts/phase_8_product_beta_deployment/audits",
+      "partner_count": 0,
+      "legal_approval_count": 0,
+      "market_access_review_count": 0,
+      "ticket_count": 0,
+      "human_approval_count": 0,
+      "submission_count": 0,
+      "sandbox_submission_count": 0,
+      "production_submission_count": 0,
+      "post_trade_review_count": 0,
+      "production_unlocked": false,
+      "kill_switch_enabled": false,
+      "release_ready_count": 0,
+      "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass."
+    },
+    "paper_summary": {
+      "audit_dir": "artifacts/phase_8_product_beta_deployment/audits",
+      "trade_count": 0,
+      "open_count": 0,
+      "closed_count": 0,
+      "review_count": 0,
+      "reserved_notional": 0,
+      "realized_pnl": 0,
+      "win_rate": 0,
+      "loss_count": 0,
+      "average_realized_return": 0,
+      "max_drawdown": 0,
+      "turnover_notional": 0,
+      "by_symbol": {},
+      "simulation_only": true,
+      "live_execution_unlocked": false,
+      "disclosure": "Paper trading is simulation only; outcomes do not prove future live performance and cannot unlock live execution."
+    },
+    "product_policy": {
+      "public_description": "Parallax is a research accountability platform for trading ideas. It turns a thesis into an evidence-linked dossier, challenges assumptions, surfaces invalidators, and monitors whether the thesis remains defensible.",
+      "legal_posture": "Research support only. Parallax is not a broker, investment adviser, signal service, tax adviser, legal adviser, or live execution system.",
+      "product_rule": "The general product ceiling is no_trade, research_needed, watchlist, or paper_trade_candidate. Live execution is excluded from the general product.",
+      "user_promise": "Make unsupported conviction hard to hide."
+    }
+  }
+}

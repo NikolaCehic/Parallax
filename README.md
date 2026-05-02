@@ -26,6 +26,7 @@ Parallax tries to sit in the middle:
 - Phase 5 paper trading stores simulated positions, outcomes, attribution, and reviews without unlocking live execution.
 - Phase 6 team governance adds role-aware review assignments, comments, approvals, release controls, and governance exports.
 - Phase 7 partner execution adds legal approval, market-access review, human approval, kill switch, post-trade review, and a locked production-adapter boundary.
+- Phase 8 beta deployment adds an authenticated local API, readiness checks, deployment config, Docker scaffold, and beta export package.
 
 Instead of asking:
 
@@ -108,6 +109,7 @@ TypeScript owns:
 - team governance;
 - paper trading;
 - sandbox and partner execution controls.
+- beta API and deployment readiness.
 
 Python owns:
 
@@ -461,6 +463,51 @@ npm run partner-report -- --audit-dir audits
 
 Production partner submission remains locked unless an explicitly configured regulated production adapter is enabled by compliance.
 
+## Beta Deployment
+
+Phase 8 adds a deployable beta surface around the local workspace.
+
+Initialize beta config with a hashed API token:
+
+```bash
+npm run beta-init -- \
+  --audit-dir audits \
+  --workspace-name "Parallax Beta" \
+  --api-token "$PARALLAX_BETA_API_TOKEN"
+```
+
+Check readiness:
+
+```bash
+npm run beta-readiness -- --audit-dir audits
+```
+
+Start the beta API/dashboard server:
+
+```bash
+npm run beta-serve -- \
+  --audit-dir audits \
+  --host 127.0.0.1 \
+  --port 8787
+```
+
+Authenticated API calls use:
+
+```bash
+curl -H "Authorization: Bearer $PARALLAX_BETA_API_TOKEN" \
+  http://127.0.0.1:8787/api/status
+```
+
+Export a beta deployment package:
+
+```bash
+npm run cli -- beta-export \
+  --audit-dir audits \
+  --out beta-deployment-package.json
+```
+
+Deployment files live in [deploy/README.md](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/deploy/README.md), with a root [Dockerfile](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/Dockerfile).
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -630,7 +677,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 48 tests:
+The suite currently includes 50 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -644,6 +691,7 @@ The suite currently includes 48 tests:
 - Phase 5 paper-ledger, risk-reservation, attribution, review, export/import, and CLI tests;
 - Phase 6 team-governance role, assignment, approval, release-readiness, export/import, dashboard, and CLI tests;
 - Phase 7 partner-execution legal approval, market-access review, human approval, kill switch, production lock, post-trade review, export/import, dashboard, and CLI tests;
+- Phase 8 beta-deployment readiness, authenticated API, analysis endpoint, dashboard endpoint, export, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -665,6 +713,7 @@ More detail: [E2E_TESTING.md](E2E_TESTING.md)
 src/
   app/            Static local alpha dashboard generator
   analytics/      TypeScript bridge to Python analytics
+  beta/           Beta deployment readiness and authenticated API server
   cli/            Parallax CLI
   core/           IDs, schemas, shared contracts
   council/        Personas and council runner
@@ -690,7 +739,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -725,6 +774,7 @@ Current intentional limits:
 - partner production adapter is locked by default;
 - no external market data vendor yet;
 - no external LLM API integration yet; the current LLM path is a local scripted harness;
+- no external SSO provider yet; beta auth is bearer-token based;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -775,7 +825,11 @@ Current state:
 - partner sandbox handoff;
 - production-adapter lock;
 - post-trade review records;
-- 48 passing tests.
+- beta deployment config and readiness report;
+- authenticated beta API server;
+- Docker deployment scaffold;
+- beta export package;
+- 50 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

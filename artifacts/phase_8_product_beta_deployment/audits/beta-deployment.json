@@ -1,0 +1,58 @@
+{
+  "schema_version": "0.1.0",
+  "deployment_id": "beta_dep_6fb38eb8fbed",
+  "deployment_mode": "local_beta",
+  "workspace_name": "Phase Eight Beta",
+  "audit_dir": "artifacts/phase_8_product_beta_deployment/audits",
+  "public_base_url": "http://127.0.0.1:8787",
+  "created_at": "2026-05-01T17:00:00Z",
+  "api": {
+    "auth_required": true,
+    "auth_scheme": "bearer",
+    "token_hash": "08c92b7c00094d23c4e62236cb6ef2e1e42adf340767f226401110f2c10c6e12",
+    "raw_token_stored": false,
+    "allowed_origins": [
+      "http://127.0.0.1",
+      "http://localhost"
+    ]
+  },
+  "external_providers": {
+    "identity_provider": {
+      "mode": "local_api_token",
+      "sso_status": "disabled_until_configured",
+      "required_for_public_beta": true
+    },
+    "market_data_vendor": {
+      "mode": "local_licensed_data_pack",
+      "external_vendor_status": "disabled_until_configured",
+      "required_for_public_beta": true
+    },
+    "llm_provider": {
+      "mode": "scripted_llm_council_v0",
+      "external_provider_status": "disabled_until_configured",
+      "required_for_public_beta": true
+    },
+    "regulated_partner": {
+      "mode": "partner_sandbox_or_locked_production_adapter",
+      "production_status": "locked_by_default",
+      "required_for_live_beta": true
+    }
+  },
+  "beta_boundaries": {
+    "investment_advice": false,
+    "direct_broker_connection": false,
+    "live_execution_default": "locked",
+    "production_partner_adapter_default": "locked",
+    "external_credentials_required_for_local_beta": false
+  },
+  "endpoints": [
+    "GET /healthz",
+    "GET /readyz",
+    "GET /api/status",
+    "GET /api/library",
+    "POST /api/analyze",
+    "GET /api/governance",
+    "GET /api/partner",
+    "GET /dashboard"
+  ]
+}

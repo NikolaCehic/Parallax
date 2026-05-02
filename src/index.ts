@@ -146,3 +146,17 @@ export {
   submitPartnerOrder,
   updatePartnerKillSwitch
 } from "./execution/partner.js";
+export {
+  betaDeploymentReadiness,
+  betaStatus,
+  defaultBetaConfigPath,
+  exportBetaDeploymentPackage,
+  initializeBetaDeployment,
+  loadBetaDeploymentConfig,
+  verifyBetaToken
+} from "./beta/deployment.js";
+export {
+  createBetaRequestHandler,
+  createBetaServer,
+  startBetaServer
+} from "./beta/server.js";

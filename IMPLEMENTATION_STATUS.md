@@ -2,13 +2,13 @@
 
 Status date: 2026-05-02
 
-Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, and partner-execution controls.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, partner-execution controls, and a beta deployment surface.
 
-TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, and partner-execution controls.
+TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, partner-execution controls, and the beta API/deployment layer.
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, and the partner-execution ledger.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, and beta deployment readiness.
 
 ## Phase Completion Map
 
@@ -34,10 +34,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 5 Paper Trading Lab | Complete for local simulation scope | Paper ledger, risk reservation, fill assumptions, open/closed views, attribution, review notes, calibration, phase artifacts |
 | 6 Team And Governance | Complete for local team workspace scope | Role directory, review assignments, comments, approvals, release readiness controls, governance export, SOC 2 readiness program, phase artifacts |
 | 7 Regulated/Partner Execution | Complete for partner sandbox handoff and locked production-adapter scope | Regulated partner registry, legal/compliance approval, market-access review, persistent partner tickets, human approval, kill switch, partner sandbox handoff, production lock, post-trade review, phase artifacts |
+| 8 Product Beta And Deployment | Complete for local beta deployment scope | Hashed API token config, readiness report, authenticated beta API, dashboard endpoint, Docker scaffold, beta export package, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 48 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, and Phase 7 partner-execution tests.
+- `npm test` builds TypeScript and runs 50 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, and Phase 8 beta-deployment tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -66,6 +67,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `partner-kill-switch` blocks partner submission.
 - `partner-post-review` records post-trade review.
 - `partner-report` summarizes execution controls, submissions, regulatory source anchors, and production-lock status.
+- `beta-init` creates a beta deployment config that stores only a token hash.
+- `beta-readiness` checks auth, product boundaries, locked production, provider status, registry availability, dashboard generation, and export readiness.
+- `beta-status` summarizes the workspace for API consumers.
+- `beta-serve` starts an authenticated local API and dashboard server.
+- `beta-export` writes a beta deployment package plus workspace export.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -80,6 +86,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Phase 5 artifacts live under `artifacts/phase_5_paper_trading_lab/`.
 - Phase 6 artifacts live under `artifacts/phase_6_team_and_governance/`.
 - Phase 7 artifacts live under `artifacts/phase_7_regulated_partner_execution/`.
+- Phase 8 artifacts live under `artifacts/phase_8_product_beta_deployment/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -114,7 +121,8 @@ The suite exposed and fixed two issues: past events were previously counted as f
 - Partner production adapter is locked by default and requires a separately approved regulated partner implementation.
 - No external market data vendor API yet; Phase 2 supports local licensed data packs and vendor-shaped manifests.
 - No external LLM API integration yet; the current LLM path is a deterministic local harness that exercises the production contract.
-- No cloud workspace yet; Phase 6 and Phase 7 are local file-based governance/execution-control workspaces.
+- No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold.
+- No external SSO provider yet; beta auth uses bearer tokens and stores only token hashes.
 - No legal/compliance claim beyond prototype controls.
 - No claim of trading profitability.
 
@@ -126,4 +134,4 @@ Within a local prototype scope, the current implementation reaches the intended 
 
 > I do not know a better architecture for this agent, and I do not know what is structurally wrong with the current one.
 
-The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, UI, deployment, cloud identity, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).
+The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, a richer hosted UI, cloud identity/SSO, multi-tenant storage, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).

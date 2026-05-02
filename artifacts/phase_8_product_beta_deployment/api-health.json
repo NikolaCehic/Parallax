@@ -1,0 +1,8 @@
+{
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "service": "parallax-beta",
+    "direct_live_broker_connection": false
+  }
+}

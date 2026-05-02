@@ -106,7 +106,8 @@ The current repo already has the right skeleton:
 - paper trading lab ledger;
 - team governance ledger;
 - partner execution ledger;
-- 48 tests;
+- beta deployment/API layer;
+- 50 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -170,7 +171,13 @@ Implemented on 2026-05-02:
 - production-adapter lock;
 - post-trade review records;
 - Phase 7 artifact bundle;
-- 48 passing tests.
+- beta deployment config;
+- authenticated local beta API;
+- readiness checks;
+- Docker deployment scaffold;
+- beta export package;
+- Phase 8 artifact bundle;
+- 50 passing tests.
 
 ## Knowledge Gathered
 
@@ -923,6 +930,37 @@ Exit criteria:
 - no order can bypass controls;
 - partner/regulatory obligations are understood;
 - live execution is limited, auditable, and reversible.
+
+### Phase 8: Product Beta And Deployment
+
+Status: Complete for local beta deployment scope.
+
+Goal:
+
+Make Parallax deployable for a controlled beta without weakening product boundaries.
+
+Deliverables:
+
+- authenticated TypeScript beta API;
+- local beta readiness checks;
+- deployment config with hashed API token;
+- beta status endpoint;
+- analysis API endpoint;
+- dashboard endpoint;
+- workspace/library/governance/partner API endpoints;
+- Docker deployment scaffold;
+- beta environment example;
+- beta export package;
+- external-provider status surface for SSO, market data, LLM, and regulated partner integrations.
+
+Exit criteria:
+
+- beta server can run from the repo;
+- API calls require auth except health/readiness;
+- raw beta token is not stored in config;
+- external providers are explicit and disabled until configured;
+- production partner adapter remains locked by default;
+- beta export package can reconstruct readiness and workspace state.
 
 ## Team Needed
 

@@ -1,0 +1,8 @@
+{
+  "out": "artifacts/phase_8_product_beta_deployment/beta-deployment-package.json",
+  "readiness_status": "ready_for_local_beta",
+  "workspace_export_path": "artifacts/phase_8_product_beta_deployment/beta-workspace-export.json",
+  "dossier_count": 1,
+  "execution_file_count": 0,
+  "governance_file_count": 0
+}

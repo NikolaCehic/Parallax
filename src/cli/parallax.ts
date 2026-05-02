@@ -14,6 +14,11 @@ import {
   alertPreferencesToHumanReport,
   alertsToHumanReport,
   appToHumanReport,
+  betaExportToHumanReport,
+  betaInitToHumanReport,
+  betaReadinessToHumanReport,
+  betaServeToHumanReport,
+  betaStatusToHumanReport,
   dataStatusToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
@@ -107,6 +112,14 @@ import {
   submitPartnerOrder,
   updatePartnerKillSwitch
 } from "../execution/partner.js";
+import {
+  betaDeploymentReadiness,
+  betaStatus,
+  defaultBetaConfigPath,
+  exportBetaDeploymentPackage,
+  initializeBetaDeployment
+} from "../beta/deployment.js";
+import { startBetaServer } from "../beta/server.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -175,6 +188,11 @@ Commands:
   partner-post-review --submission partner_submission_x --reviewer "Ops" --outcome acceptable
   partner-report [--audit-dir audits]
   partner-kill-switch --enabled true --reason "market halt"
+  beta-init --audit-dir audits --api-token "dev-secret-token" [--workspace-name "Beta Desk"]
+  beta-readiness [--audit-dir audits]
+  beta-status [--audit-dir audits]
+  beta-export --audit-dir audits --out beta-deployment-package.json
+  beta-serve [--audit-dir audits] [--host 127.0.0.1] [--port 8787]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -191,6 +209,7 @@ Common flags:
   --events               Symbol event flags, for alerts: NVDA=true,TSLA=false.
   --vols                 Symbol volatility overrides, for alerts: NVDA=0.9.
   --tags                 Comma-separated governance comment tags.
+  --config               Beta deployment config path.
 `;
 }
 
@@ -834,6 +853,72 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, partnerKillSwitchToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "beta-init") {
+    if (!args["api-token"]) throw new Error("beta-init requires --api-token");
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const result = await initializeBetaDeployment({
+      auditDir,
+      configPath: args.config ? String(args.config) : defaultBetaConfigPath(auditDir),
+      workspaceName: String(args["workspace-name"] ?? "Parallax Beta Workspace"),
+      apiToken: String(args["api-token"]),
+      publicBaseUrl: String(args["public-base-url"] ?? "http://127.0.0.1:8787"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, betaInitToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "beta-readiness") {
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const result = await betaDeploymentReadiness({
+      auditDir,
+      configPath: args.config ? String(args.config) : defaultBetaConfigPath(auditDir),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, betaReadinessToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "beta-status") {
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const result = await betaStatus({
+      auditDir,
+      configPath: args.config ? String(args.config) : defaultBetaConfigPath(auditDir),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, betaStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "beta-export") {
+    if (!args.out) throw new Error("beta-export requires --out");
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const result = await exportBetaDeploymentPackage({
+      auditDir,
+      configPath: args.config ? String(args.config) : defaultBetaConfigPath(auditDir),
+      out: String(args.out)
+    });
+    printResult(args, betaExportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "beta-serve") {
+    const auditDir = String(args["audit-dir"] ?? "audits");
+    const started = await startBetaServer({
+      auditDir,
+      configPath: args.config ? String(args.config) : defaultBetaConfigPath(auditDir),
+      dataDir: String(args["data-dir"] ?? "fixtures"),
+      host: String(args.host ?? "127.0.0.1"),
+      port: args.port && args.port !== true ? Number(args.port) : 8787
+    });
+    console.log(betaServeToHumanReport(started));
+    process.on("SIGINT", async () => {
+      await started.close();
+      process.exit(0);
+    });
     return;
   }
 

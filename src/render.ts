@@ -828,6 +828,103 @@ export function partnerKillSwitchToHumanReport(result: any) {
   ]);
 }
 
+export function betaInitToHumanReport(result: any) {
+  return lines([
+    "Parallax Beta Deployment",
+    "========================",
+    "",
+    `Deployment ID: ${result.config.deployment_id}`,
+    `Workspace: ${result.config.workspace_name}`,
+    `Mode: ${result.config.deployment_mode}`,
+    `Base URL: ${result.config.public_base_url}`,
+    `Audit dir: ${result.config.audit_dir}`,
+    `Config: ${result.config_path}`,
+    "",
+    "Auth",
+    `  Scheme: ${result.config.api.auth_scheme}`,
+    `  Raw token stored: ${result.config.api.raw_token_stored ? "yes" : "no"}`,
+    "",
+    "Boundary",
+    `  ${result.disclosure}`
+  ]);
+}
+
+export function betaReadinessToHumanReport(report: any) {
+  const rows = report.controls.map((control: any) =>
+    [
+      `  - ${control.id}`,
+      control.passed ? "passed" : "failed",
+      control.severity,
+      control.detail
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Beta Readiness",
+    "=======================",
+    "",
+    `Status: ${report.status}`,
+    `Workspace: ${report.deployment.workspace_name}`,
+    `Mode: ${report.deployment.deployment_mode}`,
+    `Audit dir: ${report.deployment.audit_dir}`,
+    `Dossiers: ${report.summary.dossier_count}`,
+    `Release ready: ${report.summary.release_ready_count}`,
+    `Partner submissions: ${report.summary.partner_submission_count}`,
+    `Production submissions: ${report.summary.production_submission_count}`,
+    `Required failures: ${report.summary.required_failed_count}`,
+    `Warnings: ${report.summary.warning_count}`,
+    "",
+    "Controls",
+    rows.join("\n"),
+    "",
+    "Endpoints",
+    report.endpoints.map((endpoint: string) => `  - ${endpoint}`).join("\n")
+  ]);
+}
+
+export function betaStatusToHumanReport(status: any) {
+  return lines([
+    "Parallax Beta Status",
+    "====================",
+    "",
+    `Readiness: ${status.readiness.status}`,
+    `Dossiers: ${status.library_summary.dossier_count}`,
+    `Action classes: ${JSON.stringify(status.library_summary.action_classes)}`,
+    `Team release ready: ${status.governance_summary.release_ready_count}`,
+    `Partner submissions: ${status.partner_execution_summary.submission_count}`,
+    `Production submissions: ${status.partner_execution_summary.production_submission_count}`,
+    `Paper trades: ${status.paper_summary.trade_count}`,
+    "",
+    "Product Boundary",
+    `  ${status.product_policy.legal_posture}`
+  ]);
+}
+
+export function betaExportToHumanReport(result: any) {
+  return lines([
+    "Parallax Beta Export",
+    "====================",
+    "",
+    `Output: ${result.out}`,
+    `Readiness: ${result.readiness_status}`,
+    `Workspace export: ${result.workspace_export_path}`,
+    `Dossiers: ${result.dossier_count}`,
+    `Governance files: ${result.governance_file_count}`,
+    `Execution files: ${result.execution_file_count}`
+  ]);
+}
+
+export function betaServeToHumanReport(result: any) {
+  return lines([
+    "Parallax Beta Server",
+    "====================",
+    "",
+    `URL: ${result.url}`,
+    `Health: ${result.url}/healthz`,
+    `Readiness: ${result.url}/readyz`,
+    `Dashboard: ${result.url}/dashboard`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

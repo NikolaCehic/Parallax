@@ -1,0 +1,13 @@
+Parallax Beta Status
+====================
+
+Readiness: ready_for_local_beta
+Dossiers: 1
+Action classes: {"watchlist":1}
+Team release ready: 0
+Partner submissions: 0
+Production submissions: 0
+Paper trades: 0
+
+Product Boundary
+  Research support only. Parallax is not a broker, investment adviser, signal service, tax adviser, legal adviser, or live execution system.
