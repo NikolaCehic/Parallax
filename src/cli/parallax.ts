@@ -32,6 +32,16 @@ import {
   paperOpenToHumanReport,
   paperReviewToHumanReport,
   paperToHumanReport,
+  partnerControlsToHumanReport,
+  partnerHumanApprovalToHumanReport,
+  partnerKillSwitchToHumanReport,
+  partnerLegalApprovalToHumanReport,
+  partnerMarketReviewToHumanReport,
+  partnerPostTradeReviewToHumanReport,
+  partnerRegisterToHumanReport,
+  partnerReportToHumanReport,
+  partnerSubmitToHumanReport,
+  partnerTicketToHumanReport,
   policyToHumanReport,
   portfolioImportToHumanReport,
   promptRegistryToHumanReport,
@@ -85,6 +95,18 @@ import {
   initializeTeamWorkspace,
   recordGovernanceComment
 } from "../team/governance.js";
+import {
+  approvePartnerOrder,
+  createPartnerOrderTicket,
+  evaluatePartnerOrderControls,
+  partnerExecutionReport,
+  recordLegalApproval,
+  recordMarketAccessReview,
+  recordPostTradeReview,
+  registerExecutionPartner,
+  submitPartnerOrder,
+  updatePartnerKillSwitch
+} from "../execution/partner.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -143,6 +165,16 @@ Commands:
   team-approve --assignment review_x --approver "Rina" --decision approved --rationale "..."
   team-report [--audit-dir audits]
   team-export --audit-dir audits --out governance-package.json
+  partner-register --partner-id sandbox_a --name "Regulated Partner Sandbox"
+  partner-legal-approve --partner-id sandbox_a --approver "Counsel" [--scope sandbox]
+  partner-market-review --partner-id sandbox_a --reviewer "Market Access" [--allowed-symbols NVDA]
+  partner-ticket --audit audits/dos_x.json --partner-id sandbox_a [--environment sandbox]
+  partner-approve --ticket partner_ticket_x --approver "human"
+  partner-controls --ticket partner_ticket_x
+  partner-submit --ticket partner_ticket_x
+  partner-post-review --submission partner_submission_x --reviewer "Ops" --outcome acceptable
+  partner-report [--audit-dir audits]
+  partner-kill-switch --enabled true --reason "market halt"
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -203,6 +235,11 @@ function parseOptionalBoolean(value?: string | boolean) {
   if (value === undefined) return undefined;
   if (value === true) return true;
   return ["true", "1", "yes", "on"].includes(String(value).toLowerCase());
+}
+
+function parseRequiredBoolean(value?: string | boolean, fallback = false) {
+  const parsed = parseOptionalBoolean(value);
+  return parsed === undefined ? fallback : parsed;
 }
 
 function parseLLMBudget(args: CliArgs) {
@@ -651,6 +688,152 @@ async function main() {
       out: String(args.out)
     });
     printResult(args, teamGovernanceExportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-register") {
+    if (!args["partner-id"]) throw new Error("partner-register requires --partner-id");
+    if (!args.name) throw new Error("partner-register requires --name");
+    const result = await registerExecutionPartner({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      partnerId: String(args["partner-id"]),
+      name: String(args.name),
+      environment: String(args.environment ?? "sandbox"),
+      regulated: parseRequiredBoolean(args.regulated, true),
+      productionEnabled: parseRequiredBoolean(args["production-enabled"], false),
+      productionAdapterStatus: String(args["production-adapter-status"] ?? "locked"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerRegisterToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-legal-approve") {
+    if (!args["partner-id"]) throw new Error("partner-legal-approve requires --partner-id");
+    if (!args.approver) throw new Error("partner-legal-approve requires --approver");
+    const result = await recordLegalApproval({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      partnerId: String(args["partner-id"]),
+      approver: String(args.approver),
+      authority: String(args.authority ?? "legal_compliance"),
+      scope: String(args.scope ?? "sandbox"),
+      decision: String(args.decision ?? "approved"),
+      memo: args.memo ? String(args.memo) : "",
+      expiresAt: args["expires-at"] ? String(args["expires-at"]) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerLegalApprovalToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-market-review") {
+    if (!args["partner-id"]) throw new Error("partner-market-review requires --partner-id");
+    if (!args.reviewer) throw new Error("partner-market-review requires --reviewer");
+    const result = await recordMarketAccessReview({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      partnerId: String(args["partner-id"]),
+      reviewer: String(args.reviewer),
+      environment: String(args.environment ?? "sandbox"),
+      decision: String(args.decision ?? "approved"),
+      maxOrderNotional: args["max-order-notional"] && args["max-order-notional"] !== true ? Number(args["max-order-notional"]) : 1000,
+      maxDailyNotional: args["max-daily-notional"] && args["max-daily-notional"] !== true ? Number(args["max-daily-notional"]) : 5000,
+      allowedSymbols: parseCsvList(args["allowed-symbols"]) ?? [],
+      restrictedSymbols: parseCsvList(args["restricted-symbols"]) ?? [],
+      allowedSides: parseCsvList(args["allowed-sides"]) ?? ["buy"],
+      shortingAllowed: parseRequiredBoolean(args["shorting-allowed"], false),
+      notes: args.notes ? String(args.notes) : "",
+      expiresAt: args["expires-at"] ? String(args["expires-at"]) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerMarketReviewToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-ticket") {
+    if (!args.audit) throw new Error("partner-ticket requires --audit");
+    if (!args["partner-id"]) throw new Error("partner-ticket requires --partner-id");
+    const result = await createPartnerOrderTicket({
+      auditPath: String(args.audit),
+      auditDir: String(args["audit-dir"] ?? path.dirname(String(args.audit))),
+      partnerId: String(args["partner-id"]),
+      environment: String(args.environment ?? "sandbox"),
+      side: args.side ? String(args.side) : "buy",
+      riskBudgetPct: args["risk-budget"] && args["risk-budget"] !== true ? Number(args["risk-budget"]) : undefined,
+      orderType: String(args["order-type"] ?? "market"),
+      timeInForce: String(args["time-in-force"] ?? "day"),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerTicketToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-approve") {
+    if (!args.ticket) throw new Error("partner-approve requires --ticket");
+    if (!args.approver) throw new Error("partner-approve requires --approver");
+    const result = await approvePartnerOrder({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      ticketId: String(args.ticket),
+      approver: String(args.approver),
+      rationale: args.rationale ? String(args.rationale) : "",
+      expiresAt: args["expires-at"] ? String(args["expires-at"]) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerHumanApprovalToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-controls") {
+    if (!args.ticket) throw new Error("partner-controls requires --ticket");
+    const result = await evaluatePartnerOrderControls({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      ticketId: String(args.ticket),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerControlsToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-submit") {
+    if (!args.ticket) throw new Error("partner-submit requires --ticket");
+    const result = await submitPartnerOrder({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      ticketId: String(args.ticket),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerSubmitToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-post-review") {
+    if (!args.submission) throw new Error("partner-post-review requires --submission");
+    if (!args.reviewer) throw new Error("partner-post-review requires --reviewer");
+    const result = await recordPostTradeReview({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      submissionId: String(args.submission),
+      reviewer: String(args.reviewer),
+      outcome: String(args.outcome ?? "acceptable"),
+      notes: args.notes ? String(args.notes) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerPostTradeReviewToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-report") {
+    const result = await partnerExecutionReport(String(args["audit-dir"] ?? "audits"));
+    printResult(args, partnerReportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "partner-kill-switch") {
+    if (args.enabled === undefined) throw new Error("partner-kill-switch requires --enabled true|false");
+    const result = await updatePartnerKillSwitch({
+      auditDir: String(args["audit-dir"] ?? "audits"),
+      enabled: parseRequiredBoolean(args.enabled, false),
+      reason: args.reason ? String(args.reason) : "manual",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, partnerKillSwitchToHumanReport(result), result);
     return;
   }
 

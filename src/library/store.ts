@@ -6,6 +6,7 @@ import { evaluateLifecycle } from "../lifecycle/engine.js";
 import { summarizeEvidenceItems } from "../data/status.js";
 import { PAPER_LEDGER_FILE } from "../paper/lab.js";
 import { TEAM_GOVERNANCE_FILE } from "../team/governance.js";
+import { PARTNER_EXECUTION_FILE } from "../execution/partner.js";
 import {
   ALERT_PREFERENCES_FILE,
   LIFECYCLE_CHECKS_FILE,
@@ -362,6 +363,9 @@ export async function exportWorkspace({
   const governanceFiles: Record<string, any> = {};
   const teamGovernance = await readJsonIfExists(path.join(auditDir, TEAM_GOVERNANCE_FILE), undefined);
   if (teamGovernance !== undefined) governanceFiles[TEAM_GOVERNANCE_FILE] = teamGovernance;
+  const executionFiles: Record<string, any> = {};
+  const partnerExecution = await readJsonIfExists(path.join(auditDir, PARTNER_EXECUTION_FILE), undefined);
+  if (partnerExecution !== undefined) executionFiles[PARTNER_EXECUTION_FILE] = partnerExecution;
 
   const body = {
     schema_version: "0.1.0",
@@ -373,7 +377,8 @@ export async function exportWorkspace({
     feedback,
     lifecycle_files: lifecycleFiles,
     paper_files: paperFiles,
-    governance_files: governanceFiles
+    governance_files: governanceFiles,
+    execution_files: executionFiles
   };
   await writeJson(out, body);
   return {
@@ -384,7 +389,8 @@ export async function exportWorkspace({
     feedback_count: feedback.length,
     lifecycle_file_count: Object.keys(lifecycleFiles).length,
     paper_file_count: Object.keys(paperFiles).length,
-    governance_file_count: Object.keys(governanceFiles).length
+    governance_file_count: Object.keys(governanceFiles).length,
+    execution_file_count: Object.keys(executionFiles).length
   };
 }
 
@@ -484,6 +490,25 @@ export async function importWorkspace({
     await writeJson(path.join(auditDir, fileName), portableValue);
   }
 
+  for (const [fileName, value] of Object.entries(imported.execution_files ?? {})) {
+    if (fileName !== PARTNER_EXECUTION_FILE) continue;
+    const portableValue = value && typeof value === "object"
+      ? {
+        ...(value as any),
+        audit_dir: auditDir,
+        tickets: ((value as any).tickets ?? []).map((ticket: any) => ({
+          ...ticket,
+          audit_path: auditPathByDossier.get(ticket.dossier_id) ?? ticket.audit_path
+        })),
+        submissions: ((value as any).submissions ?? []).map((submission: any) => ({
+          ...submission,
+          audit_path: auditPathByDossier.get(submission.dossier_id) ?? submission.audit_path
+        }))
+      }
+      : value;
+    await writeJson(path.join(auditDir, fileName), portableValue);
+  }
+
   const existingLibrary = await loadLibrary(auditDir);
   const mergedEntries = mergeEntries(existingLibrary.entries, entries).map((entry) => {
     const feedbackItems = feedbackByDossier.get(entry.id) ?? [];
@@ -509,7 +534,8 @@ export async function importWorkspace({
     feedback_count: imported.feedback?.length ?? 0,
     lifecycle_file_count: Object.keys(imported.lifecycle_files ?? {}).length,
     paper_file_count: Object.keys(imported.paper_files ?? {}).length,
-    governance_file_count: Object.keys(imported.governance_files ?? {}).length
+    governance_file_count: Object.keys(imported.governance_files ?? {}).length,
+    execution_file_count: Object.keys(imported.execution_files ?? {}).length
   };
 }
 

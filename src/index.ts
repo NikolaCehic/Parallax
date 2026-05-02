@@ -133,3 +133,16 @@ export {
   loadTeamGovernance,
   recordGovernanceComment
 } from "./team/governance.js";
+export {
+  approvePartnerOrder,
+  createPartnerOrderTicket,
+  evaluatePartnerOrderControls,
+  loadPartnerExecutionLedger,
+  partnerExecutionReport,
+  recordLegalApproval,
+  recordMarketAccessReview,
+  recordPostTradeReview,
+  registerExecutionPartner,
+  submitPartnerOrder,
+  updatePartnerKillSwitch
+} from "./execution/partner.js";

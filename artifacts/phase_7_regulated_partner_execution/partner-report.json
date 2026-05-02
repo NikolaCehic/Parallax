@@ -1,0 +1,298 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-02T19:06:34.700Z",
+  "summary": {
+    "audit_dir": "artifacts/phase_7_regulated_partner_execution/audits",
+    "partner_count": 1,
+    "legal_approval_count": 2,
+    "market_access_review_count": 2,
+    "ticket_count": 2,
+    "human_approval_count": 2,
+    "submission_count": 1,
+    "sandbox_submission_count": 1,
+    "production_submission_count": 0,
+    "post_trade_review_count": 1,
+    "production_unlocked": false,
+    "kill_switch_enabled": false,
+    "release_ready_count": 1,
+    "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass."
+  },
+  "regulatory_obligations": [
+    {
+      "id": "broker_dealer_registration",
+      "source": "SEC broker-dealer registration guidance",
+      "url": "https://www.sec.gov/divisions/marketreg/bdguide.htm",
+      "control": "Production routing requires a registered/regulated execution partner; Parallax is not a broker."
+    },
+    {
+      "id": "market_access_controls",
+      "source": "SEC Rule 15c3-5 market access controls",
+      "url": "https://www.sec.gov/rules-regulations/2011/06/risk-management-controls-brokers-or-dealers-market-access",
+      "control": "Partner handoff requires documented financial and regulatory risk controls before any market-access route."
+    },
+    {
+      "id": "supervisory_system",
+      "source": "FINRA Rule 3110 supervision",
+      "url": "https://www.finra.org/finramanual/rules/r3110/",
+      "control": "Review assignments, approvals, and supervisory decisions must be reconstructable."
+    },
+    {
+      "id": "books_records",
+      "source": "Broker-dealer books and records rules",
+      "url": "https://www.finra.org/rules-guidance/key-topics/books-records",
+      "control": "Tickets, approvals, submissions, and post-trade reviews are retained in the local execution ledger."
+    }
+  ],
+  "partners": [
+    {
+      "id": "partner_11b0f0bb07f3",
+      "partner_id": "regulated_sandbox",
+      "name": "Regulated Partner Sandbox",
+      "environment": "sandbox",
+      "regulated": true,
+      "status": "active",
+      "production_enabled": false,
+      "production_adapter_status": "locked",
+      "registered_at": "2026-05-01T15:30:00Z",
+      "product_boundary": "Parallax does not custody assets, provide broker services, or bypass partner controls."
+    }
+  ],
+  "legal_approvals": [
+    {
+      "id": "legal_e25ae21e3098",
+      "partner_id": "regulated_sandbox",
+      "approver": "Counsel",
+      "authority": "legal_compliance",
+      "scope": "sandbox",
+      "decision": "approved",
+      "memo": "Sandbox handoff approved for governed paper candidates only.",
+      "created_at": "2026-05-01T15:33:00Z",
+      "expires_at": ""
+    },
+    {
+      "id": "legal_193b5d8c5f72",
+      "partner_id": "regulated_sandbox",
+      "approver": "Counsel",
+      "authority": "legal_compliance",
+      "scope": "production",
+      "decision": "approved",
+      "memo": "Production paperwork exists, but adapter remains locked.",
+      "created_at": "2026-05-01T16:06:00Z",
+      "expires_at": ""
+    }
+  ],
+  "market_access_reviews": [
+    {
+      "id": "market_access_7af972c31095",
+      "partner_id": "regulated_sandbox",
+      "reviewer": "Market Access Principal",
+      "environment": "sandbox",
+      "decision": "approved",
+      "max_order_notional": 2000,
+      "max_daily_notional": 3000,
+      "allowed_symbols": [
+        "NVDA"
+      ],
+      "restricted_symbols": [],
+      "allowed_sides": [
+        "buy"
+      ],
+      "shorting_allowed": false,
+      "notes": "",
+      "created_at": "2026-05-01T15:34:00Z",
+      "expires_at": ""
+    },
+    {
+      "id": "market_access_dd48d8f5f7d8",
+      "partner_id": "regulated_sandbox",
+      "reviewer": "Market Access Principal",
+      "environment": "production",
+      "decision": "approved",
+      "max_order_notional": 2000,
+      "max_daily_notional": 3000,
+      "allowed_symbols": [
+        "NVDA"
+      ],
+      "restricted_symbols": [],
+      "allowed_sides": [
+        "buy"
+      ],
+      "shorting_allowed": false,
+      "notes": "",
+      "created_at": "2026-05-01T16:07:00Z",
+      "expires_at": ""
+    }
+  ],
+  "tickets": [
+    {
+      "id": "partner_ticket_85d4ebd8a6c4",
+      "source_ticket_id": "paper_ticket_d9c53a75e741",
+      "dossier_id": "dos_54f0333b49c3",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "partner_id": "regulated_sandbox",
+      "partner_name": "Regulated Partner Sandbox",
+      "environment": "sandbox",
+      "symbol": "NVDA",
+      "side": "buy",
+      "quantity": 4,
+      "reference_price": 114.6,
+      "notional": 458.4,
+      "order_type": "market",
+      "time_in_force": "day",
+      "status": "submitted_to_partner_sandbox",
+      "created_at": "2026-05-01T15:31:00Z",
+      "production_adapter_locked": false,
+      "live_execution_intent": false,
+      "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass.",
+      "human_approval_id": "partner_human_9c118b2fad28",
+      "submission_id": "partner_submission_1282056ea3e1"
+    },
+    {
+      "id": "partner_ticket_ba82688634e7",
+      "source_ticket_id": "paper_ticket_0cdbd09c92a5",
+      "dossier_id": "dos_54f0333b49c3",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "partner_id": "regulated_sandbox",
+      "partner_name": "Regulated Partner Sandbox",
+      "environment": "production",
+      "symbol": "NVDA",
+      "side": "buy",
+      "quantity": 4,
+      "reference_price": 114.6,
+      "notional": 458.4,
+      "order_type": "market",
+      "time_in_force": "day",
+      "status": "approved",
+      "created_at": "2026-05-01T16:05:00Z",
+      "production_adapter_locked": true,
+      "live_execution_intent": true,
+      "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass.",
+      "human_approval_id": "partner_human_372565ef02cc"
+    }
+  ],
+  "human_approvals": [
+    {
+      "id": "partner_human_9c118b2fad28",
+      "ticket_id": "partner_ticket_85d4ebd8a6c4",
+      "dossier_id": "dos_54f0333b49c3",
+      "partner_id": "regulated_sandbox",
+      "approver": "Human Trader",
+      "rationale": "Approved after team, legal, and market-access controls.",
+      "decision": "approved",
+      "approved_at": "2026-05-01T15:35:00Z",
+      "expires_at": "2026-05-01T15:50:00.000Z"
+    },
+    {
+      "id": "partner_human_372565ef02cc",
+      "ticket_id": "partner_ticket_ba82688634e7",
+      "dossier_id": "dos_54f0333b49c3",
+      "partner_id": "regulated_sandbox",
+      "approver": "Human Trader",
+      "rationale": "Production should remain blocked by adapter lock.",
+      "decision": "approved",
+      "approved_at": "2026-05-01T16:08:00Z",
+      "expires_at": "2026-05-01T16:23:00.000Z"
+    }
+  ],
+  "submissions": [
+    {
+      "id": "partner_submission_1282056ea3e1",
+      "ticket_id": "partner_ticket_85d4ebd8a6c4",
+      "dossier_id": "dos_54f0333b49c3",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "partner_id": "regulated_sandbox",
+      "environment": "sandbox",
+      "symbol": "NVDA",
+      "side": "buy",
+      "quantity": 4,
+      "notional": 458.4,
+      "status": "submitted_to_partner_sandbox",
+      "submitted_at": "2026-05-01T15:40:00Z",
+      "human_approval_id": "partner_human_9c118b2fad28",
+      "legal_approval_id": "legal_e25ae21e3098",
+      "market_access_review_id": "market_access_7af972c31095",
+      "controls": {
+        "ticket_id": "partner_ticket_85d4ebd8a6c4",
+        "dossier_id": "dos_54f0333b49c3",
+        "partner_id": "regulated_sandbox",
+        "environment": "sandbox",
+        "evaluated_at": "2026-05-01T15:40:00Z",
+        "passed": true,
+        "problems": [],
+        "controls": [
+          {
+            "id": "regulated_partner",
+            "passed": true,
+            "detail": "Regulated Partner Sandbox"
+          },
+          {
+            "id": "kill_switch",
+            "passed": true,
+            "detail": "inactive"
+          },
+          {
+            "id": "legal_compliance_approval",
+            "passed": true,
+            "ref": "legal_e25ae21e3098"
+          },
+          {
+            "id": "team_release_control",
+            "passed": true,
+            "ref": "dos_54f0333b49c3",
+            "missing_review_types": []
+          },
+          {
+            "id": "market_access_review",
+            "passed": true,
+            "ref": "market_access_7af972c31095",
+            "problems": []
+          },
+          {
+            "id": "human_approval",
+            "passed": true,
+            "ref": "partner_human_9c118b2fad28"
+          },
+          {
+            "id": "pre_trade_controls",
+            "passed": true,
+            "problems": []
+          },
+          {
+            "id": "sandbox_adapter",
+            "passed": true,
+            "detail": "partner sandbox handoff only"
+          }
+        ]
+      },
+      "reversible": true,
+      "live_execution": false,
+      "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass."
+    }
+  ],
+  "post_trade_reviews": [
+    {
+      "id": "post_trade_b08ed6e929b2",
+      "submission_id": "partner_submission_1282056ea3e1",
+      "ticket_id": "partner_ticket_85d4ebd8a6c4",
+      "dossier_id": "dos_54f0333b49c3",
+      "partner_id": "regulated_sandbox",
+      "reviewer": "Execution Ops",
+      "outcome": "acceptable",
+      "notes": "Sandbox handoff matched the approval scope.",
+      "created_at": "2026-05-01T16:00:00Z"
+    }
+  ],
+  "governance_summary": {
+    "audit_dir": "artifacts/phase_7_regulated_partner_execution/audits",
+    "workspace_id": "team_ws_9c0067815579",
+    "workspace_name": "Phase Seven Execution Desk",
+    "member_count": 5,
+    "dossier_count": 1,
+    "assignment_count": 4,
+    "open_assignment_count": 0,
+    "comment_count": 0,
+    "approval_count": 4,
+    "release_ready_count": 1,
+    "blocked_release_count": 0
+  }
+}

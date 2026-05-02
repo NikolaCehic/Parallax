@@ -1,0 +1,55 @@
+{
+  "ticket_id": "partner_ticket_ba82688634e7",
+  "dossier_id": "dos_54f0333b49c3",
+  "partner_id": "regulated_sandbox",
+  "environment": "production",
+  "evaluated_at": "2026-05-01T16:09:00Z",
+  "passed": false,
+  "problems": [
+    "Production adapter is locked until a regulated partner production adapter is explicitly enabled by compliance."
+  ],
+  "controls": [
+    {
+      "id": "regulated_partner",
+      "passed": true,
+      "detail": "Regulated Partner Sandbox"
+    },
+    {
+      "id": "kill_switch",
+      "passed": true,
+      "detail": "inactive"
+    },
+    {
+      "id": "legal_compliance_approval",
+      "passed": true,
+      "ref": "legal_193b5d8c5f72"
+    },
+    {
+      "id": "team_release_control",
+      "passed": true,
+      "ref": "dos_54f0333b49c3",
+      "missing_review_types": []
+    },
+    {
+      "id": "market_access_review",
+      "passed": true,
+      "ref": "market_access_dd48d8f5f7d8",
+      "problems": []
+    },
+    {
+      "id": "human_approval",
+      "passed": true,
+      "ref": "partner_human_372565ef02cc"
+    },
+    {
+      "id": "pre_trade_controls",
+      "passed": true,
+      "problems": []
+    },
+    {
+      "id": "production_adapter",
+      "passed": false,
+      "detail": "locked"
+    }
+  ]
+}

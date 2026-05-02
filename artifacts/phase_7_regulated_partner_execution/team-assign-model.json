@@ -1,0 +1,17 @@
+{
+  "assignment": {
+    "id": "review_06c7b7976758",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "action_class": "paper_trade_candidate",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "model_review",
+    "assignee": "Mira Model",
+    "requester": "Niko Owner",
+    "due_at": "",
+    "note": "Model/tool registry review.",
+    "status": "open",
+    "created_at": "2026-05-01T15:13:00Z"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json"
+}

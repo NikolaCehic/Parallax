@@ -1,0 +1,18 @@
+{
+  "member": {
+    "id": "member_07a8aa9d7eaa",
+    "name": "Lena Lead",
+    "role": "lead_analyst",
+    "email": "",
+    "status": "active",
+    "added_at": "2026-05-01T15:01:00Z"
+  },
+  "permissions": [
+    "assign_review",
+    "comment",
+    "approve_analysis_review",
+    "export_governance"
+  ],
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json",
+  "member_count": 2
+}

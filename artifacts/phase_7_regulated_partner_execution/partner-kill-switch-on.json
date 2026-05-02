@@ -1,0 +1,8 @@
+{
+  "kill_switch": {
+    "enabled": true,
+    "reason": "phase7 proof halt",
+    "updated_at": "2026-05-01T15:37:00Z"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json"
+}

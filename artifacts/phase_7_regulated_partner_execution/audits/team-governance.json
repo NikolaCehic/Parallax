@@ -1,0 +1,261 @@
+{
+  "schema_version": "0.1.0",
+  "audit_dir": "artifacts/phase_7_regulated_partner_execution/audits",
+  "workspace": {
+    "id": "team_ws_9c0067815579",
+    "name": "Phase Seven Execution Desk",
+    "created_at": "2026-05-01T15:00:00Z",
+    "product_boundary": "Research, watchlist, and paper-trade governance only; no live execution."
+  },
+  "role_permissions": {
+    "owner": [
+      "manage_workspace",
+      "manage_members",
+      "assign_review",
+      "comment",
+      "approve_analysis_review",
+      "approve_risk_review",
+      "approve_compliance_review",
+      "approve_model_review",
+      "export_governance"
+    ],
+    "lead_analyst": [
+      "assign_review",
+      "comment",
+      "approve_analysis_review",
+      "export_governance"
+    ],
+    "risk_reviewer": [
+      "comment",
+      "approve_risk_review"
+    ],
+    "compliance_reviewer": [
+      "comment",
+      "approve_compliance_review",
+      "export_governance"
+    ],
+    "model_validator": [
+      "comment",
+      "approve_model_review",
+      "export_governance"
+    ],
+    "observer": [
+      "comment"
+    ]
+  },
+  "review_policy": {
+    "review_role_map": {
+      "analysis_review": "lead_analyst",
+      "risk_review": "risk_reviewer",
+      "compliance_review": "compliance_reviewer",
+      "model_review": "model_validator"
+    },
+    "paper_trade_candidate_required_reviews": [
+      "analysis_review",
+      "risk_review",
+      "compliance_review",
+      "model_review"
+    ],
+    "watchlist_required_reviews": [
+      "analysis_review",
+      "risk_review",
+      "compliance_review"
+    ],
+    "no_trade_required_reviews": [
+      "analysis_review",
+      "compliance_review"
+    ],
+    "release_rule": "A dossier is team-release-ready only when registry validation passes, required approvals are present, and no review has requested changes or rejected the thesis."
+  },
+  "soc2_readiness_program": [
+    {
+      "id": "CC1.1",
+      "name": "Control Environment",
+      "description": "Workspace owner and active role directory are configured."
+    },
+    {
+      "id": "CC2.1",
+      "name": "Communication And Information",
+      "description": "Review assignments, comments, and approvals are persisted as audit records."
+    },
+    {
+      "id": "CC3.1",
+      "name": "Risk Assessment",
+      "description": "Release readiness checks combine dossier validation with required human approvals."
+    },
+    {
+      "id": "CC6.1",
+      "name": "Logical Access",
+      "description": "Approval authority is role-bound by review type."
+    },
+    {
+      "id": "CC7.1",
+      "name": "Change Management",
+      "description": "Model/tool registry and validation status are included in release controls."
+    },
+    {
+      "id": "A1.1",
+      "name": "Availability And Audit Export",
+      "description": "A portable governance export can reconstruct team review state."
+    }
+  ],
+  "members": [
+    {
+      "id": "member_5c5a2c43448c",
+      "name": "Niko Owner",
+      "role": "owner",
+      "email": "",
+      "status": "active",
+      "added_at": "2026-05-01T15:00:00Z"
+    },
+    {
+      "id": "member_07a8aa9d7eaa",
+      "name": "Lena Lead",
+      "role": "lead_analyst",
+      "email": "",
+      "status": "active",
+      "added_at": "2026-05-01T15:01:00Z"
+    },
+    {
+      "id": "member_c055d6670f42",
+      "name": "Ravi Risk",
+      "role": "risk_reviewer",
+      "email": "",
+      "status": "active",
+      "added_at": "2026-05-01T15:02:00Z"
+    },
+    {
+      "id": "member_72c158203370",
+      "name": "Casey Compliance",
+      "role": "compliance_reviewer",
+      "email": "",
+      "status": "active",
+      "added_at": "2026-05-01T15:03:00Z"
+    },
+    {
+      "id": "member_fa69fe2c0dad",
+      "name": "Mira Model",
+      "role": "model_validator",
+      "email": "",
+      "status": "active",
+      "added_at": "2026-05-01T15:04:00Z"
+    }
+  ],
+  "assignments": [
+    {
+      "id": "review_f6c2b81912c3",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "action_class": "paper_trade_candidate",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "analysis_review",
+      "assignee": "Lena Lead",
+      "requester": "Niko Owner",
+      "due_at": "",
+      "note": "Partner execution analysis review.",
+      "status": "approved",
+      "created_at": "2026-05-01T15:10:00Z",
+      "resolved_at": "2026-05-01T15:20:00Z",
+      "approval_id": "gov_approval_c68c2a0b2bfc"
+    },
+    {
+      "id": "review_958d2887a01f",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "action_class": "paper_trade_candidate",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "risk_review",
+      "assignee": "Ravi Risk",
+      "requester": "Niko Owner",
+      "due_at": "",
+      "note": "Partner execution risk review.",
+      "status": "approved",
+      "created_at": "2026-05-01T15:11:00Z",
+      "resolved_at": "2026-05-01T15:21:00Z",
+      "approval_id": "gov_approval_ffce59668c6d"
+    },
+    {
+      "id": "review_7c8800207e3e",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "action_class": "paper_trade_candidate",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "compliance_review",
+      "assignee": "Casey Compliance",
+      "requester": "Niko Owner",
+      "due_at": "",
+      "note": "Research-only and partner boundary review.",
+      "status": "approved",
+      "created_at": "2026-05-01T15:12:00Z",
+      "resolved_at": "2026-05-01T15:22:00Z",
+      "approval_id": "gov_approval_7757415917c7"
+    },
+    {
+      "id": "review_06c7b7976758",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "action_class": "paper_trade_candidate",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "model_review",
+      "assignee": "Mira Model",
+      "requester": "Niko Owner",
+      "due_at": "",
+      "note": "Model/tool registry review.",
+      "status": "approved",
+      "created_at": "2026-05-01T15:13:00Z",
+      "resolved_at": "2026-05-01T15:23:00Z",
+      "approval_id": "gov_approval_332938271d0b"
+    }
+  ],
+  "comments": [],
+  "approvals": [
+    {
+      "id": "gov_approval_c68c2a0b2bfc",
+      "assignment_id": "review_f6c2b81912c3",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "analysis_review",
+      "approver": "Lena Lead",
+      "decision": "approved",
+      "rationale": "Thesis is evidence-linked and dissent is preserved.",
+      "created_at": "2026-05-01T15:20:00Z"
+    },
+    {
+      "id": "gov_approval_ffce59668c6d",
+      "assignment_id": "review_958d2887a01f",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "risk_review",
+      "approver": "Ravi Risk",
+      "decision": "approved",
+      "rationale": "Risk controls allow only small sandbox handoff.",
+      "created_at": "2026-05-01T15:21:00Z"
+    },
+    {
+      "id": "gov_approval_7757415917c7",
+      "assignment_id": "review_7c8800207e3e",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "compliance_review",
+      "approver": "Casey Compliance",
+      "decision": "approved",
+      "rationale": "Partner path remains controlled and non-broker.",
+      "created_at": "2026-05-01T15:22:00Z"
+    },
+    {
+      "id": "gov_approval_332938271d0b",
+      "assignment_id": "review_06c7b7976758",
+      "dossier_id": "dos_54f0333b49c3",
+      "symbol": "NVDA",
+      "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+      "review_type": "model_review",
+      "approver": "Mira Model",
+      "decision": "approved",
+      "rationale": "Model and tool registry validation passes.",
+      "created_at": "2026-05-01T15:23:00Z"
+    }
+  ]
+}

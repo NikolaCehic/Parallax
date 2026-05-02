@@ -1,0 +1,28 @@
+Parallax Partner Execution Report
+==================================
+
+Audit dir: artifacts/phase_7_regulated_partner_execution/audits
+Partners: 1
+Legal approvals: 2
+Market access reviews: 2
+Tickets: 2
+Human approvals: 2
+Submissions: 1
+Sandbox submissions: 1
+Production submissions: 0
+Post-trade reviews: 1
+Production unlocked: no
+Kill switch enabled: no
+Team release ready: 1
+
+Submissions
+1. NVDA | sandbox | submitted_to_partner_sandbox | notional=458.4 | live=no | partner_submission_1282056ea3e1
+
+Regulatory Control Checklist
+  - broker_dealer_registration: Production routing requires a registered/regulated execution partner; Parallax is not a broker.
+  - market_access_controls: Partner handoff requires documented financial and regulatory risk controls before any market-access route.
+  - supervisory_system: Review assignments, approvals, and supervisory decisions must be reconstructable.
+  - books_records: Tickets, approvals, submissions, and post-trade reviews are retained in the local execution ledger.
+
+Boundary
+  Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass.

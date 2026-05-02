@@ -25,6 +25,7 @@ Parallax tries to sit in the middle:
 - Phase 4 lifecycle alerts track change since the last run, custom triggers, preferences, and a local notification inbox.
 - Phase 5 paper trading stores simulated positions, outcomes, attribution, and reviews without unlocking live execution.
 - Phase 6 team governance adds role-aware review assignments, comments, approvals, release controls, and governance exports.
+- Phase 7 partner execution adds legal approval, market-access review, human approval, kill switch, post-trade review, and a locked production-adapter boundary.
 
 Instead of asking:
 
@@ -74,7 +75,7 @@ User thesis
   -> Decision gate
   -> Lifecycle engine
   -> Audit bundle
-  -> Optional paper/sandbox path
+  -> Optional paper/team/partner-control path
 ```
 
 The important design choice: generated reasoning does not own the numbers. The Python analytics worker produces the calculations. The council can interpret and challenge those results, but numeric claims must be tied back to tool outputs.
@@ -106,7 +107,7 @@ TypeScript owns:
 - audit replay;
 - team governance;
 - paper trading;
-- sandbox execution controls.
+- sandbox and partner execution controls.
 
 Python owns:
 
@@ -377,6 +378,89 @@ npm run team-export -- \
   --out governance-package.json
 ```
 
+## Partner Execution Controls
+
+Phase 7 adds a partner-execution ledger for regulated-partner handoff review. It does not connect Parallax to a live broker by itself.
+
+The controlled path is:
+
+```text
+team-release-ready dossier
+  -> registered regulated partner
+  -> legal/compliance approval
+  -> market-access review
+  -> partner ticket
+  -> human approval
+  -> execution controls
+  -> partner sandbox handoff
+  -> post-trade review
+```
+
+Register a partner sandbox:
+
+```bash
+npm run cli -- partner-register \
+  --audit-dir audits \
+  --partner-id sandbox_a \
+  --name "Regulated Partner Sandbox"
+```
+
+Record legal/compliance approval and market-access review:
+
+```bash
+npm run cli -- partner-legal-approve \
+  --audit-dir audits \
+  --partner-id sandbox_a \
+  --approver "Counsel" \
+  --scope sandbox
+
+npm run cli -- partner-market-review \
+  --audit-dir audits \
+  --partner-id sandbox_a \
+  --reviewer "Market Access Principal" \
+  --allowed-symbols NVDA \
+  --max-order-notional 2000 \
+  --max-daily-notional 3000
+```
+
+Create, approve, check, and submit a partner sandbox ticket:
+
+```bash
+npm run cli -- partner-ticket \
+  --audit audits/dos_x.json \
+  --audit-dir audits \
+  --partner-id sandbox_a \
+  --risk-budget 0.005
+
+npm run cli -- partner-approve \
+  --audit-dir audits \
+  --ticket partner_ticket_x \
+  --approver "Human Trader" \
+  --rationale "Approved after all controls."
+
+npm run cli -- partner-controls \
+  --audit-dir audits \
+  --ticket partner_ticket_x
+
+npm run cli -- partner-submit \
+  --audit-dir audits \
+  --ticket partner_ticket_x
+```
+
+Record post-trade review and report the ledger:
+
+```bash
+npm run cli -- partner-post-review \
+  --audit-dir audits \
+  --submission partner_submission_x \
+  --reviewer "Execution Ops" \
+  --outcome acceptable
+
+npm run partner-report -- --audit-dir audits
+```
+
+Production partner submission remains locked unless an explicitly configured regulated production adapter is enabled by compliance.
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -536,7 +620,7 @@ Sandbox submission requires:
 - pre-trade controls;
 - kill switch not active.
 
-There is no live broker integration in this prototype.
+There is no direct live broker integration in this prototype. Partner production submission is represented as a controlled handoff boundary and is locked by default.
 
 ## Testing
 
@@ -546,7 +630,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 46 tests:
+The suite currently includes 48 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -559,6 +643,7 @@ The suite currently includes 46 tests:
 - Phase 4 lifecycle trigger-editor, alert-preference, change-since-last-run, notification, and dashboard tests;
 - Phase 5 paper-ledger, risk-reservation, attribution, review, export/import, and CLI tests;
 - Phase 6 team-governance role, assignment, approval, release-readiness, export/import, dashboard, and CLI tests;
+- Phase 7 partner-execution legal approval, market-access review, human approval, kill switch, production lock, post-trade review, export/import, dashboard, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -586,7 +671,7 @@ src/
   data/           Local data adapters, portfolio import, freshness status
   decision/       Decision gate
   evidence/       Evidence loading and snapshots
-  execution/      Sandbox execution controls
+  execution/      Sandbox and partner execution controls
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state, trigger engine, alert prefs, overrides, notifications
   library/        Local dossier library, source view, feedback, export
@@ -605,7 +690,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -636,7 +721,8 @@ It should not pretend to know the future. It should not hide uncertainty. It sho
 
 Current intentional limits:
 
-- no live broker integration;
+- no direct live broker integration;
+- partner production adapter is locked by default;
 - no external market data vendor yet;
 - no external LLM API integration yet; the current LLM path is a local scripted harness;
 - no tax/legal/compliance advice;
@@ -682,8 +768,14 @@ Current state:
 - deterministic analytics;
 - full audit replay;
 - lifecycle monitoring;
-- paper and sandbox paths;
-- 46 passing tests.
+- paper, sandbox, and partner-control paths;
+- partner execution ledger and control report;
+- legal/compliance approval records;
+- market-access review records;
+- partner sandbox handoff;
+- production-adapter lock;
+- post-trade review records;
+- 48 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

@@ -1,0 +1,25 @@
+{
+  "ticket": {
+    "id": "partner_ticket_ba82688634e7",
+    "source_ticket_id": "paper_ticket_0cdbd09c92a5",
+    "dossier_id": "dos_54f0333b49c3",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "partner_id": "regulated_sandbox",
+    "partner_name": "Regulated Partner Sandbox",
+    "environment": "production",
+    "symbol": "NVDA",
+    "side": "buy",
+    "quantity": 4,
+    "reference_price": 114.6,
+    "notional": 458.4,
+    "order_type": "market",
+    "time_in_force": "day",
+    "status": "created",
+    "created_at": "2026-05-01T16:05:00Z",
+    "production_adapter_locked": true,
+    "live_execution_intent": true,
+    "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass."
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json",
+  "ticket_count": 2
+}

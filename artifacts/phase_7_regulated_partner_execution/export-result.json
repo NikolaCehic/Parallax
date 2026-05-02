@@ -1,0 +1,11 @@
+{
+  "out": "artifacts/phase_7_regulated_partner_execution/phase7-workspace.json",
+  "dossier_count": 1,
+  "source_view_count": 1,
+  "audit_bundle_count": 1,
+  "feedback_count": 0,
+  "lifecycle_file_count": 0,
+  "paper_file_count": 0,
+  "governance_file_count": 1,
+  "execution_file_count": 1
+}

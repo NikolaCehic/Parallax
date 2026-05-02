@@ -1,0 +1,42 @@
+{
+  "partner": {
+    "id": "partner_11b0f0bb07f3",
+    "partner_id": "regulated_sandbox",
+    "name": "Regulated Partner Sandbox",
+    "environment": "sandbox",
+    "regulated": true,
+    "status": "active",
+    "production_enabled": false,
+    "production_adapter_status": "locked",
+    "registered_at": "2026-05-01T15:30:00Z",
+    "product_boundary": "Parallax does not custody assets, provide broker services, or bypass partner controls."
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json",
+  "partner_count": 1,
+  "regulatory_obligations": [
+    {
+      "id": "broker_dealer_registration",
+      "source": "SEC broker-dealer registration guidance",
+      "url": "https://www.sec.gov/divisions/marketreg/bdguide.htm",
+      "control": "Production routing requires a registered/regulated execution partner; Parallax is not a broker."
+    },
+    {
+      "id": "market_access_controls",
+      "source": "SEC Rule 15c3-5 market access controls",
+      "url": "https://www.sec.gov/rules-regulations/2011/06/risk-management-controls-brokers-or-dealers-market-access",
+      "control": "Partner handoff requires documented financial and regulatory risk controls before any market-access route."
+    },
+    {
+      "id": "supervisory_system",
+      "source": "FINRA Rule 3110 supervision",
+      "url": "https://www.finra.org/finramanual/rules/r3110/",
+      "control": "Review assignments, approvals, and supervisory decisions must be reconstructable."
+    },
+    {
+      "id": "books_records",
+      "source": "Broker-dealer books and records rules",
+      "url": "https://www.finra.org/rules-guidance/key-topics/books-records",
+      "control": "Tickets, approvals, submissions, and post-trade reviews are retained in the local execution ledger."
+    }
+  ]
+}

@@ -579,7 +579,8 @@ export function exportToHumanReport(result: any) {
     `Feedback: ${result.feedback_count ?? 0}`,
     `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
     `Paper files: ${result.paper_file_count ?? 0}`,
-    `Governance files: ${result.governance_file_count ?? 0}`
+    `Governance files: ${result.governance_file_count ?? 0}`,
+    `Execution files: ${result.execution_file_count ?? 0}`
   ]);
 }
 
@@ -594,7 +595,236 @@ export function importToHumanReport(result: any) {
     `Feedback: ${result.feedback_count}`,
     `Lifecycle files: ${result.lifecycle_file_count ?? 0}`,
     `Paper files: ${result.paper_file_count ?? 0}`,
-    `Governance files: ${result.governance_file_count ?? 0}`
+    `Governance files: ${result.governance_file_count ?? 0}`,
+    `Execution files: ${result.execution_file_count ?? 0}`
+  ]);
+}
+
+export function partnerRegisterToHumanReport(result: any) {
+  return lines([
+    "Parallax Execution Partner",
+    "==========================",
+    "",
+    `Partner ID: ${result.partner.partner_id}`,
+    `Name: ${result.partner.name}`,
+    `Environment: ${result.partner.environment}`,
+    `Regulated: ${result.partner.regulated ? "yes" : "no"}`,
+    `Production enabled: ${result.partner.production_enabled ? "yes" : "no"}`,
+    `Production adapter: ${result.partner.production_adapter_status}`,
+    `Ledger: ${result.ledger_path}`,
+    "",
+    "Boundary",
+    `  ${result.partner.product_boundary}`
+  ]);
+}
+
+export function partnerLegalApprovalToHumanReport(result: any) {
+  const approval = result.approval;
+  return lines([
+    "Parallax Partner Legal Approval",
+    "================================",
+    "",
+    `Approval ID: ${approval.id}`,
+    `Partner ID: ${approval.partner_id}`,
+    `Approver: ${approval.approver}`,
+    `Authority: ${approval.authority}`,
+    `Scope: ${approval.scope}`,
+    `Decision: ${approval.decision}`,
+    `Expires: ${compact(approval.expires_at)}`,
+    "",
+    "Memo",
+    `  ${compact(approval.memo)}`
+  ]);
+}
+
+export function partnerMarketReviewToHumanReport(result: any) {
+  const review = result.review;
+  return lines([
+    "Parallax Market Access Review",
+    "=============================",
+    "",
+    `Review ID: ${review.id}`,
+    `Partner ID: ${review.partner_id}`,
+    `Environment: ${review.environment}`,
+    `Reviewer: ${review.reviewer}`,
+    `Decision: ${review.decision}`,
+    `Max order notional: ${review.max_order_notional}`,
+    `Max daily notional: ${review.max_daily_notional}`,
+    `Allowed symbols: ${review.allowed_symbols.length ? review.allowed_symbols.join(", ") : "all"}`,
+    `Restricted symbols: ${review.restricted_symbols.length ? review.restricted_symbols.join(", ") : "none"}`,
+    `Allowed sides: ${review.allowed_sides.join(", ")}`,
+    `Shorting allowed: ${review.shorting_allowed ? "yes" : "no"}`,
+    "",
+    "Notes",
+    `  ${compact(review.notes)}`
+  ]);
+}
+
+export function partnerTicketToHumanReport(result: any) {
+  const ticket = result.ticket;
+  return lines([
+    "Parallax Partner Ticket",
+    "=======================",
+    "",
+    `Ticket ID: ${ticket.id}`,
+    `Dossier ID: ${ticket.dossier_id}`,
+    `Partner ID: ${ticket.partner_id}`,
+    `Environment: ${ticket.environment}`,
+    `Symbol: ${ticket.symbol}`,
+    `Side: ${ticket.side}`,
+    `Quantity: ${ticket.quantity}`,
+    `Notional: ${ticket.notional}`,
+    `Status: ${ticket.status}`,
+    `Production adapter locked: ${ticket.production_adapter_locked ? "yes" : "no"}`,
+    "",
+    "Boundary",
+    `  ${ticket.product_boundary}`
+  ]);
+}
+
+export function partnerHumanApprovalToHumanReport(result: any) {
+  const approval = result.approval;
+  return lines([
+    "Parallax Partner Human Approval",
+    "================================",
+    "",
+    `Approval ID: ${approval.id}`,
+    `Ticket ID: ${approval.ticket_id}`,
+    `Partner ID: ${approval.partner_id}`,
+    `Approver: ${approval.approver}`,
+    `Expires: ${approval.expires_at}`,
+    "",
+    "Rationale",
+    `  ${compact(approval.rationale)}`
+  ]);
+}
+
+export function partnerControlsToHumanReport(result: any) {
+  const rows = result.controls.map((control: any) =>
+    [
+      `  - ${control.id}`,
+      control.passed ? "passed" : "failed",
+      control.ref ? `ref=${control.ref}` : "",
+      control.detail ? `detail=${control.detail}` : "",
+      control.problems?.length ? `problems=${control.problems.join("; ")}` : "",
+      control.missing_review_types?.length ? `missing=${control.missing_review_types.join(",")}` : ""
+    ].filter(Boolean).join(" | ")
+  );
+  return lines([
+    "Parallax Partner Execution Controls",
+    "====================================",
+    "",
+    `Ticket ID: ${result.ticket_id}`,
+    `Partner ID: ${result.partner_id}`,
+    `Environment: ${result.environment}`,
+    `Passed: ${result.passed ? "yes" : "no"}`,
+    "",
+    "Problems",
+    bullet(result.problems),
+    "",
+    "Controls",
+    rows.join("\n")
+  ]);
+}
+
+export function partnerSubmitToHumanReport(result: any) {
+  const submission = result.submission;
+  return lines([
+    "Parallax Partner Submission",
+    "===========================",
+    "",
+    `Submission ID: ${submission.id}`,
+    `Ticket ID: ${submission.ticket_id}`,
+    `Partner ID: ${submission.partner_id}`,
+    `Environment: ${submission.environment}`,
+    `Status: ${submission.status}`,
+    `Symbol: ${submission.symbol}`,
+    `Side: ${submission.side}`,
+    `Quantity: ${submission.quantity}`,
+    `Notional: ${submission.notional}`,
+    `Live execution: ${submission.live_execution ? "yes" : "no"}`,
+    `Reversible: ${submission.reversible ? "yes" : "no"}`,
+    "",
+    "Control References",
+    `  Human approval: ${submission.human_approval_id}`,
+    `  Legal approval: ${submission.legal_approval_id}`,
+    `  Market access review: ${submission.market_access_review_id}`,
+    "",
+    "Boundary",
+    `  ${submission.product_boundary}`
+  ]);
+}
+
+export function partnerPostTradeReviewToHumanReport(result: any) {
+  const review = result.review;
+  return lines([
+    "Parallax Post-Trade Review",
+    "==========================",
+    "",
+    `Review ID: ${review.id}`,
+    `Submission ID: ${review.submission_id}`,
+    `Partner ID: ${review.partner_id}`,
+    `Reviewer: ${review.reviewer}`,
+    `Outcome: ${review.outcome}`,
+    `Created at: ${review.created_at}`,
+    "",
+    "Notes",
+    `  ${compact(review.notes)}`
+  ]);
+}
+
+export function partnerReportToHumanReport(report: any) {
+  const submissions = report.submissions.map((submission: any, index: number) =>
+    [
+      `${index + 1}. ${submission.symbol}`,
+      submission.environment,
+      submission.status,
+      `notional=${submission.notional}`,
+      `live=${submission.live_execution ? "yes" : "no"}`,
+      submission.id
+    ].join(" | ")
+  );
+  const obligations = report.regulatory_obligations.map((item: any) =>
+    `  - ${item.id}: ${item.control}`
+  );
+  return lines([
+    "Parallax Partner Execution Report",
+    "==================================",
+    "",
+    `Audit dir: ${report.summary.audit_dir}`,
+    `Partners: ${report.summary.partner_count}`,
+    `Legal approvals: ${report.summary.legal_approval_count}`,
+    `Market access reviews: ${report.summary.market_access_review_count}`,
+    `Tickets: ${report.summary.ticket_count}`,
+    `Human approvals: ${report.summary.human_approval_count}`,
+    `Submissions: ${report.summary.submission_count}`,
+    `Sandbox submissions: ${report.summary.sandbox_submission_count}`,
+    `Production submissions: ${report.summary.production_submission_count}`,
+    `Post-trade reviews: ${report.summary.post_trade_review_count}`,
+    `Production unlocked: ${report.summary.production_unlocked ? "yes" : "no"}`,
+    `Kill switch enabled: ${report.summary.kill_switch_enabled ? "yes" : "no"}`,
+    `Team release ready: ${report.summary.release_ready_count}`,
+    "",
+    "Submissions",
+    submissions.length ? submissions.join("\n") : "No partner submissions.",
+    "",
+    "Regulatory Control Checklist",
+    obligations.join("\n"),
+    "",
+    "Boundary",
+    `  ${report.summary.product_boundary}`
+  ]);
+}
+
+export function partnerKillSwitchToHumanReport(result: any) {
+  return lines([
+    "Parallax Partner Kill Switch",
+    "============================",
+    "",
+    `Enabled: ${result.kill_switch.enabled ? "yes" : "no"}`,
+    `Reason: ${compact(result.kill_switch.reason)}`,
+    `Updated at: ${result.kill_switch.updated_at}`,
+    `Ledger: ${result.ledger_path}`
   ]);
 }
 

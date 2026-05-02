@@ -1,0 +1,77 @@
+{
+  "submission": {
+    "id": "partner_submission_1282056ea3e1",
+    "ticket_id": "partner_ticket_85d4ebd8a6c4",
+    "dossier_id": "dos_54f0333b49c3",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "partner_id": "regulated_sandbox",
+    "environment": "sandbox",
+    "symbol": "NVDA",
+    "side": "buy",
+    "quantity": 4,
+    "notional": 458.4,
+    "status": "submitted_to_partner_sandbox",
+    "submitted_at": "2026-05-01T15:40:00Z",
+    "human_approval_id": "partner_human_9c118b2fad28",
+    "legal_approval_id": "legal_e25ae21e3098",
+    "market_access_review_id": "market_access_7af972c31095",
+    "controls": {
+      "ticket_id": "partner_ticket_85d4ebd8a6c4",
+      "dossier_id": "dos_54f0333b49c3",
+      "partner_id": "regulated_sandbox",
+      "environment": "sandbox",
+      "evaluated_at": "2026-05-01T15:40:00Z",
+      "passed": true,
+      "problems": [],
+      "controls": [
+        {
+          "id": "regulated_partner",
+          "passed": true,
+          "detail": "Regulated Partner Sandbox"
+        },
+        {
+          "id": "kill_switch",
+          "passed": true,
+          "detail": "inactive"
+        },
+        {
+          "id": "legal_compliance_approval",
+          "passed": true,
+          "ref": "legal_e25ae21e3098"
+        },
+        {
+          "id": "team_release_control",
+          "passed": true,
+          "ref": "dos_54f0333b49c3",
+          "missing_review_types": []
+        },
+        {
+          "id": "market_access_review",
+          "passed": true,
+          "ref": "market_access_7af972c31095",
+          "problems": []
+        },
+        {
+          "id": "human_approval",
+          "passed": true,
+          "ref": "partner_human_9c118b2fad28"
+        },
+        {
+          "id": "pre_trade_controls",
+          "passed": true,
+          "problems": []
+        },
+        {
+          "id": "sandbox_adapter",
+          "passed": true,
+          "detail": "partner sandbox handoff only"
+        }
+      ]
+    },
+    "reversible": true,
+    "live_execution": false,
+    "product_boundary": "Partner execution is disabled by default. Parallax can create auditable partner handoff records only after legal, compliance, market-access, team-release, human-approval, pre-trade, and kill-switch controls pass."
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json",
+  "submission_count": 1
+}

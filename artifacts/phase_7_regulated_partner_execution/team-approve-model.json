@@ -1,0 +1,31 @@
+{
+  "approval": {
+    "id": "gov_approval_332938271d0b",
+    "assignment_id": "review_06c7b7976758",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "model_review",
+    "approver": "Mira Model",
+    "decision": "approved",
+    "rationale": "Model and tool registry validation passes.",
+    "created_at": "2026-05-01T15:23:00Z"
+  },
+  "assignment": {
+    "id": "review_06c7b7976758",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "action_class": "paper_trade_candidate",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "model_review",
+    "assignee": "Mira Model",
+    "requester": "Niko Owner",
+    "due_at": "",
+    "note": "Model/tool registry review.",
+    "status": "approved",
+    "created_at": "2026-05-01T15:13:00Z",
+    "resolved_at": "2026-05-01T15:23:00Z",
+    "approval_id": "gov_approval_332938271d0b"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json"
+}

@@ -1,0 +1,15 @@
+{
+  "approval": {
+    "id": "legal_193b5d8c5f72",
+    "partner_id": "regulated_sandbox",
+    "approver": "Counsel",
+    "authority": "legal_compliance",
+    "scope": "production",
+    "decision": "approved",
+    "memo": "Production paperwork exists, but adapter remains locked.",
+    "created_at": "2026-05-01T16:06:00Z",
+    "expires_at": ""
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json",
+  "legal_approval_count": 2
+}

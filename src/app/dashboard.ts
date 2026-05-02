@@ -10,6 +10,7 @@ import {
 } from "../library/store.js";
 import { readAlertPreferences, readLifecycleNotifications } from "../lifecycle/workspace.js";
 import { buildGovernanceReport } from "../team/governance.js";
+import { partnerExecutionReport } from "../execution/partner.js";
 
 function escapeHtml(value: any) {
   return String(value ?? "")
@@ -20,7 +21,7 @@ function escapeHtml(value: any) {
 }
 
 function stateClass(value: string) {
-  if (["invalidated", "no_trade", "blocked", "failed", "attention"].includes(value)) return "bad";
+  if (["invalidated", "no_trade", "blocked", "failed", "attention", "rejected"].includes(value)) return "bad";
   if (["stale", "research_needed", "warning", "needs_reframe", "needs_review", "changes_requested"].includes(value)) return "warn";
   if (["active", "watchlist", "paper_trade_candidate", "allowed", "passed", "unchanged", "ready", "release_ready", "approved"].includes(value)) return "good";
   return "neutral";
@@ -133,6 +134,23 @@ function renderAssignmentRows(assignments: any[]) {
   `).join("");
 }
 
+function renderPartnerRows(submissions: any[]) {
+  if (!submissions.length) {
+    return `<tr><td colspan="7" class="empty">No partner submissions.</td></tr>`;
+  }
+  return submissions.map((submission: any) => `
+    <tr>
+      <td><strong>${escapeHtml(submission.symbol)}</strong><span>${escapeHtml(submission.id)}</span></td>
+      <td>${badge(submission.environment)}</td>
+      <td>${badge(submission.status)}</td>
+      <td>${escapeHtml(submission.side)}</td>
+      <td>${escapeHtml(submission.quantity)}</td>
+      <td>${escapeHtml(submission.notional)}</td>
+      <td>${submission.live_execution ? badge("live_handoff") : badge("sandbox_only")}</td>
+    </tr>
+  `).join("");
+}
+
 function renderSourceRows(sourceViews: any[]) {
   const sources = sourceViews.flatMap((view: any) =>
     view.sources.map((source: any) => ({ ...source, dossier_id: view.dossier_id }))
@@ -199,6 +217,7 @@ export async function buildDashboardHtml({
   const notifications = await readLifecycleNotifications(auditDir);
   const paper = await paperLedgerReport(auditDir);
   const governance = await buildGovernanceReport(auditDir);
+  const partnerExecution = await partnerExecutionReport(auditDir);
   const policy = productPolicySnapshot();
   const sourceViews = [];
   for (const entry of library.entries) {
@@ -367,6 +386,7 @@ export async function buildDashboardHtml({
       <a href="#notifications">Notification Inbox</a>
       <a href="#paper">Paper Lab</a>
       <a href="#governance">Team Governance</a>
+      <a href="#partner">Partner Execution</a>
       <a href="#sources">Data Freshness</a>
       <a href="#feedback">Alpha Feedback</a>
       <a href="#boundary">Product Boundary</a>
@@ -381,6 +401,7 @@ export async function buildDashboardHtml({
         ${metric("Notifications", notifications.notifications.length, preferences.channels.join(", "))}
         ${metric("Paper PnL", paper.summary.realized_pnl, `${paper.summary.open_count} open / ${paper.summary.closed_count} closed`)}
         ${metric("Release Ready", governance.summary.release_ready_count, `${governance.summary.open_assignment_count} open reviews`)}
+        ${metric("Partner Submissions", partnerExecution.summary.submission_count, `${partnerExecution.summary.post_trade_review_count} post-trade reviews`)}
       </div>
 
       <section class="section" id="library">
@@ -428,6 +449,18 @@ export async function buildDashboardHtml({
         <table>
           <thead><tr><th>Symbol</th><th>Review</th><th>Assignee</th><th>Status</th><th>Note</th></tr></thead>
           <tbody>${renderAssignmentRows(governance.assignments)}</tbody>
+        </table>
+      </section>
+
+      <section class="section" id="partner">
+        <h2>Partner Execution</h2>
+        <div class="body">
+          <p><strong>Production unlocked:</strong> ${badge(partnerExecution.summary.production_unlocked ? "yes" : "no")}</p>
+          <p><strong>Kill switch:</strong> ${badge(partnerExecution.summary.kill_switch_enabled ? "enabled" : "inactive")}</p>
+        </div>
+        <table>
+          <thead><tr><th>Symbol</th><th>Environment</th><th>Status</th><th>Side</th><th>Qty</th><th>Notional</th><th>Mode</th></tr></thead>
+          <tbody>${renderPartnerRows(partnerExecution.submissions)}</tbody>
         </table>
       </section>
 

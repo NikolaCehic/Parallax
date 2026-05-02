@@ -1,0 +1,17 @@
+{
+  "assignment": {
+    "id": "review_958d2887a01f",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "action_class": "paper_trade_candidate",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "risk_review",
+    "assignee": "Ravi Risk",
+    "requester": "Niko Owner",
+    "due_at": "",
+    "note": "Partner execution risk review.",
+    "status": "open",
+    "created_at": "2026-05-01T15:11:00Z"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json"
+}

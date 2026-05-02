@@ -1,0 +1,14 @@
+Parallax Audit Replay
+=====================
+
+Replay status: valid
+Expected hash: a83592a6a2a1c5a05d0e26ffd3925c64d7c0fe781c6b33cb341d31d6db1b80f2
+Actual hash:   a83592a6a2a1c5a05d0e26ffd3925c64d7c0fe781c6b33cb341d31d6db1b80f2
+
+Replayed Decision
+  Action class: PAPER TRADE CANDIDATE
+  Thesis state: active
+  Confidence: 0.63
+  Freshness: 1
+  Vetoes: 0
+  Next trigger: Volatility regime changes materially.

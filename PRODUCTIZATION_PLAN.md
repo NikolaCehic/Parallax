@@ -105,7 +105,8 @@ The current repo already has the right skeleton:
 - lifecycle alert workspace;
 - paper trading lab ledger;
 - team governance ledger;
-- 46 tests;
+- partner execution ledger;
+- 48 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -161,7 +162,15 @@ Implemented on 2026-05-02:
 - governance export package;
 - SOC 2 readiness program;
 - Phase 6 artifact bundle;
-- 46 passing tests.
+- partner registry;
+- legal/compliance approval records;
+- market-access review records;
+- partner tickets and human approvals;
+- partner sandbox handoff;
+- production-adapter lock;
+- post-trade review records;
+- Phase 7 artifact bundle;
+- 48 passing tests.
 
 ## Knowledge Gathered
 
@@ -885,6 +894,8 @@ Exit criteria:
 
 ### Phase 7: Regulated/Partner Execution
 
+Status: Complete for partner sandbox handoff and locked production-adapter scope.
+
 Goal:
 
 Only if justified, add permissioned execution through a regulated partner.
@@ -899,6 +910,13 @@ Deliverables:
 - kill switch;
 - post-trade review;
 - market access control review.
+- persistent partner-execution ledger;
+- regulated partner registry;
+- legal/compliance approval CLI;
+- market-access review CLI;
+- partner ticket, approval, controls, submission, report, kill-switch, and post-trade-review CLI;
+- production adapter locked by default;
+- regulatory source anchors for SEC/FINRA broker-dealer registration, market-access controls, supervision, and books/records.
 
 Exit criteria:
 

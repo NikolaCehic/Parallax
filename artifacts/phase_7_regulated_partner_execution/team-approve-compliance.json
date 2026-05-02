@@ -1,0 +1,31 @@
+{
+  "approval": {
+    "id": "gov_approval_7757415917c7",
+    "assignment_id": "review_7c8800207e3e",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "compliance_review",
+    "approver": "Casey Compliance",
+    "decision": "approved",
+    "rationale": "Partner path remains controlled and non-broker.",
+    "created_at": "2026-05-01T15:22:00Z"
+  },
+  "assignment": {
+    "id": "review_7c8800207e3e",
+    "dossier_id": "dos_54f0333b49c3",
+    "symbol": "NVDA",
+    "action_class": "paper_trade_candidate",
+    "audit_path": "artifacts/phase_7_regulated_partner_execution/audits/dos_54f0333b49c3.json",
+    "review_type": "compliance_review",
+    "assignee": "Casey Compliance",
+    "requester": "Niko Owner",
+    "due_at": "",
+    "note": "Research-only and partner boundary review.",
+    "status": "approved",
+    "created_at": "2026-05-01T15:12:00Z",
+    "resolved_at": "2026-05-01T15:22:00Z",
+    "approval_id": "gov_approval_7757415917c7"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json"
+}

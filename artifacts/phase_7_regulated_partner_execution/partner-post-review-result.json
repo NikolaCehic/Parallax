@@ -1,0 +1,15 @@
+{
+  "review": {
+    "id": "post_trade_b08ed6e929b2",
+    "submission_id": "partner_submission_1282056ea3e1",
+    "ticket_id": "partner_ticket_85d4ebd8a6c4",
+    "dossier_id": "dos_54f0333b49c3",
+    "partner_id": "regulated_sandbox",
+    "reviewer": "Execution Ops",
+    "outcome": "acceptable",
+    "notes": "Sandbox handoff matched the approval scope.",
+    "created_at": "2026-05-01T16:00:00Z"
+  },
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/partner-execution.json",
+  "post_trade_review_count": 1
+}

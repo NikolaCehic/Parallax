@@ -1,0 +1,17 @@
+{
+  "member": {
+    "id": "member_72c158203370",
+    "name": "Casey Compliance",
+    "role": "compliance_reviewer",
+    "email": "",
+    "status": "active",
+    "added_at": "2026-05-01T15:03:00Z"
+  },
+  "permissions": [
+    "comment",
+    "approve_compliance_review",
+    "export_governance"
+  ],
+  "ledger_path": "artifacts/phase_7_regulated_partner_execution/audits/team-governance.json",
+  "member_count": 4
+}

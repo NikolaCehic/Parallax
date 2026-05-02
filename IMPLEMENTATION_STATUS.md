@@ -2,13 +2,13 @@
 
 Status date: 2026-05-02
 
-Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with live execution intentionally limited to sandbox-only approval workflows. The first productization slice is now implemented: product-boundary enforcement plus a local alpha workspace.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, and partner-execution controls.
 
-TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, and sandbox execution controls.
+TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, and partner-execution controls.
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, and the local team governance ledger.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, and the partner-execution ledger.
 
 ## Phase Completion Map
 
@@ -33,10 +33,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 4 Lifecycle And Alerts | Complete for local workspace scope | Trigger editor, alert preferences, persisted change-since-last-run checks, notification inbox, lifecycle dashboard upgrades, phase artifacts |
 | 5 Paper Trading Lab | Complete for local simulation scope | Paper ledger, risk reservation, fill assumptions, open/closed views, attribution, review notes, calibration, phase artifacts |
 | 6 Team And Governance | Complete for local team workspace scope | Role directory, review assignments, comments, approvals, release readiness controls, governance export, SOC 2 readiness program, phase artifacts |
+| 7 Regulated/Partner Execution | Complete for partner sandbox handoff and locked production-adapter scope | Regulated partner registry, legal/compliance approval, market-access review, persistent partner tickets, human approval, kill switch, partner sandbox handoff, production lock, post-trade review, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 46 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, and Phase 6 team-governance tests.
+- `npm test` builds TypeScript and runs 48 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, and Phase 7 partner-execution tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -58,6 +59,13 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `team-assign`, `team-comment`, and `team-approve` create review discipline around a dossier.
 - `team-report` combines human approvals, model/tool registry validation, release readiness, and SOC 2-style control status.
 - `team-export` writes a portable governance package.
+- `partner-register` records a regulated partner sandbox or locked production-adapter boundary.
+- `partner-legal-approve` records legal/compliance approval.
+- `partner-market-review` records market-access limits.
+- `partner-ticket`, `partner-approve`, `partner-controls`, and `partner-submit` enforce partner handoff controls.
+- `partner-kill-switch` blocks partner submission.
+- `partner-post-review` records post-trade review.
+- `partner-report` summarizes execution controls, submissions, regulatory source anchors, and production-lock status.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -71,6 +79,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Phase 4 artifacts live under `artifacts/phase_4_lifecycle_alerts/`.
 - Phase 5 artifacts live under `artifacts/phase_5_paper_trading_lab/`.
 - Phase 6 artifacts live under `artifacts/phase_6_team_and_governance/`.
+- Phase 7 artifacts live under `artifacts/phase_7_regulated_partner_execution/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -94,16 +103,18 @@ It covers:
 - future and past event handling;
 - lifecycle invalidation/recheck/expiry;
 - paper trade attribution;
-- sandbox approval, expiry, kill switch, and risk-control enforcement.
+- sandbox approval, expiry, kill switch, and risk-control enforcement;
+- partner legal approval, market-access review, human approval, kill switch, production-adapter lock, post-trade review, and workspace portability.
 
 The suite exposed and fixed two issues: past events were previously counted as future event risk, and boolean lifecycle trigger expressions were not evaluated correctly.
 
 ## Intentional Limits
 
-- No live broker integration.
+- No direct live broker integration.
+- Partner production adapter is locked by default and requires a separately approved regulated partner implementation.
 - No external market data vendor API yet; Phase 2 supports local licensed data packs and vendor-shaped manifests.
 - No external LLM API integration yet; the current LLM path is a deterministic local harness that exercises the production contract.
-- No cloud workspace yet; Phase 6 is a local file-based team governance workspace.
+- No cloud workspace yet; Phase 6 and Phase 7 are local file-based governance/execution-control workspaces.
 - No legal/compliance claim beyond prototype controls.
 - No claim of trading profitability.
 
@@ -115,4 +126,4 @@ Within a local prototype scope, the current implementation reaches the intended 
 
 > I do not know a better architecture for this agent, and I do not know what is structurally wrong with the current one.
 
-The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, UI, deployment, and regulated execution review. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).
+The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, UI, deployment, cloud identity, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).

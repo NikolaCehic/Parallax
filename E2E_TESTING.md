@@ -1,6 +1,6 @@
 # Parallax E2E Testing
 
-The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, local-alpha workspace, LLM council, and sandbox-execution data.
+The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, partner-execution controls, local-alpha workspace, LLM council, and sandbox-execution data.
 
 It does not use one static happy-path fixture. Each E2E scenario creates its own temporary market data, event data, and portfolio constraints, then runs:
 
@@ -11,7 +11,7 @@ Evidence Snapshot
   -> Cross-Examination
   -> Decision Gate
   -> Lifecycle Assignment
-  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Sandbox paths where relevant
+  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Partner Execution/Sandbox paths where relevant
 ```
 
 Run:
@@ -40,6 +40,7 @@ The E2E suite currently proves:
 14. Phase 4 lifecycle alerts can add replay-safe custom triggers, persist change-since-last-run checks, enforce muted alert preferences, generate local notifications, export/import lifecycle state, and render notification dashboard sections.
 15. Phase 5 paper trading lab can reserve risk budget, persist open and closed simulated trades, attribute outcomes, record review notes, export/import the paper ledger, and prove paper performance stays simulation-only.
 16. Phase 6 team governance can initialize a workspace, enforce role-aware review approvals, block release readiness until required approvals are complete, export governance evidence, preserve paths across import, and render governance dashboard sections.
+17. Phase 7 partner execution can require team-release readiness, legal/compliance approval, market-access review, human approval, kill-switch clearance, pre-trade controls, production-adapter unlock, sandbox handoff, post-trade review, export/import portability, and dashboard visibility.
 
 ## Issues Found By E2E
 
@@ -56,7 +57,7 @@ The current E2E suite supports the project exit condition:
 
 > I do not know how to improve the system any more and I do not know what is wrong with the current solution.
 
-Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, restricted data licenses, concentration risk, high volatility, event timing, corporate-action adjustment, weak source provenance, LLM hallucination, prompt injection, unsupported LLM numerical claims, LLM budget overrun, lifecycle decay, custom trigger safety, alert preference muting, notification generation, change-since-last-run tracking, paper risk overcommitment, paper outcome attribution, simulation-only boundaries, audit replay, governance validation, role approval bypass, release-readiness gaps, SOC 2 readiness evidence, local workspace portability, dashboard generation, approval bypass, kill switch, and pre-trade controls.
+Within the current local prototype scope, the suite now checks the most important structural risks: stale data, bad compliance state, restricted data licenses, concentration risk, high volatility, event timing, corporate-action adjustment, weak source provenance, LLM hallucination, prompt injection, unsupported LLM numerical claims, LLM budget overrun, lifecycle decay, custom trigger safety, alert preference muting, notification generation, change-since-last-run tracking, paper risk overcommitment, paper outcome attribution, simulation-only boundaries, audit replay, governance validation, role approval bypass, release-readiness gaps, SOC 2 readiness evidence, partner legal approval gaps, market-access breaches, partner human-approval gaps, production-adapter bypass, post-trade-review persistence, local workspace portability, dashboard generation, approval bypass, kill switch, and pre-trade controls.
 
 The remaining improvements are productionization choices, not known architectural defects:
 
@@ -64,4 +65,4 @@ The remaining improvements are productionization choices, not known architectura
 - richer Python quant analytics;
 - external model adapters;
 - cloud deployment;
-- regulated live execution review.
+- real regulated partner production adapter.
