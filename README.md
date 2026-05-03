@@ -30,6 +30,7 @@ Parallax tries to sit in the middle:
 - Phase 9 managed SaaS scaffolding adds tenant isolation, external secret references, provider manifests, observability events, and readiness/export checks for a future hosted product.
 - Phase 10 provider validation adds contract checks for external manifests and a static hosted console for managed-beta review.
 - Phase 11 hosted API adds tenant-scoped persistence, HTTP tenant isolation, hosted API readiness, and CLI controls for local multi-tenant operation.
+- Phase 12 identity/storage foundation adds hash-only identity sessions, scoped tenant API access, durable storage object manifests, and checkpoint evidence.
 
 Instead of asking:
 
@@ -115,7 +116,8 @@ TypeScript owns:
 - beta API and deployment readiness.
 - managed SaaS control-plane scaffolding.
 - provider contract validation and hosted console generation.
-- hosted multi-tenant API and tenant persistence.
+- hosted multi-tenant API and tenant persistence;
+- identity-session and durable-storage foundation.
 
 Python owns:
 
@@ -599,6 +601,41 @@ curl -H "Authorization: Bearer $PARALLAX_HOSTED_API_TOKEN" \
   http://127.0.0.1:8888/api/tenants/alpha/state
 ```
 
+Add the Phase 12 identity and durable-storage foundation:
+
+```bash
+npm run cli -- identity-init --root-dir managed-saas
+
+npm run cli -- identity-principal-add \
+  --root-dir managed-saas \
+  --email analyst@example.com \
+  --name "Analyst" \
+  --tenant alpha \
+  --role tenant_admin
+
+npm run cli -- identity-session-issue \
+  --root-dir managed-saas \
+  --email analyst@example.com \
+  --tenant alpha
+
+npm run cli -- storage-init --root-dir managed-saas
+
+npm run cli -- storage-object-put \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --key screen.cache \
+  --value '{"symbols":["NVDA"],"mode":"research"}'
+
+npm run cli -- storage-checkpoint \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --label baseline
+
+npm run hosted-foundation-status -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -768,7 +805,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 56 tests:
+The suite currently includes 58 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -786,6 +823,7 @@ The suite currently includes 56 tests:
 - Phase 9 managed-SaaS tenant isolation, secret-reference hygiene, provider manifest, observability, export, and CLI tests;
 - Phase 10 provider-contract validation, hosted-console generation, raw-secret redaction, blocking checks, and CLI tests;
 - Phase 11 hosted API readiness, tenant state persistence, HTTP tenant isolation, analysis/library endpoints, hosted-console serving, secret-payload rejection, and CLI tests;
+- Phase 12 identity-session, scoped hosted API access, durable-storage object/checkpoint, raw-token redaction, cross-tenant denial, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -823,7 +861,7 @@ src/
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, hosted API, provider manifests, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -835,7 +873,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -868,10 +906,10 @@ Current intentional limits:
 
 - no direct live broker integration;
 - partner production adapter is locked by default;
-- no external market data vendor API yet; Phase 11 serves local hosted workflows but still validates manifests only;
-- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 11 validates manifests only;
-- no external SSO provider yet; Phase 11 uses local bearer auth and validates identity-provider manifests but does not connect one;
-- no hosted cloud tenancy yet; Phase 11 provides a local multi-tenant hosted API and console surface, not cloud infrastructure;
+- no external market data vendor API yet; Phase 12 serves local hosted workflows but still validates manifests only;
+- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 12 validates manifests only;
+- no external SSO provider yet; Phase 12 has a local identity-session foundation and validates identity-provider manifests, but does not connect a real SSO provider;
+- no hosted cloud tenancy yet; Phase 12 provides a local multi-tenant hosted API plus identity/storage contracts, not cloud infrastructure;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -936,7 +974,10 @@ Current state:
 - static hosted console generator;
 - hosted multi-tenant API server;
 - tenant state and event persistence;
-- 56 passing tests.
+- hash-only local identity sessions;
+- scoped tenant API access;
+- durable storage object manifest and checkpoints;
+- 58 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

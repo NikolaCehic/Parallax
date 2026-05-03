@@ -1,0 +1,113 @@
+{
+  "schema_version": "0.1.0",
+  "issuer": "phase12-local-idp",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+  "created_at": "2026-05-03T10:00:00Z",
+  "token_policy": {
+    "default_ttl_minutes": 60,
+    "max_ttl_minutes": 240,
+    "raw_session_token_storage_allowed": false,
+    "bearer_tokens_are_hash_only": true
+  },
+  "principals": [
+    {
+      "id": "principal_7ac24470e122",
+      "email": "alpha.admin@example.com",
+      "name": "Alpha Admin",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "tenant_admin",
+          "scopes": [
+            "tenant:read",
+            "tenant:write",
+            "analysis:create",
+            "storage:read",
+            "storage:write",
+            "console:read"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T10:00:00Z",
+      "updated_at": "2026-05-03T10:00:00Z"
+    },
+    {
+      "id": "principal_d9f3edeb75fe",
+      "email": "platform.admin@example.com",
+      "name": "Platform Admin",
+      "status": "active",
+      "platform_admin": true,
+      "memberships": [],
+      "created_at": "2026-05-03T10:00:00Z",
+      "updated_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session_3de393106215",
+      "principal_id": "principal_7ac24470e122",
+      "email": "alpha.admin@example.com",
+      "tenant_slug": "alpha",
+      "role": "tenant_admin",
+      "scopes": [
+        "tenant:read",
+        "tenant:write",
+        "analysis:create",
+        "storage:read",
+        "storage:write",
+        "console:read"
+      ],
+      "token_hash": "b5729c62bb4aa94ac1710da6edf0acdb81a9ad31fb6af113261b2ee845eb7d69",
+      "issued_at": "2026-05-03T10:00:00Z",
+      "expires_at": "2026-05-03T10:30:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    },
+    {
+      "id": "session_fdb60b9c9637",
+      "principal_id": "principal_d9f3edeb75fe",
+      "email": "platform.admin@example.com",
+      "tenant_slug": "",
+      "role": "platform_admin",
+      "scopes": [
+        "control_plane:read",
+        "identity:write",
+        "tenant:read",
+        "tenant:write",
+        "analysis:create",
+        "storage:read",
+        "storage:write",
+        "storage:checkpoint",
+        "console:read"
+      ],
+      "token_hash": "f4945b4ba3d8083befb549bbba8fd59b88b77212c77c31fb74d7b8177d868b18",
+      "issued_at": "2026-05-03T10:00:00Z",
+      "expires_at": "2026-05-03T10:30:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    },
+    {
+      "id": "session_563a42d5041c",
+      "principal_id": "principal_7ac24470e122",
+      "email": "alpha.admin@example.com",
+      "tenant_slug": "alpha",
+      "role": "tenant_admin",
+      "scopes": [
+        "tenant:read",
+        "tenant:write",
+        "analysis:create",
+        "storage:read",
+        "storage:write",
+        "console:read"
+      ],
+      "token_hash": "d6cbab35eb9fa51d43626477dcce4c637dda1bc5e96528001170afd87b456a26",
+      "issued_at": "2026-05-03T10:00:00Z",
+      "expires_at": "2026-05-03T10:20:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    }
+  ],
+  "updated_at": "2026-05-03T08:48:24.603Z"
+}

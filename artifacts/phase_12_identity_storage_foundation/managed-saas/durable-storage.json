@@ -1,0 +1,56 @@
+{
+  "schema_version": "0.1.0",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+  "storage_root": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage",
+  "provider": "local_durable_storage",
+  "region": "local_dev",
+  "created_at": "2026-05-03T10:00:00Z",
+  "durability_model": {
+    "mode": "local_durable_storage_contract",
+    "tenant_prefix_required": true,
+    "checkpoint_required": true,
+    "backup_retention_days": 30,
+    "encryption_at_rest": "local_dev_envelope_placeholder",
+    "raw_secret_storage_allowed": false,
+    "direct_cloud_storage_connection": false
+  },
+  "objects": [
+    {
+      "id": "storage_obj_c5e4dceb7ab9",
+      "tenant_slug": "alpha",
+      "key": "screen.cache",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/screen.cache.json",
+      "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+      "updated_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "storage_obj_17cc5050dc36",
+      "tenant_slug": "alpha",
+      "key": "session.cache",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/session.cache.json",
+      "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1",
+      "updated_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "storage_checkpoint_d69ce38a6e09",
+      "label": "phase12-baseline",
+      "tenant_slug": "alpha",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/checkpoints/storage_checkpoint_d69ce38a6e09.json",
+      "object_count": 1,
+      "created_at": "2026-05-03T10:00:00Z"
+    },
+    {
+      "id": "storage_checkpoint_389c74acd0d1",
+      "label": "api-checkpoint",
+      "tenant_slug": "alpha",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/checkpoints/storage_checkpoint_389c74acd0d1.json",
+      "object_count": 2,
+      "created_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "updated_at": "2026-05-03T08:48:24.732Z"
+}

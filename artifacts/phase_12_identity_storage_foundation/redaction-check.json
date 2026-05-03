@@ -1,0 +1,9 @@
+{
+  "identity_directory_contains_alpha_session_token": false,
+  "identity_directory_contains_platform_session_token": false,
+  "identity_directory_contains_api_session_token": false,
+  "artifact_files_contain_service_api_token": false,
+  "storage_manifest_contains_secret_uri": false,
+  "raw_session_token_stored": false,
+  "raw_secret_stored": false
+}

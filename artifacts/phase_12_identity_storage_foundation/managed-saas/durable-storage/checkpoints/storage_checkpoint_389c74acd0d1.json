@@ -1,0 +1,24 @@
+{
+  "id": "storage_checkpoint_389c74acd0d1",
+  "label": "api-checkpoint",
+  "tenant_slug": "alpha",
+  "object_count": 2,
+  "tenant_count": 1,
+  "dossier_count": 1,
+  "state_key_count": 0,
+  "event_count": 1,
+  "object_hashes": [
+    {
+      "tenant_slug": "alpha",
+      "key": "screen.cache",
+      "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f"
+    },
+    {
+      "tenant_slug": "alpha",
+      "key": "session.cache",
+      "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1"
+    }
+  ],
+  "created_by": "hosted_api",
+  "created_at": "2026-05-03T10:00:00Z"
+}

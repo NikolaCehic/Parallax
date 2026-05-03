@@ -111,7 +111,8 @@ The current repo already has the right skeleton:
 - provider contract validation harness;
 - hosted console foundation;
 - hosted multi-tenant API and tenant persistence;
-- 56 tests;
+- identity-session and durable-storage foundation;
+- 58 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -195,7 +196,11 @@ Implemented on 2026-05-02:
 - tenant state/event persistence;
 - authenticated tenant-scoped hosted API;
 - Phase 11 artifact bundle;
-- 56 passing tests.
+- identity directory and hash-only sessions;
+- durable storage manifest and checkpoint evidence;
+- hosted identity/storage foundation readiness;
+- Phase 12 artifact bundle;
+- 58 passing tests.
 
 ## Knowledge Gathered
 
@@ -1070,6 +1075,37 @@ Exit criteria:
 - hosted readiness requires provider contracts, tenant persistence, auth config, tenant count, and production-provider lock;
 - hosted API does not store raw bearer tokens or connect live brokers;
 - secret-like tenant payloads are rejected before persistence.
+
+### Phase 12: Cloud Identity And Durable Storage Foundation
+
+Status: Complete for local foundation scope.
+
+Goal:
+
+Define the product-grade identity and storage boundary before connecting real SSO, cloud databases, object storage, or external production infrastructure.
+
+Deliverables:
+
+- local identity directory;
+- role and scope membership model;
+- hash-only identity sessions;
+- hosted API session authentication;
+- tenant-scoped session enforcement;
+- durable storage manifest;
+- tenant object write/read contracts;
+- storage checkpoint evidence;
+- hosted foundation readiness report;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- identity sessions can access only authorized tenant scopes;
+- raw session tokens are returned once and never persisted;
+- tenant storage object paths stay under tenant prefixes;
+- storage checkpoints exist before foundation readiness passes;
+- secret-like identity/storage payloads are rejected;
+- no live cloud storage or live broker boundary is crossed;
+- external SSO and cloud storage remain future production integrations.
 
 ## Team Needed
 

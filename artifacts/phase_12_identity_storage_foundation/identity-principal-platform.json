@@ -1,0 +1,14 @@
+{
+  "principal": {
+    "id": "principal_d9f3edeb75fe",
+    "email": "platform.admin@example.com",
+    "name": "Platform Admin",
+    "status": "active",
+    "platform_admin": true,
+    "memberships": [],
+    "created_at": "2026-05-03T10:00:00Z",
+    "updated_at": "2026-05-03T10:00:00Z"
+  },
+  "principal_count": 2,
+  "directory_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/identity-directory.json"
+}

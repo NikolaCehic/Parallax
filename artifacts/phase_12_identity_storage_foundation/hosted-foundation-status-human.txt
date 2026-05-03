@@ -1,0 +1,21 @@
+Parallax Identity And Storage Foundation
+========================================
+
+Status: ready_for_identity_storage_foundation
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas
+Tenants: 2
+Principals: 2
+Active sessions: 2
+Storage objects: 1
+Storage checkpoints: 1
+Raw token stored: no
+Raw session token stored: no
+Raw secret stored: no
+Direct cloud storage connection: no
+
+Controls
+  - hosted_api_ready | passed | Hosted API readiness passed.
+  - identity_foundation_ready | passed | Identity directory, principal memberships, and hash-only sessions are ready.
+  - durable_storage_ready | passed | Durable storage manifest, tenant object paths, and checkpoint evidence are ready.
+  - no_raw_tokens_or_secrets | passed | No raw API tokens, identity sessions, or storage secrets are persisted.
+  - no_live_external_execution_or_storage | passed | Phase 12 remains a foundation contract, not live execution or production cloud storage.

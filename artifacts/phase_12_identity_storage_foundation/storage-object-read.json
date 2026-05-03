@@ -1,0 +1,25 @@
+{
+  "object": {
+    "schema_version": "0.1.0",
+    "tenant_slug": "alpha",
+    "key": "screen.cache",
+    "value": {
+      "symbols": [
+        "NVDA"
+      ],
+      "mode": "research"
+    },
+    "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+    "written_by": "phase12_artifact",
+    "written_at": "2026-05-03T10:00:00Z"
+  },
+  "record": {
+    "id": "storage_obj_c5e4dceb7ab9",
+    "tenant_slug": "alpha",
+    "key": "screen.cache",
+    "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/screen.cache.json",
+    "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+    "updated_at": "2026-05-03T10:00:00Z",
+    "raw_secret_stored": false
+  }
+}

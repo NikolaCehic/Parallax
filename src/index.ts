@@ -197,6 +197,22 @@ export {
   createHostedServer,
   hostedApiStatus,
   hostedApiTokenHash,
+  hostedFoundationStatus,
   startHostedServer,
   verifyHostedApiToken
 } from "./saas/server.js";
+export {
+  identityStatus,
+  initializeIdentityDirectory,
+  issueIdentitySession,
+  registerIdentityPrincipal,
+  revokeIdentitySession,
+  verifyIdentitySession
+} from "./saas/identity.js";
+export {
+  createStorageCheckpoint,
+  durableStorageStatus,
+  initializeDurableStorage,
+  readDurableObject,
+  writeDurableObject
+} from "./saas/storage.js";

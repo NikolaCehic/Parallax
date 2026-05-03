@@ -9,6 +9,11 @@ import { dossierToMarkdown } from "../render.js";
 import { providerValidationPath, validateProviderContracts } from "../providers/validation.js";
 import { managedSaasConfigPath, managedSaasStatus } from "./managed.js";
 import {
+  identityStatus,
+  issueIdentitySession,
+  verifyIdentitySession
+} from "./identity.js";
+import {
   appendTenantEvent,
   normalizeTenantSlug,
   readTenantEvents,
@@ -17,6 +22,12 @@ import {
   saveTenantStateValue,
   tenantPersistenceStatus
 } from "./persistence.js";
+import {
+  createStorageCheckpoint,
+  durableStorageStatus,
+  readDurableObject,
+  writeDurableObject
+} from "./storage.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -85,6 +96,67 @@ function requireTenantHeader(req: http.IncomingMessage, tenantSlug: string) {
     throw requestError(403, `Tenant header ${normalizedHeader} cannot access tenant ${normalizedPath}.`);
   }
   return normalizedPath;
+}
+
+async function authenticateRequest({
+  req,
+  rootDir,
+  apiTokenHash
+}: {
+  req: http.IncomingMessage;
+  rootDir: string;
+  apiTokenHash: string;
+}) {
+  const token = bearerToken(req);
+  if (verifyHostedApiToken(apiTokenHash, token)) {
+    return {
+      kind: "api_token",
+      token,
+      principal: {
+        id: "hosted_api_token",
+        email: "service-account@local.parallax",
+        platform_admin: true
+      }
+    };
+  }
+  if (!token) return null;
+  try {
+    const identity = await verifyIdentitySession({ rootDir, sessionToken: token });
+    return {
+      kind: "identity_session",
+      token,
+      principal: identity.principal,
+      session: identity.session
+    };
+  } catch {
+    return null;
+  }
+}
+
+async function requireAuthScope({
+  auth,
+  rootDir,
+  tenantSlug = "",
+  scope
+}: {
+  auth: any;
+  rootDir: string;
+  tenantSlug?: string;
+  scope: string;
+}) {
+  if (auth?.kind === "api_token") return auth;
+  if (!auth) throw requestError(401, "Provide Authorization: Bearer <hosted_api_token_or_identity_session>.");
+  const identity = await verifyIdentitySession({
+    rootDir,
+    sessionToken: auth.token,
+    tenantSlug,
+    requiredScope: scope
+  });
+  return {
+    ...auth,
+    principal: identity.principal,
+    session: identity.session
+  };
 }
 
 export async function hostedApiStatus({
@@ -157,6 +229,83 @@ export async function hostedApiStatus({
   };
 }
 
+export async function hostedFoundationStatus({
+  rootDir = "managed-saas",
+  configPath = managedSaasConfigPath(rootDir),
+  apiTokenHash = "",
+  now = isoNow()
+}: {
+  rootDir?: string;
+  configPath?: string;
+  apiTokenHash?: string;
+  now?: string;
+} = {}) {
+  const hosted = await hostedApiStatus({ rootDir, configPath, apiTokenHash, now });
+  const identity = await identityStatus({ rootDir, configPath, now });
+  const storage = await durableStorageStatus({ rootDir, configPath, now });
+  const controls = [
+    {
+      id: "hosted_api_ready",
+      passed: hosted.status === "ready_for_hosted_multi_tenant_api",
+      severity: "required",
+      detail: "Hosted API readiness passed."
+    },
+    {
+      id: "identity_foundation_ready",
+      passed: identity.status === "ready_for_identity_foundation",
+      severity: "required",
+      detail: "Identity directory, principal memberships, and hash-only sessions are ready."
+    },
+    {
+      id: "durable_storage_ready",
+      passed: storage.status === "ready_for_durable_storage_foundation",
+      severity: "required",
+      detail: "Durable storage manifest, tenant object paths, and checkpoint evidence are ready."
+    },
+    {
+      id: "no_raw_tokens_or_secrets",
+      passed: hosted.summary.raw_token_stored === false &&
+        identity.summary.raw_session_token_stored === false &&
+        storage.summary.raw_secret_stored === false,
+      severity: "required",
+      detail: "No raw API tokens, identity sessions, or storage secrets are persisted."
+    },
+    {
+      id: "no_live_external_execution_or_storage",
+      passed: hosted.summary.direct_live_broker_connection === false &&
+        storage.summary.direct_cloud_storage_connection === false,
+      severity: "required",
+      detail: "Phase 12 remains a foundation contract, not live execution or production cloud storage."
+    }
+  ];
+  const requiredFailures = controls.filter((control) => control.severity === "required" && !control.passed);
+  return {
+    schema_version: "0.1.0",
+    generated_at: now,
+    root_dir: rootDir,
+    config_path: configPath,
+    status: requiredFailures.length === 0 ? "ready_for_identity_storage_foundation" : "blocked",
+    summary: {
+      required_failure_count: requiredFailures.length,
+      tenant_count: hosted.summary.tenant_count,
+      provider_count: hosted.summary.provider_count,
+      principal_count: identity.summary.principal_count,
+      active_session_count: identity.summary.active_session_count,
+      storage_object_count: storage.summary.object_count,
+      storage_checkpoint_count: storage.summary.checkpoint_count,
+      raw_token_stored: false,
+      raw_session_token_stored: false,
+      raw_secret_stored: false,
+      direct_live_broker_connection: false,
+      direct_cloud_storage_connection: false
+    },
+    controls,
+    hosted_api: hosted,
+    identity,
+    durable_storage: storage
+  };
+}
+
 async function tenantFromRoute({
   req,
   rootDir,
@@ -209,28 +358,93 @@ export function createHostedRequestHandler({
         return;
       }
 
-      if (!verifyHostedApiToken(apiTokenHash, bearerToken(req))) {
+      if (req.method === "POST" && url.pathname === "/api/identity/sessions") {
+        if (!verifyHostedApiToken(apiTokenHash, bearerToken(req))) {
+          jsonResponse(res, 401, {
+            error: "unauthorized",
+            message: "Identity session issuance requires the hosted service API token."
+          });
+          return;
+        }
+        const body = await readJsonBody(req);
+        if (!body.email) {
+          jsonResponse(res, 400, { error: "bad_request", message: "email is required." });
+          return;
+        }
+        const result = await issueIdentitySession({
+          rootDir,
+          email: String(body.email),
+          tenantSlug: body.tenant_slug ? String(body.tenant_slug) : "",
+          ttlMinutes: body.ttl_minutes ? Number(body.ttl_minutes) : undefined,
+          actor: body.actor ? String(body.actor) : "hosted_api",
+          now: body.now ? String(body.now) : undefined
+        });
+        jsonResponse(res, 201, result);
+        return;
+      }
+
+      const auth = await authenticateRequest({ req, rootDir, apiTokenHash });
+      if (!auth) {
         jsonResponse(res, 401, {
           error: "unauthorized",
-          message: "Provide Authorization: Bearer <hosted_api_token>."
+          message: "Provide Authorization: Bearer <hosted_api_token_or_identity_session>."
         });
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/control-plane") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
         jsonResponse(res, 200, {
           hosted_api: await hostedApiStatus({ rootDir, configPath, apiTokenHash }),
-          managed_saas: await managedSaasStatus({ rootDir, configPath })
+          managed_saas: await managedSaasStatus({ rootDir, configPath }),
+          identity: await identityStatus({ rootDir, configPath }),
+          durable_storage: await durableStorageStatus({ rootDir, configPath })
         });
         return;
       }
 
+      if (req.method === "GET" && url.pathname === "/api/foundation") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        const status = await hostedFoundationStatus({ rootDir, configPath, apiTokenHash });
+        jsonResponse(res, status.status === "ready_for_identity_storage_foundation" ? 200 : 503, status);
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/api/identity/status") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        jsonResponse(res, 200, await identityStatus({ rootDir, configPath }));
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/api/storage/status") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        jsonResponse(res, 200, await durableStorageStatus({ rootDir, configPath }));
+        return;
+      }
+
+      if (req.method === "POST" && url.pathname === "/api/storage/checkpoints") {
+        await requireAuthScope({ auth, rootDir, scope: "storage:checkpoint" });
+        const body = await readJsonBody(req);
+        const result = await createStorageCheckpoint({
+          rootDir,
+          configPath,
+          tenantSlug: body.tenant_slug ? String(body.tenant_slug) : undefined,
+          label: body.label ? String(body.label) : "api_checkpoint",
+          actor: body.actor ? String(body.actor) : "hosted_api",
+          now: body.now ? String(body.now) : undefined
+        });
+        jsonResponse(res, 201, result);
+        return;
+      }
+
       if (req.method === "GET" && url.pathname === "/api/tenants") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
         jsonResponse(res, 200, await tenantPersistenceStatus({ rootDir, configPath }));
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/console") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
         textResponse(res, 200, await buildHostedConsoleHtml({ rootDir, configPath }));
         return;
       }
@@ -242,6 +456,7 @@ export function createHostedRequestHandler({
         const tenant = await tenantFromRoute({ req, rootDir, configPath, tenantSlug });
 
         if (req.method === "GET" && action === "status") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await tenantPersistenceStatus({
             rootDir,
             configPath,
@@ -251,16 +466,19 @@ export function createHostedRequestHandler({
         }
 
         if (req.method === "GET" && action === "library") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await listLibraryEntries({ auditDir: tenant.audit_dir }));
           return;
         }
 
         if (req.method === "GET" && action === "state") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await readTenantState({ rootDir, configPath, tenantSlug: tenant.tenant_slug }));
           return;
         }
 
         if (req.method === "POST" && action === "state") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
           const body = await readJsonBody(req);
           if (!body.key) {
             jsonResponse(res, 400, { error: "bad_request", message: "key is required." });
@@ -280,11 +498,49 @@ export function createHostedRequestHandler({
         }
 
         if (req.method === "GET" && action === "events") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await readTenantEvents({ rootDir, configPath, tenantSlug: tenant.tenant_slug }));
           return;
         }
 
+        if (action === "storage") {
+          if (req.method === "GET") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "storage:read" });
+            const key = url.searchParams.get("key");
+            if (!key) {
+              jsonResponse(res, 400, { error: "bad_request", message: "key query parameter is required." });
+              return;
+            }
+            jsonResponse(res, 200, await readDurableObject({
+              rootDir,
+              tenantSlug: tenant.tenant_slug,
+              key
+            }));
+            return;
+          }
+          if (req.method === "POST") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "storage:write" });
+            const body = await readJsonBody(req);
+            if (!body.key) {
+              jsonResponse(res, 400, { error: "bad_request", message: "key is required." });
+              return;
+            }
+            const result = await writeDurableObject({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug,
+              key: String(body.key),
+              value: body.value ?? {},
+              actor: body.actor ? String(body.actor) : "hosted_api",
+              now: body.now ? String(body.now) : undefined
+            });
+            jsonResponse(res, 201, result);
+            return;
+          }
+        }
+
         if (req.method === "POST" && action === "analyze") {
+          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
           const body = await readJsonBody(req);
           if (!body.symbol || !body.thesis) {
             jsonResponse(res, 400, { error: "bad_request", message: "symbol and thesis are required." });
@@ -341,7 +597,7 @@ export function createHostedRequestHandler({
       jsonResponse(res, 404, { error: "not_found", path: url.pathname });
     } catch (error: any) {
       const statusCode = error.statusCode ?? (
-        /tenant slug|state key|sensitive payload|unknown tenant|json/i.test(error.message ?? "")
+        /tenant slug|state key|storage object key|identity email|sensitive .*payload|unknown tenant|unknown durable object|json/i.test(error.message ?? "")
           ? 400
           : 500
       );

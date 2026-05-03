@@ -1,0 +1,11 @@
+{
+  "phase": 12,
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/managed-saas.json",
+  "api_token_hash_configured": true,
+  "raw_token_stored": false,
+  "raw_session_token_stored": false,
+  "raw_secret_stored": false,
+  "direct_live_broker_connection": false,
+  "direct_cloud_storage_connection": false
+}

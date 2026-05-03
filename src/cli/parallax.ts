@@ -22,12 +22,17 @@ import {
   dataStatusToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
+  durableObjectToHumanReport,
+  durableStorageStatusToHumanReport,
   exportToHumanReport,
   feedbackSummaryToHumanReport,
   feedbackToHumanReport,
   hostedApiStatusToHumanReport,
   hostedConsoleToHumanReport,
+  hostedFoundationStatusToHumanReport,
   hostedServeToHumanReport,
+  identitySessionToHumanReport,
+  identityStatusToHumanReport,
   importToHumanReport,
   libraryToHumanReport,
   lifecycleNotificationsToHumanReport,
@@ -62,6 +67,7 @@ import {
   secretRefToHumanReport,
   sandboxToHumanReport,
   sourcesToHumanReport,
+  storageCheckpointToHumanReport,
   tenantCreateToHumanReport,
   tenantPersistenceToHumanReport,
   teamApprovalToHumanReport,
@@ -152,12 +158,25 @@ import {
 import {
   hostedApiStatus,
   hostedApiTokenHash,
+  hostedFoundationStatus,
   startHostedServer
 } from "../saas/server.js";
 import {
   saveTenantStateValue,
   tenantPersistenceStatus
 } from "../saas/persistence.js";
+import {
+  identityStatus,
+  initializeIdentityDirectory,
+  issueIdentitySession,
+  registerIdentityPrincipal
+} from "../saas/identity.js";
+import {
+  createStorageCheckpoint,
+  durableStorageStatus,
+  initializeDurableStorage,
+  writeDurableObject
+} from "../saas/storage.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -246,6 +265,15 @@ Commands:
   tenant-persistence [--root-dir managed-saas] [--tenant alpha]
   tenant-state-set --root-dir managed-saas --tenant alpha --key watchlist.filter --value '{"symbols":["NVDA"]}'
   hosted-serve --root-dir managed-saas --api-token "dev-secret-token" [--host 127.0.0.1] [--port 8888]
+  identity-init [--root-dir managed-saas] [--issuer parallax-local-identity]
+  identity-principal-add --root-dir managed-saas --email analyst@example.com --name "Analyst" [--tenant alpha] [--role analyst] [--scopes tenant:read,analysis:create]
+  identity-session-issue --root-dir managed-saas --email analyst@example.com [--tenant alpha] [--ttl-minutes 60]
+  identity-status [--root-dir managed-saas]
+  storage-init [--root-dir managed-saas] [--provider local_durable_storage]
+  storage-object-put --root-dir managed-saas --tenant alpha --key screen.cache --value '{"symbols":["NVDA"]}'
+  storage-checkpoint [--root-dir managed-saas] [--tenant alpha] [--label nightly]
+  storage-status [--root-dir managed-saas]
+  hosted-foundation-status [--root-dir managed-saas] [--api-token "..."]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1153,6 +1181,18 @@ async function main() {
     return;
   }
 
+  if (command === "hosted-foundation-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await hostedFoundationStatus({
+      rootDir,
+      configPath,
+      apiTokenHash: args["api-token"] && args["api-token"] !== true ? hostedApiTokenHash(String(args["api-token"])) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, hostedFoundationStatusToHumanReport(result), result);
+    return;
+  }
+
   if (command === "tenant-persistence") {
     const { rootDir, configPath } = saasPaths(args);
     const result = await tenantPersistenceStatus({
@@ -1162,6 +1202,128 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, tenantPersistenceToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "identity-init") {
+    const { rootDir } = saasPaths(args);
+    const result = await initializeIdentityDirectory({
+      rootDir,
+      issuer: args.issuer ? String(args.issuer) : "parallax-local-identity",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, identityStatusToHumanReport(await identityStatus({
+      rootDir,
+      now: args.now ? String(args.now) : undefined
+    })), result);
+    return;
+  }
+
+  if (command === "identity-principal-add") {
+    if (!args.email) throw new Error("identity-principal-add requires --email");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await registerIdentityPrincipal({
+      rootDir,
+      configPath,
+      email: String(args.email),
+      name: args.name ? String(args.name) : "",
+      tenantSlug: args.tenant ? String(args.tenant) : "",
+      role: args.role ? String(args.role) : "analyst",
+      scopes: parseCsvList(args.scopes),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, identityStatusToHumanReport(await identityStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    })), result);
+    return;
+  }
+
+  if (command === "identity-session-issue") {
+    if (!args.email) throw new Error("identity-session-issue requires --email");
+    const { rootDir } = saasPaths(args);
+    const result = await issueIdentitySession({
+      rootDir,
+      email: String(args.email),
+      tenantSlug: args.tenant ? String(args.tenant) : "",
+      ttlMinutes: args["ttl-minutes"] && args["ttl-minutes"] !== true ? Number(args["ttl-minutes"]) : undefined,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, identitySessionToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "identity-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await identityStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, identityStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "storage-init") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await initializeDurableStorage({
+      rootDir,
+      configPath,
+      provider: args.provider ? String(args.provider) : "local_durable_storage",
+      region: args.region ? String(args.region) : "local_dev",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, durableStorageStatusToHumanReport(await durableStorageStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    })), result);
+    return;
+  }
+
+  if (command === "storage-object-put") {
+    for (const required of ["tenant", "key", "value"]) {
+      if (!args[required]) throw new Error(`storage-object-put requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await writeDurableObject({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      key: String(args.key),
+      value: parseJsonValue(args.value),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, durableObjectToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "storage-checkpoint") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await createStorageCheckpoint({
+      rootDir,
+      configPath,
+      tenantSlug: args.tenant ? String(args.tenant) : undefined,
+      label: args.label ? String(args.label) : "cli_checkpoint",
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, storageCheckpointToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "storage-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await durableStorageStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, durableStorageStatusToHumanReport(result), result);
     return;
   }
 

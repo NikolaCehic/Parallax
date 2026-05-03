@@ -1,0 +1,914 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T10:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/managed-saas.json",
+  "status": "ready_for_identity_storage_foundation",
+  "summary": {
+    "required_failure_count": 0,
+    "tenant_count": 2,
+    "provider_count": 5,
+    "principal_count": 2,
+    "active_session_count": 3,
+    "storage_object_count": 2,
+    "storage_checkpoint_count": 2,
+    "raw_token_stored": false,
+    "raw_session_token_stored": false,
+    "raw_secret_stored": false,
+    "direct_live_broker_connection": false,
+    "direct_cloud_storage_connection": false
+  },
+  "controls": [
+    {
+      "id": "hosted_api_ready",
+      "passed": true,
+      "severity": "required",
+      "detail": "Hosted API readiness passed."
+    },
+    {
+      "id": "identity_foundation_ready",
+      "passed": true,
+      "severity": "required",
+      "detail": "Identity directory, principal memberships, and hash-only sessions are ready."
+    },
+    {
+      "id": "durable_storage_ready",
+      "passed": true,
+      "severity": "required",
+      "detail": "Durable storage manifest, tenant object paths, and checkpoint evidence are ready."
+    },
+    {
+      "id": "no_raw_tokens_or_secrets",
+      "passed": true,
+      "severity": "required",
+      "detail": "No raw API tokens, identity sessions, or storage secrets are persisted."
+    },
+    {
+      "id": "no_live_external_execution_or_storage",
+      "passed": true,
+      "severity": "required",
+      "detail": "Phase 12 remains a foundation contract, not live execution or production cloud storage."
+    }
+  ],
+  "hosted_api": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+    "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/managed-saas.json",
+    "status": "ready_for_hosted_multi_tenant_api",
+    "summary": {
+      "tenant_count": 2,
+      "provider_count": 5,
+      "required_failure_count": 0,
+      "total_dossier_count": 1,
+      "raw_token_stored": false,
+      "direct_live_broker_connection": false
+    },
+    "controls": [
+      {
+        "id": "api_auth_configured",
+        "passed": true,
+        "severity": "required",
+        "detail": "Hosted API bearer auth token hash is configured at runtime."
+      },
+      {
+        "id": "provider_contracts_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Provider contract validation passed."
+      },
+      {
+        "id": "tenant_persistence_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant persistence paths are isolated and readable."
+      },
+      {
+        "id": "tenant_count",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant exists."
+      },
+      {
+        "id": "no_production_providers",
+        "passed": true,
+        "severity": "required",
+        "detail": "No provider manifest is enabled for production."
+      }
+    ],
+    "provider_validation": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/managed-saas.json",
+      "status": "ready_for_provider_contract_beta",
+      "summary": {
+        "provider_count": 5,
+        "contract_validated_count": 5,
+        "required_failure_count": 0,
+        "warning_count": 0,
+        "missing_required_kinds": [],
+        "managed_saas_status": "ready_for_managed_beta_scaffold",
+        "production_provider_count": 0
+      },
+      "controls": [
+        {
+          "id": "managed_saas_ready",
+          "passed": true,
+          "detail": "Managed SaaS scaffold readiness passed.",
+          "severity": "required"
+        },
+        {
+          "id": "required_provider_manifests",
+          "passed": true,
+          "detail": "Required provider manifests exist.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_contracts_validated",
+          "passed": true,
+          "detail": "Provider contract checks passed.",
+          "severity": "required"
+        },
+        {
+          "id": "no_production_providers",
+          "passed": true,
+          "detail": "No external provider is enabled for production.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_sanitized",
+          "passed": true,
+          "detail": "Provider report exposes secret names and hashes only.",
+          "severity": "required"
+        },
+        {
+          "id": "external_production_validation_pending",
+          "passed": true,
+          "detail": "External providers remain pending production validation.",
+          "severity": "warning"
+        }
+      ],
+      "providers": [
+        {
+          "id": "provider_val_3ea7b79f3a5a",
+          "integration_id": "integration_44881b64238c",
+          "kind": "identity_provider",
+          "name": "OIDC Contract",
+          "provider": "enterprise_oidc",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "IDENTITY_PROVIDER",
+          "secret_ref_hash": "13844f1e8dc7832254a2d26377ba5eef46a2dcbf14b6fa1b0b621c5deb915e09",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "oidc_endpoint_https",
+              "passed": true,
+              "detail": "Identity provider endpoint is HTTPS.",
+              "severity": "required"
+            },
+            {
+              "id": "sso_not_live",
+              "passed": true,
+              "detail": "SSO is not treated as live production.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_61d09c106406",
+          "integration_id": "integration_98d3a7e5f24a",
+          "kind": "market_data_vendor",
+          "name": "Licensed Market Data Contract",
+          "provider": "licensed_us_equities_vendor",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha",
+          "secret_ref_name": "MARKET_DATA_VENDOR",
+          "secret_ref_hash": "4575426a72014d08bf14e96aafaf4198dbbabe98b921403c6d4a2d8c08028903",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "data_license_declared",
+              "passed": true,
+              "detail": "Market-data license status is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "market_data_not_live",
+              "passed": true,
+              "detail": "Market-data vendor is not treated as production live.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ab25f2e0b150",
+          "integration_id": "integration_e63485ee9cc0",
+          "kind": "llm_provider",
+          "name": "Model Gateway Contract",
+          "provider": "model_gateway",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "LLM_PROVIDER",
+          "secret_ref_hash": "887126af25c221f4dceb3fb0819aa0013e5198c0ab6e7611bbd627f2c31bfcbf",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_provider_not_live",
+              "passed": true,
+              "detail": "External LLM provider is not treated as production live.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_notes_present",
+              "passed": true,
+              "detail": "LLM manifest records validation or local-harness notes.",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_5c79520ac5fe",
+          "integration_id": "integration_e11b96b8cf40",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Contract",
+          "provider": "regulated_execution_partner",
+          "manifest_status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "REGULATED_PARTNER",
+          "secret_ref_hash": "af979fc6a957ea8949e45ce7b81a56dee7c18c804fc7fbf10a4bf67f2ef3d3be",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "production_partner_locked",
+              "passed": true,
+              "detail": "Regulated partner production adapter is locked.",
+              "severity": "required"
+            },
+            {
+              "id": "legal_approval_not_assumed",
+              "passed": true,
+              "detail": "Legal/compliance approval is not assumed from the manifest.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ff263ac9762c",
+          "integration_id": "integration_0b5518b4b841",
+          "kind": "observability",
+          "name": "Managed Logs Contract",
+          "provider": "managed_logs_metrics",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "OBSERVABILITY_VENDOR",
+          "secret_ref_hash": "f206830975fa4c131f894ba348e81c0c17345ef47fc754804ac7a74284c078f6",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "observability_events_present",
+              "passed": true,
+              "detail": "At least one managed observability event exists.",
+              "severity": "required"
+            },
+            {
+              "id": "pii_not_logged_by_policy",
+              "passed": true,
+              "detail": "Observability scaffold stores local events only and blocks secret-like metadata.",
+              "severity": "required"
+            }
+          ]
+        }
+      ],
+      "validation_path": ""
+    },
+    "tenant_persistence": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/managed-saas.json",
+      "status": "ready_for_tenant_persistence",
+      "summary": {
+        "tenant_count": 2,
+        "total_state_key_count": 0,
+        "total_event_count": 1,
+        "total_dossier_count": 1,
+        "tenant_paths_isolated": true
+      },
+      "tenants": [
+        {
+          "tenant_slug": "alpha",
+          "tenant_name": "Alpha Research",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/alpha/audits",
+          "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/alpha/tenant-state.json",
+          "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/alpha/tenant-events.jsonl",
+          "state_key_count": 0,
+          "event_count": 1,
+          "dossier_count": 1,
+          "latest_event": {
+            "id": "tenant_evt_cf1864acf63d",
+            "tenant_slug": "alpha",
+            "event_type": "tenant_analysis_created",
+            "actor": "hosted_api",
+            "payload": {
+              "dossier_id": "dos_0baaf0b3dbd8",
+              "symbol": "NVDA",
+              "action_class": "watchlist"
+            },
+            "created_at": "2026-05-03T10:00:00Z"
+          }
+        },
+        {
+          "tenant_slug": "beta",
+          "tenant_name": "Beta Research",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/beta/audits",
+          "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/beta/tenant-state.json",
+          "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/beta/tenant-events.jsonl",
+          "state_key_count": 0,
+          "event_count": 0,
+          "dossier_count": 0,
+          "latest_event": null
+        }
+      ]
+    }
+  },
+  "identity": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+    "directory_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/identity-directory.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/identity-events.jsonl",
+    "status": "ready_for_identity_foundation",
+    "summary": {
+      "principal_count": 2,
+      "tenant_membership_count": 1,
+      "session_count": 3,
+      "active_session_count": 3,
+      "event_count": 6,
+      "raw_session_token_stored": false,
+      "required_failure_count": 0
+    },
+    "controls": [
+      {
+        "id": "identity_directory_initialized",
+        "passed": true,
+        "severity": "required",
+        "detail": "Identity directory is initialized."
+      },
+      {
+        "id": "principal_count",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one identity principal exists."
+      },
+      {
+        "id": "tenant_memberships_valid",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant memberships refer to known managed SaaS tenants."
+      },
+      {
+        "id": "sessions_hash_only",
+        "passed": true,
+        "severity": "required",
+        "detail": "Persisted sessions contain hashes only, never raw bearer values."
+      },
+      {
+        "id": "raw_session_token_storage_blocked",
+        "passed": true,
+        "severity": "required",
+        "detail": "Identity token policy blocks raw session token storage."
+      }
+    ],
+    "principals": [
+      {
+        "id": "principal_7ac24470e122",
+        "email": "alpha.admin@example.com",
+        "name": "Alpha Admin",
+        "status": "active",
+        "platform_admin": false,
+        "memberships": [
+          {
+            "tenant_slug": "alpha",
+            "role": "tenant_admin",
+            "scopes": [
+              "tenant:read",
+              "tenant:write",
+              "analysis:create",
+              "storage:read",
+              "storage:write",
+              "console:read"
+            ]
+          }
+        ]
+      },
+      {
+        "id": "principal_d9f3edeb75fe",
+        "email": "platform.admin@example.com",
+        "name": "Platform Admin",
+        "status": "active",
+        "platform_admin": true,
+        "memberships": []
+      }
+    ],
+    "sessions": [
+      {
+        "id": "session_3de393106215",
+        "email": "alpha.admin@example.com",
+        "tenant_slug": "alpha",
+        "role": "tenant_admin",
+        "scopes": [
+          "tenant:read",
+          "tenant:write",
+          "analysis:create",
+          "storage:read",
+          "storage:write",
+          "console:read"
+        ],
+        "issued_at": "2026-05-03T10:00:00Z",
+        "expires_at": "2026-05-03T10:30:00.000Z",
+        "revoked_at": "",
+        "raw_session_token_stored": false
+      },
+      {
+        "id": "session_fdb60b9c9637",
+        "email": "platform.admin@example.com",
+        "tenant_slug": "",
+        "role": "platform_admin",
+        "scopes": [
+          "control_plane:read",
+          "identity:write",
+          "tenant:read",
+          "tenant:write",
+          "analysis:create",
+          "storage:read",
+          "storage:write",
+          "storage:checkpoint",
+          "console:read"
+        ],
+        "issued_at": "2026-05-03T10:00:00Z",
+        "expires_at": "2026-05-03T10:30:00.000Z",
+        "revoked_at": "",
+        "raw_session_token_stored": false
+      },
+      {
+        "id": "session_563a42d5041c",
+        "email": "alpha.admin@example.com",
+        "tenant_slug": "alpha",
+        "role": "tenant_admin",
+        "scopes": [
+          "tenant:read",
+          "tenant:write",
+          "analysis:create",
+          "storage:read",
+          "storage:write",
+          "console:read"
+        ],
+        "issued_at": "2026-05-03T10:00:00Z",
+        "expires_at": "2026-05-03T10:20:00.000Z",
+        "revoked_at": "",
+        "raw_session_token_stored": false
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "identity_evt_e7214b83db33",
+        "event_type": "identity_session_issued",
+        "actor": "hosted_api",
+        "payload": {
+          "session_id": "session_563a42d5041c",
+          "principal_id": "principal_7ac24470e122",
+          "email": "alpha.admin@example.com",
+          "tenant_slug": "alpha",
+          "expires_at": "2026-05-03T10:20:00.000Z"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_d891e093210a",
+        "event_type": "identity_session_issued",
+        "actor": "identity_provider",
+        "payload": {
+          "session_id": "session_fdb60b9c9637",
+          "principal_id": "principal_d9f3edeb75fe",
+          "email": "platform.admin@example.com",
+          "tenant_slug": "",
+          "expires_at": "2026-05-03T10:30:00.000Z"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_50d71aa55e2b",
+        "event_type": "identity_session_issued",
+        "actor": "identity_provider",
+        "payload": {
+          "session_id": "session_3de393106215",
+          "principal_id": "principal_7ac24470e122",
+          "email": "alpha.admin@example.com",
+          "tenant_slug": "alpha",
+          "expires_at": "2026-05-03T10:30:00.000Z"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_eec53eaad754",
+        "event_type": "identity_principal_registered",
+        "actor": "platform",
+        "payload": {
+          "principal_id": "principal_d9f3edeb75fe",
+          "email": "platform.admin@example.com",
+          "tenant_slug": "",
+          "role": "platform_admin"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_eda900691c45",
+        "event_type": "identity_principal_registered",
+        "actor": "platform",
+        "payload": {
+          "principal_id": "principal_7ac24470e122",
+          "email": "alpha.admin@example.com",
+          "tenant_slug": "alpha",
+          "role": "tenant_admin"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_2f78e8347666",
+        "event_type": "identity_directory_initialized",
+        "actor": "platform",
+        "payload": {
+          "issuer": "phase12-local-idp"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ]
+  },
+  "durable_storage": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+    "storage_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage-events.jsonl",
+    "status": "ready_for_durable_storage_foundation",
+    "summary": {
+      "object_count": 2,
+      "checkpoint_count": 2,
+      "event_count": 5,
+      "required_failure_count": 0,
+      "raw_secret_stored": false,
+      "direct_cloud_storage_connection": false
+    },
+    "controls": [
+      {
+        "id": "durable_storage_initialized",
+        "passed": true,
+        "severity": "required",
+        "detail": "Durable storage manifest exists."
+      },
+      {
+        "id": "storage_root_inside_managed_root",
+        "passed": true,
+        "severity": "required",
+        "detail": "Storage root stays inside the managed SaaS root."
+      },
+      {
+        "id": "tenant_object_paths_isolated",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant object paths use tenant-scoped storage prefixes."
+      },
+      {
+        "id": "checkpoint_exists",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one durability checkpoint exists."
+      },
+      {
+        "id": "checkpoint_paths_isolated",
+        "passed": true,
+        "severity": "required",
+        "detail": "Checkpoint files stay under the durable storage checkpoint prefix."
+      },
+      {
+        "id": "raw_secret_storage_blocked",
+        "passed": true,
+        "severity": "required",
+        "detail": "Storage manifest and object records do not store raw secrets."
+      },
+      {
+        "id": "direct_cloud_storage_connection_disabled",
+        "passed": true,
+        "severity": "required",
+        "detail": "This phase defines the durable storage contract without connecting production cloud storage."
+      }
+    ],
+    "storage": {
+      "storage_root": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage",
+      "provider": "local_durable_storage",
+      "region": "local_dev",
+      "durability_model": {
+        "mode": "local_durable_storage_contract",
+        "tenant_prefix_required": true,
+        "checkpoint_required": true,
+        "backup_retention_days": 30,
+        "encryption_at_rest": "local_dev_envelope_placeholder",
+        "raw_secret_storage_allowed": false,
+        "direct_cloud_storage_connection": false
+      }
+    },
+    "objects": [
+      {
+        "id": "storage_obj_c5e4dceb7ab9",
+        "tenant_slug": "alpha",
+        "key": "screen.cache",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/screen.cache.json",
+        "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+        "updated_at": "2026-05-03T10:00:00Z",
+        "raw_secret_stored": false
+      },
+      {
+        "id": "storage_obj_17cc5050dc36",
+        "tenant_slug": "alpha",
+        "key": "session.cache",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/session.cache.json",
+        "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1",
+        "updated_at": "2026-05-03T10:00:00Z",
+        "raw_secret_stored": false
+      }
+    ],
+    "checkpoints": [
+      {
+        "id": "storage_checkpoint_d69ce38a6e09",
+        "label": "phase12-baseline",
+        "tenant_slug": "alpha",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/checkpoints/storage_checkpoint_d69ce38a6e09.json",
+        "object_count": 1,
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_checkpoint_389c74acd0d1",
+        "label": "api-checkpoint",
+        "tenant_slug": "alpha",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/checkpoints/storage_checkpoint_389c74acd0d1.json",
+        "object_count": 2,
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "storage_evt_dcf734731cdf",
+        "event_type": "durable_storage_checkpoint_created",
+        "actor": "hosted_api",
+        "payload": {
+          "checkpoint_id": "storage_checkpoint_389c74acd0d1",
+          "tenant_slug": "alpha",
+          "object_count": 2
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_c517a5f9543e",
+        "event_type": "durable_object_written",
+        "actor": "hosted_api",
+        "payload": {
+          "tenant_slug": "alpha",
+          "key": "session.cache",
+          "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_8cce3482b914",
+        "event_type": "durable_storage_checkpoint_created",
+        "actor": "phase12_artifact",
+        "payload": {
+          "checkpoint_id": "storage_checkpoint_d69ce38a6e09",
+          "tenant_slug": "alpha",
+          "object_count": 1
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_91d9adec4360",
+        "event_type": "durable_object_written",
+        "actor": "phase12_artifact",
+        "payload": {
+          "tenant_slug": "alpha",
+          "key": "screen.cache",
+          "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_23aff54c5578",
+        "event_type": "durable_storage_initialized",
+        "actor": "platform",
+        "payload": {
+          "provider": "local_durable_storage",
+          "region": "local_dev"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ]
+  }
+}

@@ -1,14 +1,14 @@
 # Implementation Status
 
-Status date: 2026-05-02
+Status date: 2026-05-03
 
-Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, partner-execution controls, a beta deployment surface, managed SaaS scaffolding, and a local hosted multi-tenant API.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, partner-execution controls, a beta deployment surface, managed SaaS scaffolding, a local hosted multi-tenant API, and identity/storage foundation contracts.
 
-TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, partner-execution controls, the beta API/deployment layer, managed SaaS control-plane scaffolding, tenant persistence, and hosted API serving.
+TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, partner-execution controls, the beta API/deployment layer, managed SaaS control-plane scaffolding, tenant persistence, hosted API serving, local identity sessions, and durable storage manifests.
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, managed SaaS readiness, provider contract validation, hosted console foundation, tenant persistence, and hosted multi-tenant API readiness.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, managed SaaS readiness, provider contract validation, hosted console foundation, tenant persistence, hosted multi-tenant API readiness, identity-session readiness, and durable-storage readiness.
 
 ## Phase Completion Map
 
@@ -38,10 +38,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 9 Managed SaaS And External Integrations | Complete for managed beta scaffold scope | Tenant isolation, external secret references, external provider manifests, observability event log, readiness/export package, phase artifacts |
 | 10 Provider Validation And Hosted Console | Complete for provider-contract beta scope | Provider contract checks, sanitized validation report, blocked-manifest checks, hosted console HTML, phase artifacts |
 | 11 Hosted Multi-Tenant API And Persistence | Complete for local hosted API scope | Tenant state/event persistence, hosted API readiness, authenticated tenant-scoped HTTP routes, cross-tenant blocking, phase artifacts |
+| 12 Cloud Identity And Durable Storage Foundation | Complete for local foundation scope | Hash-only identity sessions, scoped tenant API access, durable storage object manifests, checkpoints, hosted foundation readiness, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 56 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, Phase 9 managed-SaaS tests, Phase 10 provider/hosted-console tests, and Phase 11 hosted API tests.
+- `npm test` builds TypeScript and runs 58 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, Phase 9 managed-SaaS tests, Phase 10 provider/hosted-console tests, Phase 11 hosted API tests, and Phase 12 identity/storage tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -88,6 +89,9 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `tenant-persistence` summarizes tenant state/event/dossier counts and path isolation.
 - `tenant-state-set` writes tenant-scoped state while rejecting secret-like payloads.
 - `hosted-serve` starts an authenticated local hosted API with tenant-scoped status, state, event, library, analysis, control-plane, readiness, health, and console routes.
+- `identity-init`, `identity-principal-add`, `identity-session-issue`, and `identity-status` create a local identity directory, role/scopes, and hash-only session evidence.
+- `storage-init`, `storage-object-put`, `storage-checkpoint`, and `storage-status` create a durable-storage manifest, tenant-scoped object writes, and checkpoint evidence.
+- `hosted-foundation-status` validates hosted API, identity, durable storage, token redaction, and no-live-cloud/no-live-broker boundaries together.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -106,6 +110,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Phase 9 artifacts live under `artifacts/phase_9_managed_saas_external_integrations/`.
 - Phase 10 artifacts live under `artifacts/phase_10_provider_validation_hosted_console/`.
 - Phase 11 artifacts live under `artifacts/phase_11_hosted_multi_tenant_api/`.
+- Phase 12 artifacts live under `artifacts/phase_12_identity_storage_foundation/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -134,6 +139,7 @@ It covers:
 - managed SaaS tenant isolation, secret-reference hygiene, external provider manifests, observability events, readiness status, and export packaging.
 - provider contract validation, blocked provider manifests, raw-secret redaction, hosted-console generation, and CLI smoke coverage.
 - hosted API readiness, tenant state/event persistence, HTTP auth, cross-tenant blocking, tenant-scoped analysis/library separation, hosted-console serving, secret-payload rejection, and CLI smoke coverage.
+- identity directory readiness, hash-only identity sessions, role/scope enforcement, tenant-scoped session access, durable storage object manifests, checkpoint evidence, secret-payload rejection, and hosted foundation readiness.
 
 The suite exposed and fixed two issues: past events were previously counted as future event risk, and boolean lifecycle trigger expressions were not evaluated correctly.
 
@@ -141,10 +147,10 @@ The suite exposed and fixed two issues: past events were previously counted as f
 
 - No direct live broker integration.
 - Partner production adapter is locked by default and requires a separately approved regulated partner implementation.
-- No external market data vendor API yet; Phase 2 supports local licensed data packs, Phase 9 records external vendor manifests, and Phase 11 validates those manifests locally before serving hosted workflows.
-- No external LLM API integration yet; the current LLM path is a deterministic local harness, while Phase 11 validates external model-provider manifests locally.
-- No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold, Phase 9 provides a local managed SaaS control-plane scaffold, Phase 10 provides a static hosted console foundation, and Phase 11 provides a local hosted multi-tenant API.
-- No external SSO provider yet; beta and hosted APIs use bearer tokens and store only token hashes, while Phase 11 validates identity-provider manifests locally.
+- No external market data vendor API yet; Phase 2 supports local licensed data packs, Phase 9 records external vendor manifests, and Phase 12 validates those manifests locally before serving hosted workflows.
+- No external LLM API integration yet; the current LLM path is a deterministic local harness, while Phase 12 validates external model-provider manifests locally.
+- No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold, Phase 9 provides a local managed SaaS control-plane scaffold, Phase 10 provides a static hosted console foundation, Phase 11 provides a local hosted multi-tenant API, and Phase 12 provides local identity/storage contracts.
+- No external SSO provider yet; beta and hosted APIs use bearer tokens and store only token hashes, while Phase 12 adds local identity sessions and validates identity-provider manifests locally.
 - No legal/compliance claim beyond prototype controls.
 - No claim of trading profitability.
 
@@ -156,4 +162,4 @@ Within a local prototype scope, the current implementation reaches the intended 
 
 > I do not know a better architecture for this agent, and I do not know what is structurally wrong with the current one.
 
-The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, a richer hosted UI, real cloud identity/SSO, managed storage, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).
+The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, a richer hosted UI, real cloud identity/SSO, managed cloud storage, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).

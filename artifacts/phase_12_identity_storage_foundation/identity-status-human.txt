@@ -1,0 +1,21 @@
+Parallax Identity Foundation
+============================
+
+Status: ready_for_identity_foundation
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas
+Principals: 2
+Tenant memberships: 1
+Sessions: 2
+Active sessions: 2
+Raw session token stored: no
+
+Principals
+  - alpha.admin@example.com | tenant_user | memberships=1
+  - platform.admin@example.com | platform_admin | memberships=0
+
+Controls
+  - identity_directory_initialized | passed | Identity directory is initialized.
+  - principal_count | passed | At least one identity principal exists.
+  - tenant_memberships_valid | passed | Tenant memberships refer to known managed SaaS tenants.
+  - sessions_hash_only | passed | Persisted sessions contain hashes only, never raw bearer values.
+  - raw_session_token_storage_blocked | passed | Identity token policy blocks raw session token storage.

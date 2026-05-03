@@ -1,0 +1,28 @@
+{
+  "http_status": 200,
+  "body": {
+    "object": {
+      "schema_version": "0.1.0",
+      "tenant_slug": "alpha",
+      "key": "session.cache",
+      "value": {
+        "symbols": [
+          "NVDA"
+        ],
+        "source": "identity-session"
+      },
+      "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1",
+      "written_by": "hosted_api",
+      "written_at": "2026-05-03T10:00:00Z"
+    },
+    "record": {
+      "id": "storage_obj_17cc5050dc36",
+      "tenant_slug": "alpha",
+      "key": "session.cache",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/session.cache.json",
+      "value_hash": "5983b6de73accb77cb5fe0a3cd1730a1577b32089065121abf6fd8f8edb0dac1",
+      "updated_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  }
+}

@@ -1,0 +1,23 @@
+{
+  "checkpoint": {
+    "id": "storage_checkpoint_d69ce38a6e09",
+    "label": "phase12-baseline",
+    "tenant_slug": "alpha",
+    "object_count": 1,
+    "tenant_count": 1,
+    "dossier_count": 0,
+    "state_key_count": 0,
+    "event_count": 0,
+    "object_hashes": [
+      {
+        "tenant_slug": "alpha",
+        "key": "screen.cache",
+        "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f"
+      }
+    ],
+    "created_by": "phase12_artifact",
+    "created_at": "2026-05-03T10:00:00Z"
+  },
+  "checkpoint_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/checkpoints/storage_checkpoint_d69ce38a6e09.json",
+  "checkpoint_count": 1
+}

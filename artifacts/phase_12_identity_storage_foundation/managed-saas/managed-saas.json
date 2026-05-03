@@ -1,0 +1,201 @@
+{
+  "schema_version": "0.1.0",
+  "control_plane_id": "saas_cp_01a10dbdef00",
+  "environment": "managed_beta",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas",
+  "owner": "Phase Twelve Platform",
+  "created_at": "2026-05-03T10:00:00Z",
+  "tenancy": {
+    "isolation_model": "tenant_directory_per_workspace",
+    "path_traversal_protection": true,
+    "cross_tenant_queries_allowed": false,
+    "default_region": "local_dev",
+    "pii_storage": "not_configured"
+  },
+  "identity": {
+    "sso_required_for_managed_saas": true,
+    "local_bearer_tokens_allowed_for_private_beta": true,
+    "configured_provider_count": 1
+  },
+  "secrets": {
+    "storage_model": "external_secret_references_only",
+    "raw_secret_storage_allowed": false,
+    "rotation_required_days": 90
+  },
+  "observability": {
+    "event_file": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/observability-events.jsonl",
+    "audit_events_required": true,
+    "pii_in_logs_allowed": false
+  },
+  "production_boundaries": {
+    "direct_broker_connection": false,
+    "production_partner_adapter_default": "locked",
+    "external_provider_credentials_required": true
+  },
+  "tenants": [
+    {
+      "id": "tenant_70f3bb2980c1",
+      "slug": "alpha",
+      "name": "Alpha Research",
+      "owner": "Alpha Research Owner",
+      "plan": "private_beta",
+      "region": "local_dev",
+      "data_residency": "local_dev",
+      "status": "active",
+      "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/alpha/audits",
+      "created_at": "2026-05-03T10:00:00Z"
+    },
+    {
+      "id": "tenant_bd32cad09ea4",
+      "slug": "beta",
+      "name": "Beta Research",
+      "owner": "Beta Research Owner",
+      "plan": "private_beta",
+      "region": "local_dev",
+      "data_residency": "local_dev",
+      "status": "active",
+      "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/tenants/beta/audits",
+      "created_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "secret_refs": [
+    {
+      "id": "secret_ref_ee17f9c07dac",
+      "name": "IDENTITY_PROVIDER",
+      "provider": "external_secret_manager",
+      "scope": "identity_provider",
+      "secret_ref": "secret://phase12/identity",
+      "secret_ref_hash": "13844f1e8dc7832254a2d26377ba5eef46a2dcbf14b6fa1b0b621c5deb915e09",
+      "owner": "platform_security",
+      "rotation_days": 90,
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "secret_ref_d25951a11ff7",
+      "name": "MARKET_DATA_VENDOR",
+      "provider": "external_secret_manager",
+      "scope": "market_data_vendor",
+      "secret_ref": "secret://phase12/market-data",
+      "secret_ref_hash": "4575426a72014d08bf14e96aafaf4198dbbabe98b921403c6d4a2d8c08028903",
+      "owner": "platform_security",
+      "rotation_days": 90,
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "secret_ref_efb2b7e5baf2",
+      "name": "LLM_PROVIDER",
+      "provider": "external_secret_manager",
+      "scope": "llm_provider",
+      "secret_ref": "secret://phase12/llm",
+      "secret_ref_hash": "887126af25c221f4dceb3fb0819aa0013e5198c0ab6e7611bbd627f2c31bfcbf",
+      "owner": "platform_security",
+      "rotation_days": 90,
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "secret_ref_1ae2491b369e",
+      "name": "REGULATED_PARTNER",
+      "provider": "external_secret_manager",
+      "scope": "regulated_partner",
+      "secret_ref": "secret://phase12/partner",
+      "secret_ref_hash": "af979fc6a957ea8949e45ce7b81a56dee7c18c804fc7fbf10a4bf67f2ef3d3be",
+      "owner": "platform_security",
+      "rotation_days": 90,
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "secret_ref_97572f6f2737",
+      "name": "OBSERVABILITY_VENDOR",
+      "provider": "external_secret_manager",
+      "scope": "observability",
+      "secret_ref": "secret://phase12/observability",
+      "secret_ref_hash": "f206830975fa4c131f894ba348e81c0c17345ef47fc754804ac7a74284c078f6",
+      "owner": "platform_security",
+      "rotation_days": 90,
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  ],
+  "integrations": [
+    {
+      "id": "integration_44881b64238c",
+      "kind": "identity_provider",
+      "name": "OIDC Contract",
+      "provider": "enterprise_oidc",
+      "status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref": "IDENTITY_PROVIDER",
+      "data_license": "",
+      "endpoint": "https://idp.example.invalid/oauth2",
+      "notes": "OIDC discovery document must be validated before production.",
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "integration_98d3a7e5f24a",
+      "kind": "market_data_vendor",
+      "name": "Licensed Market Data Contract",
+      "provider": "licensed_us_equities_vendor",
+      "status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "alpha",
+      "secret_ref": "MARKET_DATA_VENDOR",
+      "data_license": "contract_required_before_shared_outputs",
+      "endpoint": "",
+      "notes": "License and redistribution status must be approved before production.",
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "integration_e63485ee9cc0",
+      "kind": "llm_provider",
+      "name": "Model Gateway Contract",
+      "provider": "model_gateway",
+      "status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref": "LLM_PROVIDER",
+      "data_license": "",
+      "endpoint": "",
+      "notes": "External model adapter must pass the council eval suite before production.",
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "integration_e11b96b8cf40",
+      "kind": "regulated_partner",
+      "name": "Regulated Partner Contract",
+      "provider": "regulated_execution_partner",
+      "status": "disabled_until_legal_approval",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref": "REGULATED_PARTNER",
+      "data_license": "",
+      "endpoint": "",
+      "notes": "Legal, market-access, and production-adapter approvals are not assumed.",
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    },
+    {
+      "id": "integration_0b5518b4b841",
+      "kind": "observability",
+      "name": "Managed Logs Contract",
+      "provider": "managed_logs_metrics",
+      "status": "disabled_until_configured",
+      "validation_status": "not_validated",
+      "tenant_slug": "",
+      "secret_ref": "OBSERVABILITY_VENDOR",
+      "data_license": "",
+      "endpoint": "",
+      "notes": "Production exporter must pass PII and retention checks.",
+      "created_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  ],
+  "updated_at": "2026-05-03T08:48:24.561Z"
+}

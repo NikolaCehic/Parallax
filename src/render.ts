@@ -1204,6 +1204,140 @@ export function hostedServeToHumanReport(result: any) {
   ]);
 }
 
+export function identityStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  const principals = status.principals.map((principal: any) =>
+    [
+      `  - ${principal.email}`,
+      principal.platform_admin ? "platform_admin" : "tenant_user",
+      `memberships=${principal.memberships.length}`
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Identity Foundation",
+    "============================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Principals: ${status.summary.principal_count}`,
+    `Tenant memberships: ${status.summary.tenant_membership_count}`,
+    `Sessions: ${status.summary.session_count}`,
+    `Active sessions: ${status.summary.active_session_count}`,
+    `Raw session token stored: ${status.summary.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Principals",
+    principals.length ? principals.join("\n") : "No principals.",
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
+export function identitySessionToHumanReport(result: any) {
+  return lines([
+    "Parallax Identity Session",
+    "=========================",
+    "",
+    `Session ID: ${result.session.id}`,
+    `Principal: ${result.session.email}`,
+    `Tenant: ${compact(result.session.tenant_slug)}`,
+    `Role: ${result.session.role}`,
+    `Scopes: ${result.session.scopes.join(", ")}`,
+    `Expires at: ${result.session.expires_at}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Session token",
+    `  ${result.session_token}`
+  ]);
+}
+
+export function durableStorageStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  const objects = status.objects.map((object: any) =>
+    [
+      `  - ${object.tenant_slug}/${object.key}`,
+      object.value_hash,
+      object.path
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Durable Storage",
+    "========================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Storage root: ${status.storage.storage_root}`,
+    `Provider: ${status.storage.provider}`,
+    `Objects: ${status.summary.object_count}`,
+    `Checkpoints: ${status.summary.checkpoint_count}`,
+    `Raw secret stored: ${status.summary.raw_secret_stored ? "yes" : "no"}`,
+    `Direct cloud storage connection: ${status.summary.direct_cloud_storage_connection ? "yes" : "no"}`,
+    "",
+    "Objects",
+    objects.length ? objects.join("\n") : "No durable objects.",
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
+export function durableObjectToHumanReport(result: any) {
+  return lines([
+    "Parallax Durable Object",
+    "=======================",
+    "",
+    `Tenant: ${result.object.tenant_slug}`,
+    `Key: ${result.object.key}`,
+    `Hash: ${result.object.value_hash}`,
+    `Path: ${result.object_path}`,
+    `Objects: ${result.object_count}`
+  ]);
+}
+
+export function storageCheckpointToHumanReport(result: any) {
+  return lines([
+    "Parallax Storage Checkpoint",
+    "===========================",
+    "",
+    `Checkpoint ID: ${result.checkpoint.id}`,
+    `Label: ${result.checkpoint.label}`,
+    `Tenant: ${compact(result.checkpoint.tenant_slug)}`,
+    `Objects: ${result.checkpoint.object_count}`,
+    `Dossiers: ${result.checkpoint.dossier_count}`,
+    `Path: ${result.checkpoint_path}`,
+    `Checkpoints: ${result.checkpoint_count}`
+  ]);
+}
+
+export function hostedFoundationStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  return lines([
+    "Parallax Identity And Storage Foundation",
+    "========================================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Tenants: ${status.summary.tenant_count}`,
+    `Principals: ${status.summary.principal_count}`,
+    `Active sessions: ${status.summary.active_session_count}`,
+    `Storage objects: ${status.summary.storage_object_count}`,
+    `Storage checkpoints: ${status.summary.storage_checkpoint_count}`,
+    `Raw token stored: ${status.summary.raw_token_stored ? "yes" : "no"}`,
+    `Raw session token stored: ${status.summary.raw_session_token_stored ? "yes" : "no"}`,
+    `Raw secret stored: ${status.summary.raw_secret_stored ? "yes" : "no"}`,
+    `Direct cloud storage connection: ${status.summary.direct_cloud_storage_connection ? "yes" : "no"}`,
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

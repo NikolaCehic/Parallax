@@ -1,0 +1,23 @@
+Parallax Durable Storage
+========================
+
+Status: ready_for_durable_storage_foundation
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas
+Storage root: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage
+Provider: local_durable_storage
+Objects: 1
+Checkpoints: 1
+Raw secret stored: no
+Direct cloud storage connection: no
+
+Objects
+  - alpha/screen.cache | 46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/durable-storage/tenants/alpha/objects/screen.cache.json
+
+Controls
+  - durable_storage_initialized | passed | Durable storage manifest exists.
+  - storage_root_inside_managed_root | passed | Storage root stays inside the managed SaaS root.
+  - tenant_object_paths_isolated | passed | Tenant object paths use tenant-scoped storage prefixes.
+  - checkpoint_exists | passed | At least one durability checkpoint exists.
+  - checkpoint_paths_isolated | passed | Checkpoint files stay under the durable storage checkpoint prefix.
+  - raw_secret_storage_blocked | passed | Storage manifest and object records do not store raw secrets.
+  - direct_cloud_storage_connection_disabled | passed | This phase defines the durable storage contract without connecting production cloud storage.

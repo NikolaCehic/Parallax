@@ -1,0 +1,27 @@
+{
+  "principal": {
+    "id": "principal_7ac24470e122",
+    "email": "alpha.admin@example.com",
+    "name": "Alpha Admin",
+    "status": "active",
+    "platform_admin": false,
+    "memberships": [
+      {
+        "tenant_slug": "alpha",
+        "role": "tenant_admin",
+        "scopes": [
+          "tenant:read",
+          "tenant:write",
+          "analysis:create",
+          "storage:read",
+          "storage:write",
+          "console:read"
+        ]
+      }
+    ],
+    "created_at": "2026-05-03T10:00:00Z",
+    "updated_at": "2026-05-03T10:00:00Z"
+  },
+  "principal_count": 1,
+  "directory_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_12_identity_storage_foundation/managed-saas/identity-directory.json"
+}
