@@ -1,5 +1,7 @@
 import { spawnSync } from "node:child_process";
+import { existsSync } from "node:fs";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 import { makeId, stableHash, isoNow } from "../core/ids.js";
 
 function defaultPythonExecutable() {
@@ -23,8 +25,18 @@ function toolOutput({ toolName, inputIds, result, status = "passed", now = isoNo
   };
 }
 
+function packagePythonWorkerPath() {
+  return path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../../..", "python", "parallax_analytics.py");
+}
+
+function resolvePythonWorkerPath() {
+  const packaged = packagePythonWorkerPath();
+  if (existsSync(packaged)) return packaged;
+  return path.resolve("python", "parallax_analytics.py");
+}
+
 export function runAnalytics(snapshot: any, { now = isoNow(), pythonExecutable = defaultPythonExecutable() }: any = {}) {
-  const workerPath = path.resolve("python", "parallax_analytics.py");
+  const workerPath = resolvePythonWorkerPath();
   const result = spawnSync(pythonExecutable, [workerPath], {
     input: JSON.stringify(snapshot),
     encoding: "utf8",

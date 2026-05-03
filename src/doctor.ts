@@ -1,4 +1,5 @@
 import { spawnSync } from "node:child_process";
+import { loadCliConfig } from "./config.js";
 import { liveLLMHealthCheck, resolveLiveLLMConfig } from "./llm/live.js";
 
 function pythonExecutable() {
@@ -37,13 +38,16 @@ function checkNode() {
 
 export async function parallaxDoctor({
   live = false,
-  llmProviderOptions = {}
+  llmProviderOptions = {},
+  rootDir = process.cwd()
 }: {
   live?: boolean;
   llmProviderOptions?: any;
+  rootDir?: string;
 } = {}) {
   const node = checkNode();
   const python = checkPython();
+  const workspaceConfig = await loadCliConfig(rootDir);
   const llm = resolveLiveLLMConfig(llmProviderOptions);
   const checks: any[] = [
     {
@@ -55,6 +59,11 @@ export async function parallaxDoctor({
       id: "python",
       ok: python.ok,
       detail: python.ok ? `${python.command} ${python.version}` : `${python.command} failed: ${python.message}`
+    },
+    {
+      id: "workspace_config",
+      ok: Boolean(workspaceConfig),
+      detail: workspaceConfig ? `.parallax/config.json loaded for ${workspaceConfig.project_name}` : "not initialized; run parallax init"
     },
     {
       id: "llm_api_key",
@@ -96,6 +105,13 @@ export async function parallaxDoctor({
     status: checks.every((check) => check.ok) ? "ready" : "needs_attention",
     node,
     python,
+    workspace: {
+      initialized: Boolean(workspaceConfig),
+      project_name: workspaceConfig?.project_name ?? "",
+      audit_dir: workspaceConfig?.audit_dir ?? "audits",
+      data_dir: workspaceConfig?.data_dir ?? "fixtures",
+      default_council_mode: workspaceConfig?.default_council_mode ?? "deterministic"
+    },
     llm: {
       provider: llm.provider,
       model: llm.model,

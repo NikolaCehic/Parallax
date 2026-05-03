@@ -1711,6 +1711,13 @@ export function doctorToHumanReport(result: any) {
     `  Node: ${result.node.ok ? "ready" : "blocked"} (${result.node.version}, required ${result.node.required})`,
     `  Python: ${result.python.ok ? "ready" : "blocked"} (${result.python.command}${result.python.version ? ` ${result.python.version}` : ""})`,
     "",
+    "Workspace",
+    `  Initialized: ${result.workspace.initialized ? "yes" : "no"}`,
+    result.workspace.initialized ? `  Project: ${result.workspace.project_name}` : "  Next: parallax init",
+    `  Audit dir: ${result.workspace.audit_dir}`,
+    `  Data dir: ${result.workspace.data_dir}`,
+    `  Default council: ${result.workspace.default_council_mode}`,
+    "",
     "Live LLM",
     `  Provider: ${result.llm.provider}`,
     `  Model: ${result.llm.model}`,
@@ -1727,6 +1734,37 @@ export function doctorToHumanReport(result: any) {
     "",
     "Next Live Command",
     `  ${result.next_live_command}`
+  ]);
+}
+
+export function initToHumanReport(result: any) {
+  return lines([
+    "Parallax Workspace Init",
+    "=======================",
+    "",
+    `Root: ${result.root_dir}`,
+    `Config: ${result.config_path}`,
+    `Audit dir: ${result.audit_dir}`,
+    `Fixtures dir: ${result.fixtures_dir}`,
+    `Environment example: ${result.env_path}`,
+    "",
+    "Created",
+    `  - Config: ${result.statuses.config}`,
+    `  - Audit dir: ${result.statuses.audit_dir}`,
+    `  - Fixtures: ${result.statuses.fixtures}`,
+    `  - Env example: ${result.statuses.env}`,
+    `  - Workspace README: ${result.statuses.workspace_readme}`,
+    `  - Gitignore advice: ${result.statuses.gitignore_advice}`,
+    "",
+    "Defaults",
+    `  Symbol: ${result.config.default_symbol}`,
+    `  Horizon: ${result.config.default_horizon}`,
+    `  Ceiling: ${result.config.default_ceiling}`,
+    `  Council mode: ${result.config.default_council_mode}`,
+    `  LLM model: ${result.config.llm.model}`,
+    "",
+    "Next Commands",
+    result.next_commands.map((command: string) => `  ${command}`).join("\n")
   ]);
 }
 

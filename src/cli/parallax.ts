@@ -40,6 +40,7 @@ import {
   identitySessionToHumanReport,
   identityStatusToHumanReport,
   importToHumanReport,
+  initToHumanReport,
   inviteAcceptToHumanReport,
   inviteCreateToHumanReport,
   libraryToHumanReport,
@@ -96,6 +97,7 @@ import {
   observabilityEventToHumanReport
 } from "../render.js";
 import { parallaxDoctor } from "../doctor.js";
+import { initializeCliWorkspace, loadCliConfig } from "../config.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import {
   closeLedgerTrade,
@@ -241,6 +243,7 @@ function usage() {
   return `Parallax CLI
 
 Commands:
+  init [--dir .] [--force] [--skip-fixtures] [--council-mode deterministic]
   analyze --symbol NVDA --horizon swing --thesis "post-earnings continuation" [--ceiling watchlist]
   doctor [--live] [--llm-model gpt-5-mini] [--llm-api-key-env OPENAI_API_KEY]
   llm-eval [--out artifacts/phase_3_llm_council_beta/llm-eval.json]
@@ -354,6 +357,9 @@ Common flags:
   --tags                 Comma-separated governance comment tags.
   --config               Beta deployment config path.
   --root-dir             Managed SaaS control-plane root directory.
+  --dir                  Target directory for init.
+  --force                Overwrite init-managed files.
+  --skip-fixtures        Do not copy sample fixture data during init.
 `;
 }
 
@@ -457,10 +463,25 @@ async function main() {
     return;
   }
 
+  if (command === "init") {
+    const result = await initializeCliWorkspace({
+      rootDir: args.dir && args.dir !== true ? String(args.dir) : process.cwd(),
+      projectName: args["project-name"] && args["project-name"] !== true ? String(args["project-name"]) : undefined,
+      force: args.force === true,
+      skipFixtures: args["skip-fixtures"] === true,
+      councilMode: args["council-mode"] && args["council-mode"] !== true ? String(args["council-mode"]) : "deterministic",
+      llmModel: args["llm-model"] && args["llm-model"] !== true ? String(args["llm-model"]) : "gpt-5-mini",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, initToHumanReport(result), result);
+    return;
+  }
+
   if (command === "doctor") {
     const result = await parallaxDoctor({
       live: args.live === true,
-      llmProviderOptions: parseLiveLLMOptions(args)
+      llmProviderOptions: parseLiveLLMOptions(args),
+      rootDir: process.cwd()
     });
     printResult(args, doctorToHumanReport(result), result);
     return;
@@ -468,22 +489,28 @@ async function main() {
 
   if (command === "analyze") {
     if (!args.symbol || !args.thesis) throw new Error("analyze requires --symbol and --thesis");
-    const auditDir = String(args["audit-dir"] ?? "audits");
+    const config = await loadCliConfig(process.cwd());
+    const auditDir = String(args["audit-dir"] ?? config?.audit_dir ?? "audits");
     const dossier = await analyzeThesis({
       symbol: String(args.symbol),
-      horizon: String(args.horizon ?? "swing"),
+      horizon: String(args.horizon ?? config?.default_horizon ?? "swing"),
       thesis: String(args.thesis),
-      dataDir: String(args["data-dir"] ?? "fixtures"),
-      actionCeiling: String(args.ceiling ?? "watchlist"),
-      userClass: String(args["user-class"] ?? "self_directed_investor"),
-      intendedUse: String(args["intended-use"] ?? "research"),
+      dataDir: String(args["data-dir"] ?? config?.data_dir ?? "fixtures"),
+      actionCeiling: String(args.ceiling ?? config?.default_ceiling ?? "watchlist"),
+      userClass: String(args["user-class"] ?? config?.user_class ?? "self_directed_investor"),
+      intendedUse: String(args["intended-use"] ?? config?.intended_use ?? "research"),
       audit: true,
       now: args.now ? String(args.now) : undefined,
       auditDir,
-      councilMode: String(args["council-mode"] ?? "deterministic"),
+      councilMode: String(args["council-mode"] ?? config?.default_council_mode ?? "deterministic"),
       llmScenario: String(args["llm-scenario"] ?? "safe"),
       llmBudget: parseLLMBudget(args),
-      llmProviderOptions: parseLiveLLMOptions(args)
+      llmProviderOptions: parseLiveLLMOptions(args) ?? (config?.llm ? {
+        provider: config.llm.provider,
+        model: config.llm.model,
+        baseUrl: config.llm.base_url,
+        apiKeyEnv: config.llm.api_key_env
+      } : undefined)
     });
     const auditPath = path.join(auditDir, `${dossier.id}.json`);
     const markdownPath = path.join(auditDir, `${dossier.id}.md`);

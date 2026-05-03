@@ -160,12 +160,24 @@ PARALLAX_PYTHON="$(command -v python3)" npm test
 
 ## Quick Start
 
-Clone and install:
+Install as a CLI package:
+
+```bash
+npm install -g @nikolacehic/parallax
+mkdir parallax-workspace
+cd parallax-workspace
+parallax init
+parallax doctor
+parallax analyze --symbol NVDA --thesis "post-earnings continuation with controlled risk"
+```
+
+Or clone the repo for development:
 
 ```bash
 git clone https://github.com/NikolaCehic/Parallax.git
 cd Parallax
 npm install
+npm run init -- --dir ./workspace
 ```
 
 Build and run the full test suite:
@@ -184,6 +196,12 @@ Check the CLI runtime and live LLM configuration:
 
 ```bash
 npm run doctor
+```
+
+Initialize a normal project workspace from the repo checkout:
+
+```bash
+npm run init -- --dir ./parallax-workspace
 ```
 
 Run your own thesis:
@@ -788,6 +806,7 @@ artifacts/
 - [SPEC](TradeAgent/SPEC.md)
 - [Productization plan](PRODUCTIZATION_PLAN.md)
 - [Product boundaries](PRODUCT_BOUNDARIES.md)
+- [Onboarding plan](ONBOARDING_PLAN.md)
 - [E2E testing plan](E2E_TESTING.md)
 - [Implementation status](IMPLEMENTATION_STATUS.md)
 - [Product notes](PRODUCT.md)
@@ -846,7 +865,7 @@ Parallax is designed to avoid accidental escalation:
 - external provider integrations use manifests and secret references, not raw persisted secrets;
 - identity sessions are stored hash-only;
 - tenant data is scoped by tenant identifiers;
-- external LLM behavior is replay-only by default;
+- external LLM behavior is deterministic by default and live only when an API key is explicitly configured;
 - evidence snapshots and audit bundles are written locally for inspection;
 - setup repair actions are previewable and bounded.
 
@@ -891,7 +910,7 @@ The product-shaped direction is:
 
 ## Contributing
 
-This repository is still early, but useful contributions should preserve the core boundaries:
+Useful contributions should preserve the core boundaries:
 
 - keep tests deterministic;
 - prefer local fixtures over network calls in CI;
@@ -916,10 +935,10 @@ git diff --check
 
 ## License
 
-The repository currently declares `UNLICENSED` in `package.json`. Before publishing this as open source, choose and add an explicit license file, then update `package.json`. Common choices for this kind of developer-facing tool are MIT or Apache-2.0, but the right choice depends on how you want others to use, modify, and commercialize Parallax.
+Parallax is licensed under the [Apache License 2.0](LICENSE).
 
 ## Status
 
-Parallax is a local-first, productized prototype. The core analysis engine, CLI, tests, paper lab, governance workflows, provider boundaries, hosted API scaffold, onboarding, and account flows are implemented and covered by e2e or smoke tests.
+Parallax is a CLI-first open source agent with local-first defaults. The core analysis engine, CLI, init/doctor onboarding, live LLM mode, tests, paper lab, governance workflows, provider boundaries, hosted API scaffold, invitations, and account flows are implemented and covered by e2e or smoke tests.
 
 The system is intentionally conservative: it is designed to make thesis reasoning inspectable, falsifiable, and governable before any future work touches real external data, model networking, or regulated execution.

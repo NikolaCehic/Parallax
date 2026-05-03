@@ -238,3 +238,8 @@ export {
   runLLMProviderReplayAnalysis
 } from "./saas/llm_provider.js";
 export { parallaxDoctor } from "./doctor.js";
+export {
+  defaultCliConfig,
+  initializeCliWorkspace,
+  loadCliConfig
+} from "./config.js";
