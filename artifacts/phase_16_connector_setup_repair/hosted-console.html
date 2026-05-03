@@ -1,301 +1,4 @@
-import { mkdir, writeFile } from "node:fs/promises";
-import path from "node:path";
-import { managedSaasConfigPath, managedSaasStatus } from "../saas/managed.js";
-import { providerValidationPath, validateProviderContracts } from "../providers/validation.js";
-import { tenantPersistenceStatus } from "../saas/persistence.js";
-import { identityStatus } from "../saas/identity.js";
-import { durableStorageStatus } from "../saas/storage.js";
-import { dataVendorStatus } from "../saas/data_vendor.js";
-import { llmProviderStatus } from "../saas/llm_provider.js";
-import { connectorRepairStatus } from "../saas/setup_repair.js";
-
-function escapeHtml(value: any) {
-  return String(value ?? "")
-    .replaceAll("&", "&amp;")
-    .replaceAll("<", "&lt;")
-    .replaceAll(">", "&gt;")
-    .replaceAll('"', "&quot;");
-}
-
-function escapeJson(value: any) {
-  return escapeHtml(JSON.stringify(value));
-}
-
-function stateClass(value: string) {
-  const normalized = String(value ?? "").toLowerCase();
-  if (["blocked", "failed", "enabled_production", "missing", "forbidden", "unauthorized"].includes(normalized)) return "bad";
-  if (normalized.includes("blocked") || normalized.includes("failed")) return "bad";
-  if (["warning", "not_validated", "disabled_until_configured", "disabled_until_legal_approval"].includes(normalized)) return "warn";
-  if (normalized.includes("ready_for") || ["contract_validated", "passed", "active", "ok"].includes(normalized)) return "good";
-  return "neutral";
-}
-
-function badge(value: any) {
-  const text = String(value ?? "unknown");
-  return `<span class="badge ${stateClass(text)}">${escapeHtml(text)}</span>`;
-}
-
-function row(label: string, value: any) {
-  return `<tr><th>${escapeHtml(label)}</th><td>${escapeHtml(value)}</td></tr>`;
-}
-
-function statusMetric(label: string, value: any, detail = "") {
-  return `
-    <section class="metric">
-      <span>${escapeHtml(label)}</span>
-      <strong>${escapeHtml(value)}</strong>
-      ${detail ? `<em>${escapeHtml(detail)}</em>` : ""}
-    </section>
-  `;
-}
-
-function providerRows(providers: any[]) {
-  if (!providers.length) {
-    return `<tr><td colspan="7" class="empty">No provider manifests registered.</td></tr>`;
-  }
-  return providers.map((provider: any) => `
-    <tr>
-      <td><strong>${escapeHtml(provider.name)}</strong><span>${escapeHtml(provider.kind)}</span></td>
-      <td>${escapeHtml(provider.provider)}</td>
-      <td>${badge(provider.status)}</td>
-      <td>${badge(provider.manifest_status)}</td>
-      <td>${badge(provider.validation_status)}</td>
-      <td>${escapeHtml(provider.secret_ref_name)}</td>
-      <td>${escapeHtml(provider.required_failure_count)}</td>
-    </tr>
-  `).join("");
-}
-
-function tenantRows(tenants: any[]) {
-  if (!tenants.length) {
-    return `<tr><td colspan="7" class="empty">No tenants configured.</td></tr>`;
-  }
-  return tenants.map((tenant: any) => `
-    <tr>
-      <td><strong>${escapeHtml(tenant.tenant_name ?? tenant.name)}</strong><span>${escapeHtml(tenant.tenant_slug ?? tenant.slug)}</span></td>
-      <td>${badge(tenant.status)}</td>
-      <td>${escapeHtml(tenant.dossier_count ?? 0)}</td>
-      <td>${escapeHtml(tenant.event_count ?? 0)}</td>
-      <td>${escapeHtml(tenant.state_key_count ?? 0)}</td>
-      <td>${escapeHtml(tenant.latest_event?.event_type ?? "none")}</td>
-      <td><code>${escapeHtml(tenant.audit_dir)}</code></td>
-    </tr>
-  `).join("");
-}
-
-function controlRows(controls: any[]) {
-  if (!controls.length) {
-    return `<tr><td colspan="4" class="empty">No controls reported.</td></tr>`;
-  }
-  return controls.map((control: any) => `
-    <tr>
-      <td><code>${escapeHtml(control.id)}</code></td>
-      <td>${badge(control.passed ? "passed" : "failed")}</td>
-      <td>${badge(control.severity)}</td>
-      <td>${escapeHtml(control.detail)}</td>
-    </tr>
-  `).join("");
-}
-
-function setupRows(steps: any[]) {
-  return steps.map((step: any, index: number) => `
-    <li class="${stateClass(step.status)}">
-      <span class="step-index">${index + 1}</span>
-      <div>
-        <strong>${escapeHtml(step.label)}</strong>
-        <span>${escapeHtml(step.detail)}</span>
-        <code>${escapeHtml(step.command)}</code>
-      </div>
-      ${badge(step.status)}
-    </li>
-  `).join("");
-}
-
-function boundaryRows(rows: any[]) {
-  return rows.map((item: any) => `
-    <tr>
-      <td><strong>${escapeHtml(item.label)}</strong><span>${escapeHtml(item.detail)}</span></td>
-      <td>${badge(item.status)}</td>
-      <td>${escapeHtml(item.counts)}</td>
-      <td>${escapeHtml(item.safety)}</td>
-    </tr>
-  `).join("");
-}
-
-function renderOptions(values: string[]) {
-  return values.map((value) => `<option value="${escapeHtml(value)}">${escapeHtml(value)}</option>`).join("");
-}
-
-function miniRows(rows: any[]) {
-  if (!rows.length) return `<p class="empty inline-empty">No records yet.</p>`;
-  return rows.map((item) => `
-    <div class="mini-row">
-      <strong>${escapeHtml(item.title)}</strong>
-      <span>${escapeHtml(item.detail)}</span>
-      ${badge(item.status)}
-    </div>
-  `).join("");
-}
-
-function repairRows(actions: any[]) {
-  return actions.map((item: any) => `
-    <div class="repair-row ${stateClass(item.status)}">
-      <div>
-        <strong>${escapeHtml(item.label)}</strong>
-        <span>${escapeHtml(item.detail)}</span>
-        <code>${escapeHtml(item.command)}</code>
-      </div>
-      <div class="repair-state">
-        ${badge(item.status)}
-        ${item.block_reason ? `<span>${escapeHtml(item.block_reason)}</span>` : ""}
-      </div>
-    </div>
-  `).join("");
-}
-
-export async function buildHostedConsoleHtml({
-  rootDir = "managed-saas",
-  configPath = managedSaasConfigPath(rootDir),
-  validationPath = providerValidationPath(rootDir),
-  apiTokenHash = "",
-  now
-}: {
-  rootDir?: string;
-  configPath?: string;
-  validationPath?: string;
-  apiTokenHash?: string;
-  now?: string;
-} = {}) {
-  const providerValidation = await validateProviderContracts({
-    rootDir,
-    configPath,
-    out: validationPath,
-    now
-  });
-  const saas = await managedSaasStatus({ rootDir, configPath, now });
-  const persistence = await tenantPersistenceStatus({ rootDir, configPath, now });
-  const identity = await identityStatus({ rootDir, configPath, now });
-  const storage = await durableStorageStatus({ rootDir, configPath, now });
-  const dataVendor = await dataVendorStatus({ rootDir, configPath, now });
-  const llmProvider = await llmProviderStatus({ rootDir, configPath, now });
-  const repair = await connectorRepairStatus({ rootDir, configPath, apiTokenHash, now });
-  const readiness = saas.readiness;
-  const generatedAt = now ?? providerValidation.generated_at;
-  const hostedApiReady = Boolean(apiTokenHash) &&
-    providerValidation.status === "ready_for_provider_contract_beta" &&
-    persistence.status === "ready_for_tenant_persistence";
-  const foundationReady = hostedApiReady &&
-    identity.status === "ready_for_identity_foundation" &&
-    storage.status === "ready_for_durable_storage_foundation";
-  const tenantSlugs = persistence.tenants.map((tenant: any) => tenant.tenant_slug);
-  const setup = [
-    {
-      label: "Control plane",
-      status: readiness.status,
-      detail: `${readiness.summary.tenant_count} tenants, ${readiness.summary.integration_count} integrations`,
-      command: "npm run saas-readiness -- --root-dir managed-saas"
-    },
-    {
-      label: "Provider contracts",
-      status: providerValidation.status,
-      detail: `${providerValidation.summary.contract_validated_count}/${providerValidation.summary.provider_count} contracts validated`,
-      command: "npm run provider-validate -- --root-dir managed-saas"
-    },
-    {
-      label: "Hosted API",
-      status: hostedApiReady ? "ready_for_hosted_multi_tenant_api" : "blocked",
-      detail: Boolean(apiTokenHash) ? "Bearer auth hash is configured" : "Runtime API token hash is missing",
-      command: "npm run hosted-serve -- --root-dir managed-saas --api-token \"$PARALLAX_HOSTED_API_TOKEN\""
-    },
-    {
-      label: "Identity and storage",
-      status: foundationReady ? "ready_for_identity_storage_foundation" : "blocked",
-      detail: `${identity.summary.principal_count} principals, ${storage.summary.checkpoint_count} storage checkpoints`,
-      command: "npm run hosted-foundation-status -- --root-dir managed-saas"
-    },
-    {
-      label: "Data vendor",
-      status: dataVendor.status,
-      detail: `${dataVendor.summary.adapter_count} adapters, ${dataVendor.summary.import_count} imports`,
-      command: "npm run data-vendor-status -- --root-dir managed-saas"
-    },
-    {
-      label: "LLM provider",
-      status: llmProvider.status,
-      detail: `${llmProvider.summary.adapter_count} adapters, ${llmProvider.summary.run_count} replay runs`,
-      command: "npm run llm-provider-status -- --root-dir managed-saas"
-    }
-  ];
-
-  const boundary = [
-    {
-      label: "Identity",
-      detail: "Hash-only sessions",
-      status: identity.status,
-      counts: `${identity.summary.principal_count} principals, ${identity.summary.active_session_count} active sessions`,
-      safety: `raw tokens: ${identity.summary.raw_session_token_stored ? "stored" : "blocked"}`
-    },
-    {
-      label: "Durable storage",
-      detail: "Tenant object manifest",
-      status: storage.status,
-      counts: `${storage.summary.object_count} objects, ${storage.summary.checkpoint_count} checkpoints`,
-      safety: `cloud connection: ${storage.summary.direct_cloud_storage_connection ? "enabled" : "disabled"}`
-    },
-    {
-      label: "Data vendor",
-      detail: "Licensed local replay packs",
-      status: dataVendor.status,
-      counts: `${dataVendor.summary.adapter_count} adapters, ${dataVendor.summary.import_count} imports`,
-      safety: `vendor network: ${dataVendor.summary.direct_vendor_network_connection ? "enabled" : "disabled"}`
-    },
-    {
-      label: "LLM provider",
-      detail: "External-model replay contracts",
-      status: llmProvider.status,
-      counts: `${llmProvider.summary.adapter_count} adapters, ${llmProvider.summary.run_count} runs`,
-      safety: `model network: ${llmProvider.summary.direct_model_network_connection ? "enabled" : "disabled"}`
-    }
-  ];
-
-  const recentRuns = [
-    ...dataVendor.imports.slice(-3).map((item: any) => ({
-      title: `${item.tenant_slug}/${item.symbol}`,
-      detail: `data vendor import via ${item.adapter_id}`,
-      status: item.data_status_passed ? "passed" : "failed"
-    })),
-    ...llmProvider.runs.slice(-3).map((item: any) => ({
-      title: `${item.tenant_slug}/${item.symbol}`,
-      detail: `LLM replay via ${item.adapter_id}`,
-      status: item.council_eval_passed ? "passed" : "failed"
-    }))
-  ].slice(-5).reverse();
-
-  const consoleState = {
-    tenantSlugs,
-    generatedAt,
-    rootDir,
-    statuses: {
-      managed: readiness.status,
-      providers: providerValidation.status,
-      identity: identity.status,
-      storage: storage.status,
-      dataVendor: dataVendor.status,
-      llmProvider: llmProvider.status
-    },
-    repair: {
-      status: repair.status,
-      nextAction: repair.next_action?.id ?? "",
-      actions: repair.actions.map((item: any) => ({
-        id: item.id,
-        label: item.label,
-        status: item.status,
-        boundary: item.boundary
-      }))
-    }
-  };
-
-  const html = `<!doctype html>
+<!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -712,29 +415,65 @@ export async function buildHostedConsoleHtml({
         <a href="#providers">Providers</a>
         <a href="#controls">Controls</a>
       </nav>
-      <div class="side-footer">Generated ${escapeHtml(generatedAt)}</div>
+      <div class="side-footer">Generated 2026-05-03T10:00:00Z</div>
     </aside>
     <main>
       <header id="overview">
         <div>
           <p class="section-kicker">Parallax Hosted Console</p>
           <h1>Research readiness and tenant analysis workspace</h1>
-          <p class="lead">${escapeHtml(saas.environment)} | ${escapeHtml(rootDir)}</p>
+          <p class="lead">managed_beta | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas</p>
         </div>
         <div class="top-actions">
-          ${badge(providerValidation.status)}
+          <span class="badge good">ready_for_provider_contract_beta</span>
           <a class="button" href="/readyz">Readiness JSON</a>
           <a class="button" href="/api/control-plane">Control Plane JSON</a>
         </div>
       </header>
 
       <section class="metrics" aria-label="Readiness metrics">
-        ${statusMetric("Managed", readiness.status, `${readiness.summary.tenant_count} tenants`)}
-        ${statusMetric("Providers", providerValidation.summary.contract_validated_count + " / " + providerValidation.summary.provider_count, providerValidation.status)}
-        ${statusMetric("Identity", identity.summary.principal_count, identity.status)}
-        ${statusMetric("Storage", storage.summary.checkpoint_count, storage.status)}
-        ${statusMetric("Data Vendor", dataVendor.summary.import_count, dataVendor.status)}
-        ${statusMetric("LLM Provider", llmProvider.summary.run_count, llmProvider.status)}
+
+    <section class="metric">
+      <span>Managed</span>
+      <strong>ready_for_managed_beta_scaffold</strong>
+      <em>1 tenants</em>
+    </section>
+
+
+    <section class="metric">
+      <span>Providers</span>
+      <strong>5 / 5</strong>
+      <em>ready_for_provider_contract_beta</em>
+    </section>
+
+
+    <section class="metric">
+      <span>Identity</span>
+      <strong>1</strong>
+      <em>ready_for_identity_foundation</em>
+    </section>
+
+
+    <section class="metric">
+      <span>Storage</span>
+      <strong>1</strong>
+      <em>ready_for_durable_storage_foundation</em>
+    </section>
+
+
+    <section class="metric">
+      <span>Data Vendor</span>
+      <strong>1</strong>
+      <em>ready_for_external_data_vendor_boundary</em>
+    </section>
+
+
+    <section class="metric">
+      <span>LLM Provider</span>
+      <strong>1</strong>
+      <em>ready_for_external_llm_provider_boundary</em>
+    </section>
+
       </section>
 
       <div class="layout-2">
@@ -744,21 +483,141 @@ export async function buildHostedConsoleHtml({
             <span class="section-kicker">Phase 16</span>
           </div>
           <div class="panel-body">
-            <ol class="step-list">${setupRows(setup)}</ol>
+            <ol class="step-list">
+    <li class="good">
+      <span class="step-index">1</span>
+      <div>
+        <strong>Control plane</strong>
+        <span>1 tenants, 5 integrations</span>
+        <code>npm run saas-readiness -- --root-dir managed-saas</code>
+      </div>
+      <span class="badge good">ready_for_managed_beta_scaffold</span>
+    </li>
+
+    <li class="good">
+      <span class="step-index">2</span>
+      <div>
+        <strong>Provider contracts</strong>
+        <span>5/5 contracts validated</span>
+        <code>npm run provider-validate -- --root-dir managed-saas</code>
+      </div>
+      <span class="badge good">ready_for_provider_contract_beta</span>
+    </li>
+
+    <li class="good">
+      <span class="step-index">3</span>
+      <div>
+        <strong>Hosted API</strong>
+        <span>Bearer auth hash is configured</span>
+        <code>npm run hosted-serve -- --root-dir managed-saas --api-token &quot;$PARALLAX_HOSTED_API_TOKEN&quot;</code>
+      </div>
+      <span class="badge good">ready_for_hosted_multi_tenant_api</span>
+    </li>
+
+    <li class="good">
+      <span class="step-index">4</span>
+      <div>
+        <strong>Identity and storage</strong>
+        <span>1 principals, 1 storage checkpoints</span>
+        <code>npm run hosted-foundation-status -- --root-dir managed-saas</code>
+      </div>
+      <span class="badge good">ready_for_identity_storage_foundation</span>
+    </li>
+
+    <li class="good">
+      <span class="step-index">5</span>
+      <div>
+        <strong>Data vendor</strong>
+        <span>1 adapters, 1 imports</span>
+        <code>npm run data-vendor-status -- --root-dir managed-saas</code>
+      </div>
+      <span class="badge good">ready_for_external_data_vendor_boundary</span>
+    </li>
+
+    <li class="good">
+      <span class="step-index">6</span>
+      <div>
+        <strong>LLM provider</strong>
+        <span>1 adapters, 1 replay runs</span>
+        <code>npm run llm-provider-status -- --root-dir managed-saas</code>
+      </div>
+      <span class="badge good">ready_for_external_llm_provider_boundary</span>
+    </li>
+  </ol>
           </div>
         </section>
 
         <section class="panel" id="repair">
           <div class="panel-head">
             <h2>Guided Repair</h2>
-            <span class="section-kicker">${escapeHtml(repair.status)}</span>
+            <span class="section-kicker">ready_for_guided_connector_setup</span>
           </div>
           <div class="panel-body">
             <div class="repair-summary">
-              <strong>${escapeHtml(repair.summary.complete_count)} / ${escapeHtml(repair.summary.action_count)} complete</strong>
-              <span>Next: ${escapeHtml(repair.next_action?.label ?? "No repair needed")}</span>
+              <strong>5 / 5 complete</strong>
+              <span>Next: No repair needed</span>
             </div>
-            <div class="repair-list" id="repair-list">${repairRows(repair.actions)}</div>
+            <div class="repair-list" id="repair-list">
+    <div class="repair-row neutral">
+      <div>
+        <strong>Scaffold control plane contracts</strong>
+        <span>Create a tenant, secret-reference names, provider manifests, and one local observability event.</span>
+        <code>setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action control_plane_scaffold --tenant alpha</code>
+      </div>
+      <div class="repair-state">
+        <span class="badge neutral">complete</span>
+
+      </div>
+    </div>
+
+    <div class="repair-row neutral">
+      <div>
+        <strong>Bootstrap identity directory</strong>
+        <span>Initialize hash-only identity state and add a tenant-scoped analyst principal.</span>
+        <code>setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action identity_bootstrap --tenant alpha</code>
+      </div>
+      <div class="repair-state">
+        <span class="badge neutral">complete</span>
+
+      </div>
+    </div>
+
+    <div class="repair-row neutral">
+      <div>
+        <strong>Bootstrap durable storage</strong>
+        <span>Create local durable storage, write a tenant seed object, and capture a checkpoint.</span>
+        <code>setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action storage_bootstrap --tenant alpha</code>
+      </div>
+      <div class="repair-state">
+        <span class="badge neutral">complete</span>
+
+      </div>
+    </div>
+
+    <div class="repair-row neutral">
+      <div>
+        <strong>Bootstrap data vendor replay</strong>
+        <span>Register a tenant-scoped local vendor adapter and import a licensed synthetic data pack.</span>
+        <code>setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action data_vendor_bootstrap --tenant alpha --symbol NVDA</code>
+      </div>
+      <div class="repair-state">
+        <span class="badge neutral">complete</span>
+
+      </div>
+    </div>
+
+    <div class="repair-row neutral">
+      <div>
+        <strong>Bootstrap LLM replay provider</strong>
+        <span>Register a replay model adapter, run evals, and record one evidence-only replay analysis.</span>
+        <code>setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action llm_provider_bootstrap --tenant alpha --symbol NVDA</code>
+      </div>
+      <div class="repair-state">
+        <span class="badge neutral">complete</span>
+
+      </div>
+    </div>
+  </div>
             <div class="form-actions">
               <button type="button" id="preview-repair">Preview repair plan</button>
               <button type="button" id="apply-next-repair" class="primary">Apply next repair</button>
@@ -784,7 +643,7 @@ export async function buildHostedConsoleHtml({
               </div>
               <div class="field">
                 <label for="tenant">Tenant</label>
-                <select id="tenant">${renderOptions(tenantSlugs)}</select>
+                <select id="tenant"><option value="alpha">alpha</option></select>
               </div>
               <div class="field">
                 <label for="symbol">Symbol</label>
@@ -838,7 +697,35 @@ export async function buildHostedConsoleHtml({
           </div>
           <table>
             <thead><tr><th>Boundary</th><th>Status</th><th>Records</th><th>Safety</th></tr></thead>
-            <tbody>${boundaryRows(boundary)}</tbody>
+            <tbody>
+    <tr>
+      <td><strong>Identity</strong><span>Hash-only sessions</span></td>
+      <td><span class="badge good">ready_for_identity_foundation</span></td>
+      <td>1 principals, 0 active sessions</td>
+      <td>raw tokens: blocked</td>
+    </tr>
+
+    <tr>
+      <td><strong>Durable storage</strong><span>Tenant object manifest</span></td>
+      <td><span class="badge good">ready_for_durable_storage_foundation</span></td>
+      <td>1 objects, 1 checkpoints</td>
+      <td>cloud connection: disabled</td>
+    </tr>
+
+    <tr>
+      <td><strong>Data vendor</strong><span>Licensed local replay packs</span></td>
+      <td><span class="badge good">ready_for_external_data_vendor_boundary</span></td>
+      <td>1 adapters, 1 imports</td>
+      <td>vendor network: disabled</td>
+    </tr>
+
+    <tr>
+      <td><strong>LLM provider</strong><span>External-model replay contracts</span></td>
+      <td><span class="badge good">ready_for_external_llm_provider_boundary</span></td>
+      <td>1 adapters, 1 runs</td>
+      <td>model network: disabled</td>
+    </tr>
+  </tbody>
           </table>
         </section>
 
@@ -847,18 +734,40 @@ export async function buildHostedConsoleHtml({
             <h2>Recent Boundary Runs</h2>
             <span class="section-kicker">Replay evidence</span>
           </div>
-          <div class="panel-body mini-list" id="recent-runs">${miniRows(recentRuns)}</div>
+          <div class="panel-body mini-list" id="recent-runs">
+    <div class="mini-row">
+      <strong>alpha/NVDA</strong>
+      <span>LLM replay via guided-model</span>
+      <span class="badge good">passed</span>
+    </div>
+
+    <div class="mini-row">
+      <strong>alpha/NVDA</strong>
+      <span>data vendor import via guided-local</span>
+      <span class="badge good">passed</span>
+    </div>
+  </div>
         </section>
       </div>
 
       <section class="panel" id="tenants">
         <div class="panel-head">
           <h2>Tenants</h2>
-          <span class="section-kicker">${escapeHtml(persistence.status)}</span>
+          <span class="section-kicker">ready_for_tenant_persistence</span>
         </div>
         <table>
           <thead><tr><th>Tenant</th><th>Status</th><th>Dossiers</th><th>Events</th><th>State Keys</th><th>Latest Event</th><th>Audit Dir</th></tr></thead>
-          <tbody>${tenantRows(persistence.tenants)}</tbody>
+          <tbody>
+    <tr>
+      <td><strong>ALPHA Research</strong><span>alpha</span></td>
+      <td><span class="badge good">active</span></td>
+      <td>1</td>
+      <td>0</td>
+      <td>0</td>
+      <td>none</td>
+      <td><code>/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/tenants/alpha/audits</code></td>
+    </tr>
+  </tbody>
         </table>
       </section>
 
@@ -866,7 +775,7 @@ export async function buildHostedConsoleHtml({
         <section class="panel">
           <div class="panel-head">
             <h2>Tenant Library</h2>
-            <span class="section-kicker" id="library-label">${escapeHtml(tenantSlugs[0] ?? "tenant")}</span>
+            <span class="section-kicker" id="library-label">alpha</span>
           </div>
           <div class="panel-body">
             <div id="library-result" class="mini-list">
@@ -878,7 +787,7 @@ export async function buildHostedConsoleHtml({
         <section class="panel">
           <div class="panel-head">
             <h2>Tenant Events</h2>
-            <span class="section-kicker" id="events-label">${escapeHtml(tenantSlugs[0] ?? "tenant")}</span>
+            <span class="section-kicker" id="events-label">alpha</span>
           </div>
           <div class="panel-body">
             <div id="events-result" class="mini-list">
@@ -891,26 +800,76 @@ export async function buildHostedConsoleHtml({
       <section class="panel" id="providers">
         <div class="panel-head">
           <h2>Provider Contracts</h2>
-          <span class="section-kicker">${escapeHtml(generatedAt)}</span>
+          <span class="section-kicker">2026-05-03T10:00:00Z</span>
         </div>
         <table>
           <thead><tr><th>Manifest</th><th>Provider</th><th>Contract</th><th>Manifest Status</th><th>Validation</th><th>Secret Ref</th><th>Failures</th></tr></thead>
-          <tbody>${providerRows(providerValidation.providers)}</tbody>
+          <tbody>
+    <tr>
+      <td><strong>Guided Repair OIDC Contract</strong><span>identity_provider</span></td>
+      <td>guided_repair_oidc</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>IDENTITY_PROVIDER</td>
+      <td>0</td>
+    </tr>
+
+    <tr>
+      <td><strong>Guided Repair Market Data Contract</strong><span>market_data_vendor</span></td>
+      <td>guided_repair_market_data</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>MARKET_DATA_VENDOR</td>
+      <td>0</td>
+    </tr>
+
+    <tr>
+      <td><strong>Guided Repair Model Gateway Contract</strong><span>llm_provider</span></td>
+      <td>guided_repair_model_gateway</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>LLM_PROVIDER</td>
+      <td>0</td>
+    </tr>
+
+    <tr>
+      <td><strong>Guided Repair Regulated Partner Contract</strong><span>regulated_partner</span></td>
+      <td>guided_repair_partner</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_legal_approval</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>REGULATED_PARTNER</td>
+      <td>0</td>
+    </tr>
+
+    <tr>
+      <td><strong>Guided Repair Observability Contract</strong><span>observability</span></td>
+      <td>guided_repair_logs</td>
+      <td><span class="badge good">contract_validated</span></td>
+      <td><span class="badge warn">disabled_until_configured</span></td>
+      <td><span class="badge warn">not_validated</span></td>
+      <td>OBSERVABILITY_VENDOR</td>
+      <td>0</td>
+    </tr>
+  </tbody>
         </table>
       </section>
 
       <section class="panel">
         <div class="panel-head">
           <h2>Control Plane</h2>
-          <span class="section-kicker">${escapeHtml(saas.environment)}</span>
+          <span class="section-kicker">managed_beta</span>
         </div>
         <table>
           <tbody>
-            ${row("Control plane", saas.control_plane_id)}
-            ${row("Cross-tenant queries", saas.tenancy.cross_tenant_queries_allowed ? "allowed" : "disabled")}
-            ${row("Direct broker connection", saas.production_boundaries.direct_broker_connection ? "allowed" : "blocked")}
-            ${row("Partner adapter default", saas.production_boundaries.production_partner_adapter_default)}
-            ${row("Observability events", readiness.summary.observability_event_count)}
+            <tr><th>Control plane</th><td>saas_cp_494b7fb99afe</td></tr>
+            <tr><th>Cross-tenant queries</th><td>disabled</td></tr>
+            <tr><th>Direct broker connection</th><td>blocked</td></tr>
+            <tr><th>Partner adapter default</th><td>locked</td></tr>
+            <tr><th>Observability events</th><td>1</td></tr>
           </tbody>
         </table>
       </section>
@@ -922,19 +881,348 @@ export async function buildHostedConsoleHtml({
         </div>
         <table>
           <thead><tr><th>Control</th><th>Status</th><th>Severity</th><th>Detail</th></tr></thead>
-          <tbody>${controlRows([
-            ...providerValidation.controls,
-            ...readiness.controls,
-            ...identity.controls,
-            ...storage.controls,
-            ...dataVendor.controls,
-            ...llmProvider.controls
-          ])}</tbody>
+          <tbody>
+    <tr>
+      <td><code>managed_saas_ready</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Managed SaaS scaffold readiness passed.</td>
+    </tr>
+
+    <tr>
+      <td><code>required_provider_manifests</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Required provider manifests exist.</td>
+    </tr>
+
+    <tr>
+      <td><code>provider_contracts_validated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Provider contract checks passed.</td>
+    </tr>
+
+    <tr>
+      <td><code>no_production_providers</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>No external provider is enabled for production.</td>
+    </tr>
+
+    <tr>
+      <td><code>secret_refs_sanitized</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Provider report exposes secret names and hashes only.</td>
+    </tr>
+
+    <tr>
+      <td><code>external_production_validation_pending</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge warn">warning</span></td>
+      <td>External providers remain pending production validation.</td>
+    </tr>
+
+    <tr>
+      <td><code>tenant_isolation</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Tenant audit dirs stay inside the managed SaaS root.</td>
+    </tr>
+
+    <tr>
+      <td><code>tenant_count</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant workspace exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>cross_tenant_queries_disabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Cross-tenant queries are disabled by default.</td>
+    </tr>
+
+    <tr>
+      <td><code>secret_refs_only</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Only external secret references are stored.</td>
+    </tr>
+
+    <tr>
+      <td><code>identity_provider_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Identity provider manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>market_data_vendor_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Market-data vendor manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>llm_provider_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>LLM provider manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>regulated_partner_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Regulated partner manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>observability_manifest</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Observability provider manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>observability_enabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Observability manifest and events exist.</td>
+    </tr>
+
+    <tr>
+      <td><code>production_execution_locked</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Regulated partner production integration is not enabled by manifest.</td>
+    </tr>
+
+    <tr>
+      <td><code>external_integrations_not_validated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge warn">warning</span></td>
+      <td>External integrations are visible but not treated as production validated.</td>
+    </tr>
+
+    <tr>
+      <td><code>identity_directory_initialized</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Identity directory is initialized.</td>
+    </tr>
+
+    <tr>
+      <td><code>principal_count</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one identity principal exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>tenant_memberships_valid</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Tenant memberships refer to known managed SaaS tenants.</td>
+    </tr>
+
+    <tr>
+      <td><code>sessions_hash_only</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Persisted sessions contain hashes only, never raw bearer values.</td>
+    </tr>
+
+    <tr>
+      <td><code>raw_session_token_storage_blocked</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Identity token policy blocks raw session token storage.</td>
+    </tr>
+
+    <tr>
+      <td><code>durable_storage_initialized</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Durable storage manifest exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>storage_root_inside_managed_root</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Storage root stays inside the managed SaaS root.</td>
+    </tr>
+
+    <tr>
+      <td><code>tenant_object_paths_isolated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Tenant object paths use tenant-scoped storage prefixes.</td>
+    </tr>
+
+    <tr>
+      <td><code>checkpoint_exists</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one durability checkpoint exists.</td>
+    </tr>
+
+    <tr>
+      <td><code>checkpoint_paths_isolated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Checkpoint files stay under the durable storage checkpoint prefix.</td>
+    </tr>
+
+    <tr>
+      <td><code>raw_secret_storage_blocked</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Storage manifest and object records do not store raw secrets.</td>
+    </tr>
+
+    <tr>
+      <td><code>direct_cloud_storage_connection_disabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>This phase defines the durable storage contract without connecting production cloud storage.</td>
+    </tr>
+
+    <tr>
+      <td><code>market_data_provider_contract_ready</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Managed market-data provider contract is validated.</td>
+    </tr>
+
+    <tr>
+      <td><code>adapter_registered</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant-scoped data vendor adapter is registered.</td>
+    </tr>
+
+    <tr>
+      <td><code>vendor_pack_imported</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant-scoped vendor data pack has been imported.</td>
+    </tr>
+
+    <tr>
+      <td><code>data_status_passed</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Imported vendor packs pass freshness and license checks.</td>
+    </tr>
+
+    <tr>
+      <td><code>licenses_allowed</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Vendor adapter and import licenses are declared and not restricted.</td>
+    </tr>
+
+    <tr>
+      <td><code>tenant_data_paths_isolated</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Vendor data packs are stored under tenant-scoped data-vendor prefixes.</td>
+    </tr>
+
+    <tr>
+      <td><code>no_raw_vendor_secrets</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Vendor registry stores secret reference names and hashes only.</td>
+    </tr>
+
+    <tr>
+      <td><code>direct_vendor_network_disabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Phase 13 uses local replay contracts, not live vendor networking.</td>
+    </tr>
+
+    <tr>
+      <td><code>llm_provider_contract_ready</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Managed LLM provider contract is validated.</td>
+    </tr>
+
+    <tr>
+      <td><code>adapter_registered</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant-scoped LLM provider adapter is registered.</td>
+    </tr>
+
+    <tr>
+      <td><code>prompt_contract_known</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Adapter prompt ids are present in the prompt registry.</td>
+    </tr>
+
+    <tr>
+      <td><code>provider_eval_suite_passed</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Each adapter passed the external LLM replay eval suite.</td>
+    </tr>
+
+    <tr>
+      <td><code>replay_run_recorded</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>At least one tenant-scoped replay analysis run has been recorded.</td>
+    </tr>
+
+    <tr>
+      <td><code>replay_eval_passed</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Recorded replay runs passed claim-packet evaluation.</td>
+    </tr>
+
+    <tr>
+      <td><code>budget_limits_explicit</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Adapters declare token/cost budgets and replay runs stay within them.</td>
+    </tr>
+
+    <tr>
+      <td><code>no_order_ticket_escalation</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>External LLM replay cannot create an order-ticket candidate in the general product boundary.</td>
+    </tr>
+
+    <tr>
+      <td><code>no_raw_model_secrets</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>LLM provider registry stores secret reference names and hashes only.</td>
+    </tr>
+
+    <tr>
+      <td><code>direct_model_network_disabled</code></td>
+      <td><span class="badge good">passed</span></td>
+      <td><span class="badge neutral">required</span></td>
+      <td>Phase 14 uses local replay contracts, not live model networking.</td>
+    </tr>
+  </tbody>
         </table>
       </section>
     </main>
   </div>
-  <script id="console-state" type="application/json">${escapeJson(consoleState)}</script>
+  <script id="console-state" type="application/json">{&quot;tenantSlugs&quot;:[&quot;alpha&quot;],&quot;generatedAt&quot;:&quot;2026-05-03T10:00:00Z&quot;,&quot;rootDir&quot;:&quot;/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas&quot;,&quot;statuses&quot;:{&quot;managed&quot;:&quot;ready_for_managed_beta_scaffold&quot;,&quot;providers&quot;:&quot;ready_for_provider_contract_beta&quot;,&quot;identity&quot;:&quot;ready_for_identity_foundation&quot;,&quot;storage&quot;:&quot;ready_for_durable_storage_foundation&quot;,&quot;dataVendor&quot;:&quot;ready_for_external_data_vendor_boundary&quot;,&quot;llmProvider&quot;:&quot;ready_for_external_llm_provider_boundary&quot;},&quot;repair&quot;:{&quot;status&quot;:&quot;ready_for_guided_connector_setup&quot;,&quot;nextAction&quot;:&quot;&quot;,&quot;actions&quot;:[{&quot;id&quot;:&quot;control_plane_scaffold&quot;,&quot;label&quot;:&quot;Scaffold control plane contracts&quot;,&quot;status&quot;:&quot;complete&quot;,&quot;boundary&quot;:&quot;control_plane&quot;},{&quot;id&quot;:&quot;identity_bootstrap&quot;,&quot;label&quot;:&quot;Bootstrap identity directory&quot;,&quot;status&quot;:&quot;complete&quot;,&quot;boundary&quot;:&quot;identity&quot;},{&quot;id&quot;:&quot;storage_bootstrap&quot;,&quot;label&quot;:&quot;Bootstrap durable storage&quot;,&quot;status&quot;:&quot;complete&quot;,&quot;boundary&quot;:&quot;storage&quot;},{&quot;id&quot;:&quot;data_vendor_bootstrap&quot;,&quot;label&quot;:&quot;Bootstrap data vendor replay&quot;,&quot;status&quot;:&quot;complete&quot;,&quot;boundary&quot;:&quot;data_vendor&quot;},{&quot;id&quot;:&quot;llm_provider_bootstrap&quot;,&quot;label&quot;:&quot;Bootstrap LLM replay provider&quot;,&quot;status&quot;:&quot;complete&quot;,&quot;boundary&quot;:&quot;llm_provider&quot;}]}}</script>
   <script>
     const consoleState = JSON.parse(document.getElementById("console-state").textContent);
     const tokenInput = document.getElementById("api-token");
@@ -1120,34 +1408,4 @@ export async function buildHostedConsoleHtml({
     });
   </script>
 </body>
-</html>`;
-  return html.replace(/[ \t]+$/gm, "");
-}
-
-export async function writeHostedConsole({
-  rootDir = "managed-saas",
-  configPath = managedSaasConfigPath(rootDir),
-  validationPath = providerValidationPath(rootDir),
-  out = path.join(rootDir, "parallax-hosted-console.html"),
-  apiTokenHash = "",
-  now
-}: {
-  rootDir?: string;
-  configPath?: string;
-  validationPath?: string;
-  out?: string;
-  apiTokenHash?: string;
-  now?: string;
-} = {}) {
-  const html = await buildHostedConsoleHtml({ rootDir, configPath, validationPath, apiTokenHash, now });
-  await mkdir(path.dirname(out), { recursive: true });
-  await writeFile(out, html);
-  return {
-    out,
-    root_dir: rootDir,
-    validation_path: validationPath,
-    bytes: Buffer.byteLength(html),
-    console_kind: "hosted_research_console",
-    generated_at: now ?? new Date().toISOString()
-  };
-}
+</html>

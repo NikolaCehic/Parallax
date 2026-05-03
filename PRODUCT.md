@@ -29,6 +29,7 @@ Calm, exacting, accountable. The product should feel like a serious research des
 - Evidence first: the UI should show what passed, what failed, and what is missing before it celebrates any result.
 - Research, not execution: product copy and affordances must avoid live-order framing in general workflows.
 - Make gates visible: readiness, provider, data, identity, storage, and model controls should be inspectable at a glance.
+- Repair with restraint: setup flows should explain and apply local-safe fixes without hiding policy or secret boundaries.
 - Dense but calm: analysts need enough information to scan, compare, and act without visual noise.
 - Auditability over charm: every generated answer should point back to artifacts, dossier records, or validation evidence.
 

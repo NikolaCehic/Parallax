@@ -1,0 +1,33 @@
+Parallax Guided Connector Repair
+=================================
+
+Status: blocked
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas
+Tenant: alpha
+Symbol: NVDA
+Complete: 0/5
+Needed: 1
+Blocked: 4
+Raw secret stored: no
+Direct external network connection: no
+
+Statuses
+  - managed_saas: blocked
+  - provider_validation: blocked
+  - tenant_persistence: ready_for_tenant_persistence
+  - hosted_api: blocked
+  - foundation: blocked
+  - identity: blocked
+  - storage: blocked
+  - data_vendor: blocked
+  - llm_provider: blocked
+
+Next Action
+  control_plane_scaffold: Scaffold control plane contracts
+
+Actions
+  - control_plane_scaffold | needed | control_plane | can_apply | Scaffold control plane contracts
+  - identity_bootstrap | blocked | identity | A tenant must exist first. | Bootstrap identity directory
+  - storage_bootstrap | blocked | storage | A tenant must exist first. | Bootstrap durable storage
+  - data_vendor_bootstrap | blocked | data_vendor | A tenant must exist first. | Bootstrap data vendor replay
+  - llm_provider_bootstrap | blocked | llm_provider | A tenant must exist first. | Bootstrap LLM replay provider

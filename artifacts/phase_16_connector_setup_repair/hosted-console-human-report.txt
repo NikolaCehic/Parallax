@@ -1,0 +1,9 @@
+Parallax Hosted Console
+=======================
+
+Output: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/hosted-console-written.html
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas
+Console kind: hosted_research_console
+Provider validation: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/provider-validation.json
+Bytes: 52302
+Generated at: 2026-05-03T10:00:00Z

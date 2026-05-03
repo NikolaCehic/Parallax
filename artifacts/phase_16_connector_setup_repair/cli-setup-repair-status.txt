@@ -1,0 +1,33 @@
+Parallax Guided Connector Repair
+=================================
+
+Status: ready_for_guided_connector_setup
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas
+Tenant: alpha
+Symbol: NVDA
+Complete: 5/5
+Needed: 0
+Blocked: 0
+Raw secret stored: no
+Direct external network connection: no
+
+Statuses
+  - managed_saas: ready_for_managed_beta_scaffold
+  - provider_validation: ready_for_provider_contract_beta
+  - tenant_persistence: ready_for_tenant_persistence
+  - hosted_api: ready_for_hosted_multi_tenant_api
+  - foundation: ready_for_identity_storage_foundation
+  - identity: ready_for_identity_foundation
+  - storage: ready_for_durable_storage_foundation
+  - data_vendor: ready_for_external_data_vendor_boundary
+  - llm_provider: ready_for_external_llm_provider_boundary
+
+Next Action
+  No repair action needed.
+
+Actions
+  - control_plane_scaffold | complete | control_plane | no_action | Scaffold control plane contracts
+  - identity_bootstrap | complete | identity | no_action | Bootstrap identity directory
+  - storage_bootstrap | complete | storage | no_action | Bootstrap durable storage
+  - data_vendor_bootstrap | complete | data_vendor | no_action | Bootstrap data vendor replay
+  - llm_provider_bootstrap | complete | llm_provider | no_action | Bootstrap LLM replay provider

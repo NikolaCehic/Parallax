@@ -115,7 +115,8 @@ The current repo already has the right skeleton:
 - external data vendor adapter boundary;
 - external LLM provider adapter boundary;
 - hosted research console UX and onboarding shell;
-- 64 tests;
+- guided connector repair planner and apply workflow;
+- 66 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -211,6 +212,8 @@ Implemented on 2026-05-02:
 - Phase 14 artifact bundle;
 - hosted research console UX and onboarding shell;
 - Phase 15 artifact bundle;
+- guided connector setup repair workflow;
+- Phase 16 artifact bundle;
 - 64 passing tests.
 
 ## Knowledge Gathered
@@ -1208,6 +1211,39 @@ Exit criteria:
 - hosted analysis can create a tenant dossier and refresh tenant library state;
 - generated HTML contains no raw secret refs or hosted API token;
 - responsive layout keeps operational content scannable on desktop and mobile.
+
+### Phase 16: Connector Setup Wizards And Guided Readiness Repair
+
+Status: Complete for local guided-repair scope.
+
+Goal:
+
+Turn blocked readiness states into explicit, previewable, and applyable setup actions so a new operator can move from an empty local managed root to a complete local connector foundation without memorizing CLI command order.
+
+Deliverables:
+
+- guided connector repair planner;
+- apply-next local repair workflow;
+- control-plane scaffold action for tenant, secret-reference names, provider manifests, and observability;
+- identity bootstrap action;
+- durable-storage bootstrap action;
+- data-vendor replay bootstrap action;
+- LLM-provider replay bootstrap action;
+- hosted `/api/setup-repair` status and apply routes;
+- hosted console guided repair controls;
+- CLI `setup-repair-status` and `setup-repair-apply` commands;
+- convergence, hosted API, console, redaction, and CLI tests;
+- Phase 16 artifact bundle.
+
+Exit criteria:
+
+- repair plan identifies complete, needed, and blocked setup actions from live readiness state;
+- applying `next` converges through control-plane, identity, storage, data-vendor, and LLM-provider actions;
+- hosted API exposes authenticated repair preview/apply endpoints;
+- console renders guided repair controls and can call `/api/setup-repair`;
+- CLI exposes human-readable repair status and apply output;
+- outputs contain no raw hosted API token or raw `secret://` references;
+- local repair does not enable external vendor/model networks or live execution.
 
 ## Team Needed
 

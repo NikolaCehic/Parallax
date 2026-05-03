@@ -10,6 +10,7 @@ export const IDENTITY_EVENTS_FILE = "identity-events.jsonl";
 
 const PLATFORM_SCOPES = [
   "control_plane:read",
+  "control_plane:write",
   "identity:write",
   "tenant:read",
   "tenant:write",

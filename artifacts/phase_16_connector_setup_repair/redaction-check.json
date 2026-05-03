@@ -1,0 +1,23 @@
+{
+  "initial_status_raw_token_present": false,
+  "initial_status_raw_secret_ref_present": false,
+  "final_status_raw_token_present": false,
+  "final_status_raw_secret_ref_present": false,
+  "api_final_raw_token_present": false,
+  "api_final_raw_secret_ref_present": false,
+  "cli_final_raw_token_present": false,
+  "cli_final_raw_secret_ref_present": false,
+  "generated_html_raw_token_present": false,
+  "generated_html_raw_secret_ref_present": false,
+  "served_html_raw_token_present": false,
+  "served_html_raw_secret_ref_present": false,
+  "managed_config_uses_external_secret_references": true,
+  "final_ready": true,
+  "apply_sequence": [
+    "control_plane_scaffold",
+    "identity_bootstrap",
+    "storage_bootstrap",
+    "data_vendor_bootstrap",
+    "llm_provider_bootstrap"
+  ]
+}

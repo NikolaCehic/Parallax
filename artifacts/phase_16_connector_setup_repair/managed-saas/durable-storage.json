@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas",
+  "storage_root": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/durable-storage",
+  "provider": "guided_repair_local_durable_storage",
+  "region": "local_dev",
+  "created_at": "2026-05-03T10:00:00Z",
+  "durability_model": {
+    "mode": "local_durable_storage_contract",
+    "tenant_prefix_required": true,
+    "checkpoint_required": true,
+    "backup_retention_days": 30,
+    "encryption_at_rest": "local_dev_envelope_placeholder",
+    "raw_secret_storage_allowed": false,
+    "direct_cloud_storage_connection": false
+  },
+  "objects": [
+    {
+      "id": "storage_obj_88ff02ebc89f",
+      "tenant_slug": "alpha",
+      "key": "guided_repair.seed",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/durable-storage/tenants/alpha/objects/guided_repair.seed.json",
+      "value_hash": "17c291626cc96906883ad7e5b66d85546341463e2a7b4456cab2b8de74428ff8",
+      "updated_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "storage_checkpoint_0f0bc2ed96e1",
+      "label": "guided-repair",
+      "tenant_slug": "alpha",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/durable-storage/checkpoints/storage_checkpoint_0f0bc2ed96e1.json",
+      "object_count": 1,
+      "created_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "updated_at": "2026-05-03T10:50:27.041Z"
+}

@@ -36,6 +36,10 @@ import {
   llmProviderStatus,
   runLLMProviderReplayAnalysis
 } from "./llm_provider.js";
+import {
+  applyConnectorRepair,
+  connectorRepairStatus
+} from "./setup_repair.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -423,8 +427,39 @@ export function createHostedRequestHandler({
           identity: await identityStatus({ rootDir, configPath, now }),
           durable_storage: await durableStorageStatus({ rootDir, configPath, now }),
           data_vendor: await dataVendorStatus({ rootDir, configPath, now }),
-          llm_provider: await llmProviderStatus({ rootDir, configPath, now })
+          llm_provider: await llmProviderStatus({ rootDir, configPath, now }),
+          setup_repair: await connectorRepairStatus({ rootDir, configPath, apiTokenHash, now })
         });
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/api/setup-repair") {
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await connectorRepairStatus({
+          rootDir,
+          configPath,
+          apiTokenHash,
+          tenantSlug: url.searchParams.get("tenant") ?? undefined,
+          symbol: url.searchParams.get("symbol") ?? undefined,
+          now
+        }));
+        return;
+      }
+
+      if (req.method === "POST" && url.pathname === "/api/setup-repair") {
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:write" });
+        const body = await readJsonBody(req);
+        const result = await applyConnectorRepair({
+          rootDir,
+          configPath,
+          apiTokenHash,
+          actionId: String(body.action_id ?? "next"),
+          tenantSlug: body.tenant_slug ? String(body.tenant_slug) : undefined,
+          symbol: body.symbol ? String(body.symbol) : undefined,
+          actor: body.actor ? String(body.actor) : "hosted_api",
+          now: body.now ? String(body.now) : now
+        });
+        jsonResponse(res, 201, result);
         return;
       }
 

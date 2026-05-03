@@ -1,0 +1,14 @@
+{
+  "bytes": 52302,
+  "contains": {
+    "Parallax Hosted Console": true,
+    "Guided Repair": true,
+    "Apply next repair": true,
+    "/api/setup-repair": true,
+    "setup-repair-apply": true,
+    "ready_for_guided_connector_setup": true,
+    "sessionStorage": true
+  },
+  "raw_token_present": false,
+  "raw_secret_ref_present": false
+}

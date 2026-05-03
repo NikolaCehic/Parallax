@@ -1,0 +1,11 @@
+{
+  "status": 200,
+  "setup_repair_status": "ready_for_guided_connector_setup",
+  "hosted_api_status": "ready_for_hosted_multi_tenant_api",
+  "identity_status": "ready_for_identity_foundation",
+  "durable_storage_status": "ready_for_durable_storage_foundation",
+  "data_vendor_status": "ready_for_external_data_vendor_boundary",
+  "llm_provider_status": "ready_for_external_llm_provider_boundary",
+  "complete_count": 5,
+  "action_count": 5
+}

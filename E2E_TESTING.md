@@ -1,6 +1,6 @@
 # Parallax E2E Testing
 
-The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, partner-execution controls, beta-deployment API state, managed SaaS control-plane state, provider validation state, hosted API state, hosted console state, identity/session state, durable storage state, data-vendor state, LLM-provider state, local-alpha workspace, LLM council, and sandbox-execution data.
+The E2E suite is designed to challenge the full Parallax pipeline with synthetic but varied market, fundamentals, news, corporate actions, portfolio, event, lifecycle, alerting, paper-trading ledger, team governance, partner-execution controls, beta-deployment API state, managed SaaS control-plane state, provider validation state, hosted API state, hosted console state, guided repair state, identity/session state, durable storage state, data-vendor state, LLM-provider state, local-alpha workspace, LLM council, and sandbox-execution data.
 
 It does not use one static happy-path fixture. Each E2E scenario creates its own temporary market data, event data, and portfolio constraints, then runs:
 
@@ -11,7 +11,7 @@ Evidence Snapshot
   -> Cross-Examination
   -> Decision Gate
   -> Lifecycle Assignment
-  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Partner Execution/Beta API/Managed SaaS/Provider Validation/Hosted API/Hosted Console/Identity/Storage/Data Vendor/LLM Provider/Sandbox paths where relevant
+  -> Audit/Governance/Workspace/Alerts/Paper Lab/Team Governance/Partner Execution/Beta API/Managed SaaS/Provider Validation/Hosted API/Hosted Console/Guided Repair/Identity/Storage/Data Vendor/LLM Provider/Sandbox paths where relevant
 ```
 
 Run:
@@ -49,6 +49,7 @@ The E2E suite currently proves:
 23. Phase 13 external data vendor boundary can register licensed market-data adapters, import tenant-scoped vendor packs, preserve provenance hashes, block restricted licenses and unapproved symbols, serve hosted import/status routes, and deny unsafe analysis `data_dir` escape.
 24. Phase 14 external LLM provider boundary can register replay-only model adapters, run provider-specific eval suites, produce evidence-only replay dossiers, enforce budget/secret/network gates, serve hosted replay analysis/status routes, and deny unsafe analysis `data_dir` escape.
 25. Phase 15 hosted research console can render onboarding, readiness rails, boundary status, tenant analysis form, tenant library/events panes, serve through the authenticated hosted route, expose data/model boundary status in the control-plane overview, create a hosted dossier, and keep raw secrets/tokens out of HTML.
+26. Phase 16 guided connector repair can preview blocked setup work, apply local control-plane/identity/storage/data/model repairs in order, converge to ready connector status, expose hosted repair routes, render console repair controls, and keep raw secrets/tokens out of outputs.
 
 ## Issues Found By E2E
 

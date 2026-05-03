@@ -34,6 +34,7 @@ Parallax tries to sit in the middle:
 - Phase 13 external data vendor boundary adds licensed vendor adapter contracts, tenant-scoped vendor data packs, provenance hashes, and hosted import controls.
 - Phase 14 external LLM provider boundary adds replay-only model adapter contracts, provider-specific eval suites, evidence-only contexts, hosted replay analysis, and model-network/secret gates.
 - Phase 15 hosted research console turns readiness, onboarding, tenant analysis, provider/data/model boundaries, and tenant libraries into one usable product shell.
+- Phase 16 guided connector repair turns blocked readiness into previewable and actionable local setup actions for control-plane, identity, storage, data-vendor, and LLM-provider readiness.
 
 Instead of asking:
 
@@ -602,6 +603,19 @@ npm run hosted-serve -- \
   --api-token "$PARALLAX_HOSTED_API_TOKEN"
 ```
 
+Preview and apply guided connector setup repairs:
+
+```bash
+npm run setup-repair-status -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+
+npm run setup-repair-apply -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN" \
+  --action next
+```
+
 Tenant-scoped API calls must include both bearer auth and the matching tenant header:
 
 ```bash
@@ -859,7 +873,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 64 tests:
+The suite currently includes 66 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -881,6 +895,7 @@ The suite currently includes 64 tests:
 - Phase 13 external-data-vendor adapter registration, tenant-scoped import, provenance/license gates, hosted API import, unsafe `data_dir` denial, and CLI tests;
 - Phase 14 external-LLM-provider adapter registration, provider-specific eval suite, replay analysis, evidence-only context, hosted API analysis, unsafe `data_dir` denial, secret-payload rejection, and CLI tests;
 - Phase 15 hosted-research-console onboarding, readiness rail, analysis form, tenant library, control-plane overview, redaction, and hosted route tests;
+- Phase 16 guided connector repair planner, hosted API repair application, console repair controls, convergence, redaction, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -930,7 +945,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -1038,6 +1053,7 @@ Current state:
 - tenant-scoped vendor data pack import;
 - external LLM provider replay adapter registry;
 - provider-specific LLM eval suite and hosted replay analysis;
+- guided connector setup repair planner and local apply workflow;
 - 64 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:

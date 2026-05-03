@@ -1,0 +1,151 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T10:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/managed-saas.json",
+  "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas/setup-repair-events.jsonl",
+  "status": "blocked",
+  "summary": {
+    "action_count": 5,
+    "complete_count": 0,
+    "needed_count": 1,
+    "blocked_count": 4,
+    "event_count": 0,
+    "tenant_slug": "alpha",
+    "symbol": "NVDA",
+    "raw_secret_stored": false,
+    "direct_external_network_connection": false
+  },
+  "statuses": {
+    "managed_saas": "blocked",
+    "provider_validation": "blocked",
+    "tenant_persistence": "ready_for_tenant_persistence",
+    "hosted_api": "blocked",
+    "foundation": "blocked",
+    "identity": "blocked",
+    "storage": "blocked",
+    "data_vendor": "blocked",
+    "llm_provider": "blocked"
+  },
+  "failed_controls": {
+    "managed_saas": [
+      "tenant_count",
+      "secret_refs_only",
+      "identity_provider_manifest",
+      "market_data_vendor_manifest",
+      "llm_provider_manifest",
+      "regulated_partner_manifest",
+      "observability_manifest",
+      "observability_enabled"
+    ],
+    "provider_validation": [
+      "managed_saas_ready",
+      "required_provider_manifests"
+    ],
+    "hosted_api": [
+      "provider_contracts_ready",
+      "tenant_count"
+    ],
+    "foundation": [
+      "hosted_api_ready",
+      "identity_foundation_ready",
+      "durable_storage_ready"
+    ],
+    "identity": [
+      "principal_count"
+    ],
+    "storage": [
+      "checkpoint_exists"
+    ],
+    "data_vendor": [
+      "market_data_provider_contract_ready",
+      "adapter_registered",
+      "vendor_pack_imported",
+      "data_status_passed"
+    ],
+    "llm_provider": [
+      "llm_provider_contract_ready",
+      "adapter_registered",
+      "prompt_contract_known",
+      "provider_eval_suite_passed",
+      "replay_run_recorded",
+      "replay_eval_passed",
+      "budget_limits_explicit"
+    ]
+  },
+  "actions": [
+    {
+      "id": "control_plane_scaffold",
+      "label": "Scaffold control plane contracts",
+      "boundary": "control_plane",
+      "detail": "Create a tenant, secret-reference names, provider manifests, and one local observability event.",
+      "status": "needed",
+      "can_apply": true,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action control_plane_scaffold --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "identity_bootstrap",
+      "label": "Bootstrap identity directory",
+      "boundary": "identity",
+      "detail": "Initialize hash-only identity state and add a tenant-scoped analyst principal.",
+      "status": "blocked",
+      "can_apply": false,
+      "block_reason": "A tenant must exist first.",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action identity_bootstrap --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "storage_bootstrap",
+      "label": "Bootstrap durable storage",
+      "boundary": "storage",
+      "detail": "Create local durable storage, write a tenant seed object, and capture a checkpoint.",
+      "status": "blocked",
+      "can_apply": false,
+      "block_reason": "A tenant must exist first.",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action storage_bootstrap --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "data_vendor_bootstrap",
+      "label": "Bootstrap data vendor replay",
+      "boundary": "data_vendor",
+      "detail": "Register a tenant-scoped local vendor adapter and import a licensed synthetic data pack.",
+      "status": "blocked",
+      "can_apply": false,
+      "block_reason": "A tenant must exist first.",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action data_vendor_bootstrap --tenant alpha --symbol NVDA",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "llm_provider_bootstrap",
+      "label": "Bootstrap LLM replay provider",
+      "boundary": "llm_provider",
+      "detail": "Register a replay model adapter, run evals, and record one evidence-only replay analysis.",
+      "status": "blocked",
+      "can_apply": false,
+      "block_reason": "A tenant must exist first.",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action llm_provider_bootstrap --tenant alpha --symbol NVDA",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    }
+  ],
+  "next_action": {
+    "id": "control_plane_scaffold",
+    "label": "Scaffold control plane contracts",
+    "boundary": "control_plane",
+    "detail": "Create a tenant, secret-reference names, provider manifests, and one local observability event.",
+    "status": "needed",
+    "can_apply": true,
+    "block_reason": "",
+    "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_16_connector_setup_repair/managed-saas --action control_plane_scaffold --tenant alpha",
+    "raw_secret_stored": false,
+    "direct_external_network_connection": false
+  },
+  "latest_events": []
+}

@@ -1,0 +1,8 @@
+{
+  "lang_attribute": true,
+  "viewport_meta": true,
+  "nav_label": true,
+  "repair_live_region": true,
+  "repair_buttons_present": true,
+  "focus_visible_styles": true
+}

@@ -1,0 +1,32 @@
+[
+  {
+    "status": 201,
+    "action_id": "control_plane_scaffold",
+    "after_status": "blocked",
+    "next_action": "identity_bootstrap"
+  },
+  {
+    "status": 201,
+    "action_id": "identity_bootstrap",
+    "after_status": "blocked",
+    "next_action": "storage_bootstrap"
+  },
+  {
+    "status": 201,
+    "action_id": "storage_bootstrap",
+    "after_status": "blocked",
+    "next_action": "data_vendor_bootstrap"
+  },
+  {
+    "status": 201,
+    "action_id": "data_vendor_bootstrap",
+    "after_status": "blocked",
+    "next_action": "llm_provider_bootstrap"
+  },
+  {
+    "status": 201,
+    "action_id": "llm_provider_bootstrap",
+    "after_status": "ready_for_guided_connector_setup",
+    "next_action": ""
+  }
+]

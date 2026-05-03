@@ -1,0 +1,2 @@
+{"id":"identity_evt_ecd105453704","event_type":"identity_directory_initialized","actor":"platform","payload":{"issuer":"parallax-local-identity"},"created_at":"2026-05-03T10:00:00Z"}
+{"id":"identity_evt_d4816653e23c","event_type":"identity_principal_registered","actor":"setup_repair","payload":{"principal_id":"principal_bb53b40e4806","email":"guided.repair.analyst@example.com","tenant_slug":"alpha","role":"tenant_admin"},"created_at":"2026-05-03T10:00:00Z"}

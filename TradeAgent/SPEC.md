@@ -454,6 +454,7 @@ Later phases add:
 - external data vendor adapter readiness with license, provenance, and tenant path gates;
 - external LLM provider adapter readiness with replay eval, evidence-only context, budget, and tenant path gates;
 - hosted research console readiness with onboarding, tenant analysis, readiness rails, and redacted boundary status;
+- guided connector repair readiness with previewable setup actions, apply-next convergence, and redacted repair artifacts;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

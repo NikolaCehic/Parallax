@@ -1136,6 +1136,62 @@ export function hostedConsoleToHumanReport(result: any) {
   ]);
 }
 
+export function setupRepairStatusToHumanReport(status: any) {
+  const actions = status.actions.map((item: any) =>
+    [
+      `  - ${item.id}`,
+      item.status,
+      item.boundary,
+      item.can_apply ? "can_apply" : item.block_reason || "no_action",
+      item.label
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Guided Connector Repair",
+    "=================================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Tenant: ${status.summary.tenant_slug}`,
+    `Symbol: ${status.summary.symbol}`,
+    `Complete: ${status.summary.complete_count}/${status.summary.action_count}`,
+    `Needed: ${status.summary.needed_count}`,
+    `Blocked: ${status.summary.blocked_count}`,
+    `Raw secret stored: ${status.summary.raw_secret_stored ? "yes" : "no"}`,
+    `Direct external network connection: ${status.summary.direct_external_network_connection ? "yes" : "no"}`,
+    "",
+    "Statuses",
+    Object.entries(status.statuses).map(([key, value]) => `  - ${key}: ${value}`).join("\n"),
+    "",
+    "Next Action",
+    status.next_action
+      ? `  ${status.next_action.id}: ${status.next_action.label}`
+      : "  No repair action needed.",
+    "",
+    "Actions",
+    actions.length ? actions.join("\n") : "No actions."
+  ]);
+}
+
+export function setupRepairApplyToHumanReport(result: any) {
+  return lines([
+    "Parallax Guided Repair Applied",
+    "==============================",
+    "",
+    `Action: ${result.action_id}`,
+    `Label: ${result.action_label}`,
+    `Status: ${result.status}`,
+    `Root dir: ${result.root_dir}`,
+    `Tenant: ${result.tenant_slug}`,
+    `Symbol: ${result.symbol}`,
+    `Before: ${result.before_status}`,
+    `After: ${result.after_status}`,
+    `Next: ${result.next_action?.id ?? "none"}`,
+    `Raw secret stored: ${result.raw_secret_stored ? "yes" : "no"}`,
+    `Direct external network connection: ${result.direct_external_network_connection ? "yes" : "no"}`
+  ]);
+}
+
 export function tenantPersistenceToHumanReport(report: any) {
   const tenantRows = report.tenants.map((tenant: any) =>
     [

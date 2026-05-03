@@ -72,6 +72,8 @@ import {
   saasStatusToHumanReport,
   secretRefToHumanReport,
   sandboxToHumanReport,
+  setupRepairApplyToHumanReport,
+  setupRepairStatusToHumanReport,
   sourcesToHumanReport,
   storageCheckpointToHumanReport,
   tenantCreateToHumanReport,
@@ -193,6 +195,10 @@ import {
   registerLLMProviderAdapter,
   runLLMProviderReplayAnalysis
 } from "../saas/llm_provider.js";
+import {
+  applyConnectorRepair,
+  connectorRepairStatus
+} from "../saas/setup_repair.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -296,6 +302,8 @@ Commands:
   llm-provider-register --root-dir managed-saas --tenant alpha --adapter model-gateway-replay --name "Model Gateway Replay" --provider model_gateway --secret-ref LLM_PROVIDER --model model_gateway_replay_v0 [--allowed-personas quant_researcher,model_validator]
   llm-provider-analyze --root-dir managed-saas --tenant alpha --adapter model-gateway-replay --symbol NVDA --thesis "post-earnings continuation"
   llm-provider-status [--root-dir managed-saas] [--tenant alpha]
+  setup-repair-status [--root-dir managed-saas] [--tenant alpha] [--symbol NVDA] [--api-token "..."]
+  setup-repair-apply --root-dir managed-saas --action next [--tenant alpha] [--symbol NVDA] [--api-token "..."]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1486,6 +1494,36 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, llmProviderStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "setup-repair-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await connectorRepairStatus({
+      rootDir,
+      configPath,
+      apiTokenHash: args["api-token"] ? hostedApiTokenHash(String(args["api-token"])) : "",
+      tenantSlug: args.tenant ? String(args.tenant) : undefined,
+      symbol: args.symbol ? String(args.symbol) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, setupRepairStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "setup-repair-apply") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await applyConnectorRepair({
+      rootDir,
+      configPath,
+      apiTokenHash: args["api-token"] ? hostedApiTokenHash(String(args["api-token"])) : "",
+      actionId: String(args.action ?? "next"),
+      tenantSlug: args.tenant ? String(args.tenant) : undefined,
+      symbol: args.symbol ? String(args.symbol) : undefined,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, setupRepairApplyToHumanReport(result), result);
     return;
   }
 
