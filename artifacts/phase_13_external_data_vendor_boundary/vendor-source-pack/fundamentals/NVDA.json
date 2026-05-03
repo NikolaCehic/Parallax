@@ -1,0 +1,11 @@
+{
+  "as_of": "2026-04-30T00:00:00Z",
+  "period_end": "2026-03-31",
+  "revenue_growth_yoy": 0.24,
+  "eps_growth_yoy": 0.21,
+  "gross_margin": 0.73,
+  "net_debt_to_ebitda": 0.25,
+  "valuation": {
+    "forward_pe": 36
+  }
+}

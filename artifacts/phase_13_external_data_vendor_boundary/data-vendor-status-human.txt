@@ -1,0 +1,26 @@
+Parallax External Data Vendor Boundary
+======================================
+
+Status: ready_for_external_data_vendor_boundary
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas
+Adapters: 1
+Imports: 1
+Data status failures: 0
+Raw secret stored: no
+Direct vendor network connection: no
+
+Adapters
+  - licensed-local | alpha | licensed_us_equities_vendor | licensed_for_internal_research | symbols=NVDA
+
+Imports
+  - alpha/NVDA | licensed-local | data_status=passed | /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA
+
+Controls
+  - market_data_provider_contract_ready | passed | Managed market-data provider contract is validated.
+  - adapter_registered | passed | At least one tenant-scoped data vendor adapter is registered.
+  - vendor_pack_imported | passed | At least one tenant-scoped vendor data pack has been imported.
+  - data_status_passed | passed | Imported vendor packs pass freshness and license checks.
+  - licenses_allowed | passed | Vendor adapter and import licenses are declared and not restricted.
+  - tenant_data_paths_isolated | passed | Vendor data packs are stored under tenant-scoped data-vendor prefixes.
+  - no_raw_vendor_secrets | passed | Vendor registry stores secret reference names and hashes only.
+  - direct_vendor_network_disabled | passed | Phase 13 uses local replay contracts, not live vendor networking.

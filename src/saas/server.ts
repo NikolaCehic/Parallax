@@ -28,6 +28,10 @@ import {
   readDurableObject,
   writeDurableObject
 } from "./storage.js";
+import {
+  dataVendorStatus,
+  importDataVendorPack
+} from "./data_vendor.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -96,6 +100,14 @@ function requireTenantHeader(req: http.IncomingMessage, tenantSlug: string) {
     throw requestError(403, `Tenant header ${normalizedHeader} cannot access tenant ${normalizedPath}.`);
   }
   return normalizedPath;
+}
+
+function assertTenantScopedDataDir(tenant: any, dataDir: string) {
+  const tenantRoot = path.resolve(tenant.tenant_dir);
+  const target = path.resolve(dataDir);
+  if (target !== tenantRoot && !target.startsWith(`${tenantRoot}${path.sep}`)) {
+    throw requestError(403, "Tenant analysis data_dir must stay inside the tenant workspace.");
+  }
 }
 
 async function authenticateRequest({
@@ -422,6 +434,12 @@ export function createHostedRequestHandler({
         return;
       }
 
+      if (req.method === "GET" && url.pathname === "/api/data-vendors/status") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        jsonResponse(res, 200, await dataVendorStatus({ rootDir, configPath }));
+        return;
+      }
+
       if (req.method === "POST" && url.pathname === "/api/storage/checkpoints") {
         await requireAuthScope({ auth, rootDir, scope: "storage:checkpoint" });
         const body = await readJsonBody(req);
@@ -539,6 +557,38 @@ export function createHostedRequestHandler({
           }
         }
 
+        if (action === "data-vendor") {
+          if (req.method === "GET") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+            jsonResponse(res, 200, await dataVendorStatus({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug
+            }));
+            return;
+          }
+          if (req.method === "POST") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
+            const body = await readJsonBody(req);
+            if (!body.adapter_id || !body.symbol || !body.payload) {
+              jsonResponse(res, 400, { error: "bad_request", message: "adapter_id, symbol, and payload are required." });
+              return;
+            }
+            const result = await importDataVendorPack({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug,
+              adapterId: String(body.adapter_id),
+              symbol: String(body.symbol),
+              payload: body.payload,
+              actor: body.actor ? String(body.actor) : "hosted_api",
+              now: body.now ? String(body.now) : undefined
+            });
+            jsonResponse(res, 201, result);
+            return;
+          }
+        }
+
         if (req.method === "POST" && action === "analyze") {
           await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
           const body = await readJsonBody(req);
@@ -546,6 +596,7 @@ export function createHostedRequestHandler({
             jsonResponse(res, 400, { error: "bad_request", message: "symbol and thesis are required." });
             return;
           }
+          if (body.data_dir) assertTenantScopedDataDir(tenant, String(body.data_dir));
           const dossier = await analyzeThesis({
             symbol: String(body.symbol),
             horizon: String(body.horizon ?? "swing"),
@@ -597,7 +648,7 @@ export function createHostedRequestHandler({
       jsonResponse(res, 404, { error: "not_found", path: url.pathname });
     } catch (error: any) {
       const statusCode = error.statusCode ?? (
-        /tenant slug|state key|storage object key|identity email|sensitive .*payload|unknown tenant|unknown durable object|json/i.test(error.message ?? "")
+        /tenant slug|state key|storage object key|data vendor|identity email|sensitive .*payload|unknown tenant|unknown durable object|json/i.test(error.message ?? "")
           ? 400
           : 500
       );

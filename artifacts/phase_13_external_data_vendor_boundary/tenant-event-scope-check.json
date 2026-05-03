@@ -1,0 +1,17 @@
+{
+  "generated_at": "2026-05-03T10:00:00Z",
+  "purpose": "prove tenant-filtered data vendor status does not expose other tenants event payloads",
+  "global_event_tenants": [
+    "beta",
+    "alpha"
+  ],
+  "alpha_event_tenants": [
+    "alpha"
+  ],
+  "global_adapter_count": 2,
+  "alpha_adapter_count": 1,
+  "alpha_event_scope_passed": true,
+  "beta_event_absent_from_alpha_status": true,
+  "raw_secret_stored": false,
+  "direct_vendor_network_connection": false
+}

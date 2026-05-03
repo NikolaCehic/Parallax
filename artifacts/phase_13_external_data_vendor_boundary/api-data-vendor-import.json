@@ -1,0 +1,150 @@
+{
+  "http_status": 201,
+  "body": {
+    "import": {
+      "id": "data_vendor_import_dca4fb12e6eb",
+      "adapter_id": "licensed-local",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "data_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA",
+      "imported_at": "2026-05-03T10:00:00Z",
+      "imported_by": "hosted_api",
+      "license": "licensed_for_internal_research",
+      "provider": "licensed_us_equities_vendor",
+      "provenance_hash": "40befc8e6989333109c41f04d1822811e097f2680359c256dca27cbf0e0c74f2",
+      "data_status_passed": true,
+      "stale_item_count": 0,
+      "restricted_item_count": 0,
+      "direct_vendor_network_connection": false,
+      "raw_secret_stored": false
+    },
+    "data_status": {
+      "data_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA",
+      "symbol": "NVDA",
+      "snapshot_id": "snap_5699afca27da",
+      "snapshot_hash": "db2e906d7351673061d56e55fc043017f06ce75fbf2a75ad30ea037fb77f1164",
+      "created_at": "2026-05-03T10:00:00Z",
+      "passed": true,
+      "item_count": 6,
+      "by_kind": {
+        "price": 1,
+        "portfolio": 1,
+        "event": 1,
+        "corporate_action": 1,
+        "fundamental": 1,
+        "news": 1
+      },
+      "by_freshness": {
+        "fresh": 6
+      },
+      "by_license": {
+        "internal": 6
+      },
+      "stale_items": [],
+      "restricted_items": [],
+      "sources": [
+        {
+          "id": "ev_b0cf6305d158",
+          "kind": "price",
+          "symbol": "NVDA",
+          "source": "vendor:licensed-local:market/NVDA.csv",
+          "as_of": "2026-05-02T20:00:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:4ac94a128abe4b0f5287442cb925fa55e100a5614fc2cab7b39d5a550e0dd3ab",
+          "hash": "4ac94a128abe4b0f5287442cb925fa55e100a5614fc2cab7b39d5a550e0dd3ab",
+          "payload_summary": {
+            "rows": 26
+          }
+        },
+        {
+          "id": "ev_bd8dba6ced9f",
+          "kind": "portfolio",
+          "symbol": "PORTFOLIO",
+          "source": "vendor:licensed-local:portfolio/default.json",
+          "as_of": "2026-05-03T10:00:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:8202d98b3945d95c02602a6d96261654fe2e5897c8ae6907ec31fa104567aab7",
+          "hash": "8202d98b3945d95c02602a6d96261654fe2e5897c8ae6907ec31fa104567aab7",
+          "payload_summary": {
+            "keys": [
+              "account_id",
+              "as_of",
+              "cash",
+              "constraints",
+              "positions",
+              "restricted_symbols",
+              "total_equity"
+            ]
+          }
+        },
+        {
+          "id": "ev_5c62090a435e",
+          "kind": "event",
+          "symbol": "NVDA",
+          "source": "vendor:licensed-local:events/NVDA.json",
+          "as_of": "2026-05-03T10:00:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "payload_summary": {
+            "rows": 0
+          }
+        },
+        {
+          "id": "ev_51678939e452",
+          "kind": "corporate_action",
+          "symbol": "NVDA",
+          "source": "vendor:licensed-local:actions/NVDA.json",
+          "as_of": "2026-05-03T10:00:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "hash": "4f53cda18c2baa0c0354bb5f9a3ecbe5ed12ab4d8e11ba873c2f11161202b945",
+          "payload_summary": {
+            "rows": 0
+          }
+        },
+        {
+          "id": "ev_2a58f8982c17",
+          "kind": "fundamental",
+          "symbol": "NVDA",
+          "source": "vendor:licensed-local:fundamentals/NVDA.json",
+          "as_of": "2026-04-30T00:00:00Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:e6b0c93facd6f65e591bf2d3be0ae645cc1d5f91290d23b0dd7d6d8891a17f70",
+          "hash": "e6b0c93facd6f65e591bf2d3be0ae645cc1d5f91290d23b0dd7d6d8891a17f70",
+          "payload_summary": {
+            "keys": [
+              "as_of",
+              "eps_growth_yoy",
+              "gross_margin",
+              "net_debt_to_ebitda",
+              "revenue_growth_yoy",
+              "valuation"
+            ]
+          }
+        },
+        {
+          "id": "ev_fc0bba61ff8c",
+          "kind": "news",
+          "symbol": "NVDA",
+          "source": "vendor:licensed-local:news/NVDA.json",
+          "as_of": "2026-05-02T16:00:00.000Z",
+          "freshness_status": "fresh",
+          "license": "internal",
+          "payload_ref": "inline:773bd94d173f64f230b9e49c692e0b52e09fe438164ad96d61cbb5a43c896c9d",
+          "hash": "773bd94d173f64f230b9e49c692e0b52e09fe438164ad96d61cbb5a43c896c9d",
+          "payload_summary": {
+            "rows": 1
+          }
+        }
+      ]
+    },
+    "import_count": 2,
+    "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/data-vendor-adapters.json"
+  }
+}

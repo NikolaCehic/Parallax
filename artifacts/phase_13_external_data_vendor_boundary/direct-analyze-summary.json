@@ -1,0 +1,9 @@
+{
+  "dossier_id": "dos_90a675ee6259",
+  "data_provider": "licensed_us_equities_vendor",
+  "data_license": "internal",
+  "action_class": "paper_trade_candidate",
+  "policy_status": "allowed",
+  "evidence_item_count": 6,
+  "restricted_items": 0
+}

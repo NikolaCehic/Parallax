@@ -1,0 +1,7 @@
+{
+  "http_status": 400,
+  "body": {
+    "error": "bad_request",
+    "message": "Data vendor license is not allowed for tenant import: restricted."
+  }
+}

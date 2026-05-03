@@ -216,3 +216,8 @@ export {
   readDurableObject,
   writeDurableObject
 } from "./saas/storage.js";
+export {
+  dataVendorStatus,
+  importDataVendorPack,
+  registerDataVendorAdapter
+} from "./saas/data_vendor.js";

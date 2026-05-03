@@ -1,0 +1,12 @@
+Parallax Data Vendor Adapter
+============================
+
+Adapter: licensed-local
+Name: Licensed Local Vendor
+Tenant: alpha
+Provider: licensed_us_equities_vendor
+License: licensed_for_internal_research
+Allowed symbols: NVDA
+Direct vendor network connection: no
+Raw secret stored: no
+Registry: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/data-vendor-adapters.json

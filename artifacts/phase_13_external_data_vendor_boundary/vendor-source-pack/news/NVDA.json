@@ -1,0 +1,10 @@
+[
+  {
+    "published_at": "2026-05-02T15:00:00Z",
+    "source": "Phase13 Vendor Wire",
+    "source_reliability": 0.93,
+    "headline": "Vendor-sourced data center demand update",
+    "sentiment": 0.25,
+    "url": "https://vendor.example.invalid/nvda-demand"
+  }
+]

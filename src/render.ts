@@ -1338,6 +1338,90 @@ export function hostedFoundationStatusToHumanReport(status: any) {
   ]);
 }
 
+export function dataVendorStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  const adapters = status.adapters.map((adapter: any) =>
+    [
+      `  - ${adapter.adapter_id}`,
+      adapter.tenant_slug,
+      adapter.provider,
+      adapter.data_license,
+      `symbols=${adapter.allowed_symbols.join(",") || "any"}`
+    ].join(" | ")
+  );
+  const imports = status.imports.map((item: any) =>
+    [
+      `  - ${item.tenant_slug}/${item.symbol}`,
+      item.adapter_id,
+      item.data_status_passed ? "data_status=passed" : "data_status=failed",
+      item.data_dir
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax External Data Vendor Boundary",
+    "======================================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Adapters: ${status.summary.adapter_count}`,
+    `Imports: ${status.summary.import_count}`,
+    `Data status failures: ${status.summary.data_status_failed_count}`,
+    `Raw secret stored: ${status.summary.raw_secret_stored ? "yes" : "no"}`,
+    `Direct vendor network connection: ${status.summary.direct_vendor_network_connection ? "yes" : "no"}`,
+    "",
+    "Adapters",
+    adapters.length ? adapters.join("\n") : "No data vendor adapters.",
+    "",
+    "Imports",
+    imports.length ? imports.join("\n") : "No vendor data packs.",
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
+export function dataVendorAdapterToHumanReport(result: any) {
+  const adapter = result.adapter;
+  return lines([
+    "Parallax Data Vendor Adapter",
+    "============================",
+    "",
+    `Adapter: ${adapter.adapter_id}`,
+    `Name: ${adapter.name}`,
+    `Tenant: ${adapter.tenant_slug}`,
+    `Provider: ${adapter.provider}`,
+    `License: ${adapter.data_license}`,
+    `Allowed symbols: ${adapter.allowed_symbols.join(", ") || "Any"}`,
+    `Direct vendor network connection: ${adapter.direct_vendor_network_connection ? "yes" : "no"}`,
+    `Raw secret stored: ${adapter.raw_secret_stored ? "yes" : "no"}`,
+    `Registry: ${result.registry_path}`
+  ]);
+}
+
+export function dataVendorImportToHumanReport(result: any) {
+  const item = result.import;
+  return lines([
+    "Parallax Data Vendor Import",
+    "===========================",
+    "",
+    `Import ID: ${item.id}`,
+    `Adapter: ${item.adapter_id}`,
+    `Tenant: ${item.tenant_slug}`,
+    `Symbol: ${item.symbol}`,
+    `Provider: ${item.provider}`,
+    `License: ${item.license}`,
+    `Data dir: ${item.data_dir}`,
+    `Data status: ${item.data_status_passed ? "passed" : "failed"}`,
+    `Stale items: ${item.stale_item_count}`,
+    `Restricted items: ${item.restricted_item_count}`,
+    `Provenance hash: ${item.provenance_hash}`,
+    `Direct vendor network connection: ${item.direct_vendor_network_connection ? "yes" : "no"}`,
+    `Raw secret stored: ${item.raw_secret_stored ? "yes" : "no"}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

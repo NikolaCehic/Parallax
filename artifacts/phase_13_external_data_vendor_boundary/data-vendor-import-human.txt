@@ -1,0 +1,16 @@
+Parallax Data Vendor Import
+===========================
+
+Import ID: data_vendor_import_77269d9b3e09
+Adapter: licensed-local
+Tenant: alpha
+Symbol: NVDA
+Provider: licensed_us_equities_vendor
+License: licensed_for_internal_research
+Data dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA
+Data status: passed
+Stale items: 0
+Restricted items: 0
+Provenance hash: 7d2e2ae8e295fc1490ad8b69fc4e1163b84dce255e4213a5d004afc8436576d3
+Direct vendor network connection: no
+Raw secret stored: no

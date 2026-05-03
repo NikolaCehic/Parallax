@@ -112,7 +112,8 @@ The current repo already has the right skeleton:
 - hosted console foundation;
 - hosted multi-tenant API and tenant persistence;
 - identity-session and durable-storage foundation;
-- 58 tests;
+- external data vendor adapter boundary;
+- 60 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -200,7 +201,10 @@ Implemented on 2026-05-02:
 - durable storage manifest and checkpoint evidence;
 - hosted identity/storage foundation readiness;
 - Phase 12 artifact bundle;
-- 58 passing tests.
+- external data vendor adapter registry;
+- tenant-scoped vendor data pack import;
+- Phase 13 artifact bundle;
+- 60 passing tests.
 
 ## Knowledge Gathered
 
@@ -1106,6 +1110,36 @@ Exit criteria:
 - secret-like identity/storage payloads are rejected;
 - no live cloud storage or live broker boundary is crossed;
 - external SSO and cloud storage remain future production integrations.
+
+### Phase 13: External Data Vendor Adapter Boundary
+
+Status: Complete for local vendor replay scope.
+
+Goal:
+
+Create the first production-shaped market-data vendor boundary without making live vendor network calls or storing raw vendor credentials.
+
+Deliverables:
+
+- tenant-scoped data vendor adapter registry;
+- adapter symbol allow-list;
+- license gate for vendor imports;
+- provenance hash for imported packs;
+- tenant-scoped imported data pack layout compatible with the evidence pipeline;
+- hosted API import/status routes;
+- unsafe analysis `data_dir` escape prevention;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- market-data provider contract validation must pass before readiness;
+- vendor adapters store only secret-reference names and no raw secrets;
+- restricted, unlicensed, or unknown vendor data cannot be imported;
+- unapproved symbols cannot be imported through the adapter;
+- imported vendor packs stay under tenant-scoped paths;
+- hosted analysis can use tenant-scoped imported packs;
+- hosted analysis rejects explicit `data_dir` paths outside the tenant workspace;
+- direct live vendor networking remains disabled.
 
 ## Team Needed
 

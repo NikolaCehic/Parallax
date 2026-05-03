@@ -1,0 +1,6 @@
+{
+  "registry_contains_service_api_token": false,
+  "registry_contains_raw_secret_uri": false,
+  "raw_secret_stored": false,
+  "direct_vendor_network_connection": false
+}

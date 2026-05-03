@@ -1,0 +1,29 @@
+{
+  "schema_version": "0.1.0",
+  "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/audits",
+  "entries": [
+    {
+      "id": "dos_249f506232ea",
+      "title": "NVDA swing thesis dossier",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "thesis": "hosted analysis uses tenant-scoped vendor data artifact",
+      "created_at": "2026-05-03T10:00:00Z",
+      "action_class": "watchlist",
+      "thesis_state": "active",
+      "confidence": 0.74,
+      "freshness_score": 1,
+      "expires_at": "2026-05-04T10:00:00.000Z",
+      "next_review_trigger": "Volatility regime changes materially.",
+      "veto_count": 0,
+      "required_check_count": 6,
+      "policy_status": "allowed",
+      "policy_ceiling": "watchlist",
+      "council_provider": "deterministic_rule_council_v0",
+      "council_eval_passed": true,
+      "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/audits/dos_249f506232ea.json",
+      "markdown_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/audits/dos_249f506232ea.md",
+      "feedback_count": 0
+    }
+  ]
+}

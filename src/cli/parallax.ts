@@ -20,6 +20,9 @@ import {
   betaServeToHumanReport,
   betaStatusToHumanReport,
   dataStatusToHumanReport,
+  dataVendorAdapterToHumanReport,
+  dataVendorImportToHumanReport,
+  dataVendorStatusToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
   durableObjectToHumanReport,
@@ -177,6 +180,11 @@ import {
   initializeDurableStorage,
   writeDurableObject
 } from "../saas/storage.js";
+import {
+  dataVendorStatus,
+  importDataVendorPack,
+  registerDataVendorAdapter
+} from "../saas/data_vendor.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -274,6 +282,9 @@ Commands:
   storage-checkpoint [--root-dir managed-saas] [--tenant alpha] [--label nightly]
   storage-status [--root-dir managed-saas]
   hosted-foundation-status [--root-dir managed-saas] [--api-token "..."]
+  data-vendor-register --root-dir managed-saas --tenant alpha --adapter licensed-local --name "Licensed Local Vendor" --provider licensed_vendor --secret-ref MARKET_DATA_VENDOR --data-license licensed_for_internal_research [--allowed-symbols NVDA,QQQ]
+  data-vendor-import --root-dir managed-saas --tenant alpha --adapter licensed-local --symbol NVDA --source-dir fixtures
+  data-vendor-status [--root-dir managed-saas] [--tenant alpha]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1324,6 +1335,61 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, durableStorageStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "data-vendor-register") {
+    for (const required of ["tenant", "adapter", "name", "provider", "secret-ref", "data-license"]) {
+      if (!args[required]) throw new Error(`data-vendor-register requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await registerDataVendorAdapter({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      adapterId: String(args.adapter),
+      name: String(args.name),
+      provider: String(args.provider),
+      secretRef: String(args["secret-ref"]),
+      endpoint: args.endpoint ? String(args.endpoint) : "",
+      dataLicense: String(args["data-license"]),
+      allowedSymbols: parseCsvList(args["allowed-symbols"]) ?? [],
+      maxStalenessMinutes: args["max-staleness-minutes"] && args["max-staleness-minutes"] !== true ? Number(args["max-staleness-minutes"]) : 1440,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, dataVendorAdapterToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "data-vendor-import") {
+    for (const required of ["tenant", "adapter", "symbol", "source-dir"]) {
+      if (!args[required]) throw new Error(`data-vendor-import requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await importDataVendorPack({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      adapterId: String(args.adapter),
+      symbol: String(args.symbol),
+      sourceDataDir: String(args["source-dir"]),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, dataVendorImportToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "data-vendor-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await dataVendorStatus({
+      rootDir,
+      configPath,
+      tenantSlug: args.tenant ? String(args.tenant) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, dataVendorStatusToHumanReport(result), result);
     return;
   }
 

@@ -6,7 +6,7 @@ Scope: analysis-first trading thesis council with lifecycle monitoring
 
 Implementation language split:
 
-- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, and durable storage manifests.
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, and external data vendor import contracts.
 - Python owns deterministic quant-style analytics.
 
 ## 1. Product Definition
@@ -33,6 +33,8 @@ The system must preserve the reasoning chain that produced the answer.
 - No raw secret, raw token, or broker credential persistence.
 - No raw identity-session token persistence.
 - No tenant storage object outside a tenant-scoped storage prefix.
+- No imported market-data pack outside a tenant-scoped data-vendor prefix.
+- No restricted, unlicensed, or unknown-license vendor data in analysis-ready imported packs.
 - No claim that the system provides legal, financial, tax, or investment advice.
 - No high-frequency trading design in the initial system.
 
@@ -397,6 +399,8 @@ The system must never treat high confidence as actionable when freshness is low.
 - Raw bearer tokens must be hashed at configuration/runtime boundaries and never written into reports.
 - Identity-session tokens must be hash-only at persistence boundaries and scope-checked before tenant API access.
 - Durable storage manifests must keep tenant objects and checkpoints inside the managed root.
+- External data vendor imports must preserve provenance hashes, license status, and tenant-scoped paths.
+- Hosted analysis must reject explicit `data_dir` paths outside the tenant workspace.
 - External providers must remain disabled until contract, license, legal, security, and production validation are complete.
 
 ## 11. MVP Functional Requirements
@@ -443,6 +447,7 @@ Later phases add:
 - hosted API readiness and tenant-scoped persistence;
 - identity-session readiness with role/scoped tenant memberships;
 - durable storage readiness with tenant object manifests and checkpoint evidence;
+- external data vendor adapter readiness with license, provenance, and tenant path gates;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

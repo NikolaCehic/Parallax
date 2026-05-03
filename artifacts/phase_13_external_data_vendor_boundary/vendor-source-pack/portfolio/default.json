@@ -1,0 +1,21 @@
+{
+  "account_id": "phase13_vendor_portfolio",
+  "as_of": "2026-05-03T10:00:00Z",
+  "cash": 85000,
+  "total_equity": 100000,
+  "positions": [
+    {
+      "symbol": "SMH",
+      "quantity": 15,
+      "market_value": 8000,
+      "sector": "semiconductors"
+    }
+  ],
+  "constraints": {
+    "max_single_name_pct": 0.12,
+    "max_sector_pct": 0.35,
+    "max_gross_exposure_pct": 1,
+    "paper_risk_budget_pct": 0.02
+  },
+  "restricted_symbols": []
+}

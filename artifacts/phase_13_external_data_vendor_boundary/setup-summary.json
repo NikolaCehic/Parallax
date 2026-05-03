@@ -1,0 +1,11 @@
+{
+  "phase": 13,
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/managed-saas.json",
+  "adapter_id": "licensed-local",
+  "imported_data_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_13_external_data_vendor_boundary/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA",
+  "api_token_hash_configured": true,
+  "raw_secret_stored": false,
+  "direct_vendor_network_connection": false,
+  "direct_live_broker_connection": false
+}

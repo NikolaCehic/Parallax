@@ -1,0 +1,40 @@
+{
+  "provider": "licensed_us_equities_vendor",
+  "license": "internal",
+  "generated_at": "2026-05-03T10:00:00Z",
+  "data_vendor": {
+    "adapter_id": "licensed-local",
+    "tenant_slug": "alpha",
+    "source_provider": "phase13_api_vendor_payload",
+    "source_license": "licensed_for_internal_research",
+    "contract_license": "licensed_for_internal_research",
+    "direct_vendor_network_connection": false,
+    "raw_secret_stored": false
+  },
+  "sources": {
+    "market:NVDA": {
+      "source": "vendor:licensed-local:market/NVDA.csv",
+      "license": "internal"
+    },
+    "events:NVDA": {
+      "source": "vendor:licensed-local:events/NVDA.json",
+      "license": "internal"
+    },
+    "actions:NVDA": {
+      "source": "vendor:licensed-local:actions/NVDA.json",
+      "license": "internal"
+    },
+    "portfolio:default": {
+      "source": "vendor:licensed-local:portfolio/default.json",
+      "license": "internal"
+    },
+    "fundamentals:NVDA": {
+      "source": "vendor:licensed-local:fundamentals/NVDA.json",
+      "license": "internal"
+    },
+    "news:NVDA": {
+      "source": "vendor:licensed-local:news/NVDA.json",
+      "license": "internal"
+    }
+  }
+}

@@ -31,6 +31,7 @@ Parallax tries to sit in the middle:
 - Phase 10 provider validation adds contract checks for external manifests and a static hosted console for managed-beta review.
 - Phase 11 hosted API adds tenant-scoped persistence, HTTP tenant isolation, hosted API readiness, and CLI controls for local multi-tenant operation.
 - Phase 12 identity/storage foundation adds hash-only identity sessions, scoped tenant API access, durable storage object manifests, and checkpoint evidence.
+- Phase 13 external data vendor boundary adds licensed vendor adapter contracts, tenant-scoped vendor data packs, provenance hashes, and hosted import controls.
 
 Instead of asking:
 
@@ -118,6 +119,7 @@ TypeScript owns:
 - provider contract validation and hosted console generation.
 - hosted multi-tenant API and tenant persistence;
 - identity-session and durable-storage foundation.
+- external data vendor boundary and tenant-scoped imported data packs.
 
 Python owns:
 
@@ -636,6 +638,29 @@ npm run hosted-foundation-status -- \
   --api-token "$PARALLAX_HOSTED_API_TOKEN"
 ```
 
+Register and import an external-data-vendor-shaped local replay pack:
+
+```bash
+npm run cli -- data-vendor-register \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --adapter licensed-local \
+  --name "Licensed Local Vendor" \
+  --provider licensed_us_equities_vendor \
+  --secret-ref MARKET_DATA_VENDOR \
+  --data-license licensed_for_internal_research \
+  --allowed-symbols NVDA
+
+npm run cli -- data-vendor-import \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --adapter licensed-local \
+  --symbol NVDA \
+  --source-dir fixtures
+
+npm run data-vendor-status -- --root-dir managed-saas
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -805,7 +830,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 58 tests:
+The suite currently includes 60 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -824,6 +849,7 @@ The suite currently includes 58 tests:
 - Phase 10 provider-contract validation, hosted-console generation, raw-secret redaction, blocking checks, and CLI tests;
 - Phase 11 hosted API readiness, tenant state persistence, HTTP tenant isolation, analysis/library endpoints, hosted-console serving, secret-payload rejection, and CLI tests;
 - Phase 12 identity-session, scoped hosted API access, durable-storage object/checkpoint, raw-token redaction, cross-tenant denial, and CLI tests;
+- Phase 13 external-data-vendor adapter registration, tenant-scoped import, provenance/license gates, hosted API import, unsafe `data_dir` denial, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -861,7 +887,7 @@ src/
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, hosted API, provider manifests, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -873,7 +899,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, data-vendor, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -906,7 +932,7 @@ Current intentional limits:
 
 - no direct live broker integration;
 - partner production adapter is locked by default;
-- no external market data vendor API yet; Phase 12 serves local hosted workflows but still validates manifests only;
+- no live external market data vendor network call yet; Phase 13 imports licensed vendor-shaped local replay packs and blocks unsafe licenses/paths first;
 - no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 12 validates manifests only;
 - no external SSO provider yet; Phase 12 has a local identity-session foundation and validates identity-provider manifests, but does not connect a real SSO provider;
 - no hosted cloud tenancy yet; Phase 12 provides a local multi-tenant hosted API plus identity/storage contracts, not cloud infrastructure;
@@ -977,7 +1003,9 @@ Current state:
 - hash-only local identity sessions;
 - scoped tenant API access;
 - durable storage object manifest and checkpoints;
-- 58 passing tests.
+- external data vendor adapter registry;
+- tenant-scoped vendor data pack import;
+- 60 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 
