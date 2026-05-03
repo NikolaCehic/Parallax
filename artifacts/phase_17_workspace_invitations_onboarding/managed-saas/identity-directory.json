@@ -1,0 +1,79 @@
+{
+  "schema_version": "0.1.0",
+  "issuer": "parallax-local-identity",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas",
+  "created_at": "2026-05-03T11:00:00Z",
+  "token_policy": {
+    "default_ttl_minutes": 60,
+    "max_ttl_minutes": 240,
+    "raw_session_token_storage_allowed": false,
+    "bearer_tokens_are_hash_only": true
+  },
+  "principals": [
+    {
+      "id": "principal_25942abe8239",
+      "email": "guided.repair.analyst@example.com",
+      "name": "Guided Repair Analyst",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "tenant_admin",
+          "scopes": [
+            "tenant:read",
+            "tenant:write",
+            "analysis:create",
+            "storage:read",
+            "storage:write",
+            "console:read"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T11:00:00Z",
+      "updated_at": "2026-05-03T11:00:00Z"
+    },
+    {
+      "id": "principal_ba27b413471b",
+      "email": "artifact.analyst@example.com",
+      "name": "Artifact Analyst",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "analyst",
+          "scopes": [
+            "tenant:read",
+            "analysis:create",
+            "storage:read",
+            "storage:write"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T11:00:00Z",
+      "updated_at": "2026-05-03T11:00:00Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session_3430ea35159d",
+      "principal_id": "principal_ba27b413471b",
+      "email": "artifact.analyst@example.com",
+      "tenant_slug": "alpha",
+      "role": "analyst",
+      "scopes": [
+        "tenant:read",
+        "analysis:create",
+        "storage:read",
+        "storage:write"
+      ],
+      "token_hash": "c2fbf268c7175719146416d5ccd58f9fd572d9861f66d427858df1b04d21d648",
+      "issued_at": "2026-05-03T11:00:00Z",
+      "expires_at": "2026-05-03T15:00:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    }
+  ],
+  "updated_at": "2026-05-03T11:06:58.736Z"
+}

@@ -1,0 +1,28 @@
+{
+  "target_files_checked": [
+    "setup-repair-final.json",
+    "onboarding-status-initial.json",
+    "onboarding-status-final.json",
+    "invite-create-sanitized.json",
+    "invite-create-human-redacted.txt",
+    "invite-accept-sanitized.json",
+    "invite-accept-human-redacted.txt",
+    "api-onboarding-status.json",
+    "api-control-plane-summary.json",
+    "hosted-console.html",
+    "hosted-console-snapshot.json",
+    "cli-onboarding-status.txt",
+    "cli-onboarding-status.json"
+  ],
+  "target_files_raw_secret_ref_present": false,
+  "target_files_with_secret_ref": [],
+  "generated_html_raw_service_token_present": false,
+  "generated_html_raw_invite_token_present": false,
+  "generated_html_raw_session_token_present": false,
+  "generated_html_secret_ref_present": false,
+  "invite_create_raw_token_redacted": true,
+  "invite_accept_raw_session_redacted": true,
+  "managed_config_uses_external_secret_references": true,
+  "invite_token_returned_once_but_not_persisted": true,
+  "session_token_returned_once_but_not_persisted": true
+}

@@ -116,7 +116,8 @@ The current repo already has the right skeleton:
 - external LLM provider adapter boundary;
 - hosted research console UX and onboarding shell;
 - guided connector repair planner and apply workflow;
-- 66 tests;
+- workspace invitation/account onboarding workflow;
+- 68 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -214,7 +215,9 @@ Implemented on 2026-05-02:
 - Phase 15 artifact bundle;
 - guided connector setup repair workflow;
 - Phase 16 artifact bundle;
-- 64 passing tests.
+- workspace invitation/account onboarding workflow;
+- Phase 17 artifact bundle;
+- 68 passing tests.
 
 ## Knowledge Gathered
 
@@ -1244,6 +1247,36 @@ Exit criteria:
 - CLI exposes human-readable repair status and apply output;
 - outputs contain no raw hosted API token or raw `secret://` references;
 - local repair does not enable external vendor/model networks or live execution.
+
+### Phase 17: Workspace Invitations And User Account Onboarding
+
+Status: Complete for local onboarding scope.
+
+Goal:
+
+Let a workspace operator invite another user into a tenant without sharing the hosted service API token, while preserving hash-only token storage and scoped tenant access.
+
+Deliverables:
+
+- workspace invitation registry with hash-only invite tokens;
+- onboarding event log without raw invite/session tokens;
+- public `/api/onboarding/accept` route for invite acceptance;
+- authenticated `/api/onboarding/status` and `/api/onboarding/invitations` routes;
+- accepted invite flow that creates/updates identity principals and issues scoped sessions;
+- hosted console Workspace Onboarding panel with create/accept/status controls;
+- CLI `onboarding-status`, `invite-create`, and `invite-accept` commands;
+- hosted API, console, redaction, tenant-access, duplicate-accept, and CLI tests;
+- Phase 17 artifact bundle.
+
+Exit criteria:
+
+- invite creation returns the raw invite token once and persists only `invite_token_hash`;
+- invite acceptance works without the service API token and returns the raw identity session once;
+- onboarding status never returns raw invite/session tokens;
+- accepted sessions can access only scoped tenant routes;
+- duplicate acceptance is blocked;
+- console and CLI expose human-readable onboarding workflows;
+- generated public/status artifacts contain no raw invite/session/service tokens.
 
 ## Team Needed
 

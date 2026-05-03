@@ -1,0 +1,14 @@
+Parallax Workspace Invite Accepted
+==================================
+
+Invitation ID: invite_6676a598d9dd
+Principal: artifact.analyst@example.com
+Tenant: alpha
+Role: analyst
+Session ID: session_3430ea35159d
+Expires at: 2026-05-03T15:00:00.000Z
+Raw invite token stored: no
+Raw session token stored: no
+
+Session token
+  [redacted_session_token_returned_once]

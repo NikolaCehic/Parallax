@@ -37,6 +37,8 @@ import {
   identitySessionToHumanReport,
   identityStatusToHumanReport,
   importToHumanReport,
+  inviteAcceptToHumanReport,
+  inviteCreateToHumanReport,
   libraryToHumanReport,
   lifecycleNotificationsToHumanReport,
   lifecycleOverridesToHumanReport,
@@ -46,6 +48,7 @@ import {
   llmProviderRunToHumanReport,
   llmProviderStatusToHumanReport,
   monitorToHumanReport,
+  onboardingStatusToHumanReport,
   paperCloseToHumanReport,
   paperLedgerToHumanReport,
   paperOpenToHumanReport,
@@ -199,6 +202,11 @@ import {
   applyConnectorRepair,
   connectorRepairStatus
 } from "../saas/setup_repair.js";
+import {
+  acceptWorkspaceInvitation,
+  createWorkspaceInvitation,
+  workspaceOnboardingStatus
+} from "../saas/onboarding.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -304,6 +312,9 @@ Commands:
   llm-provider-status [--root-dir managed-saas] [--tenant alpha]
   setup-repair-status [--root-dir managed-saas] [--tenant alpha] [--symbol NVDA] [--api-token "..."]
   setup-repair-apply --root-dir managed-saas --action next [--tenant alpha] [--symbol NVDA] [--api-token "..."]
+  onboarding-status [--root-dir managed-saas]
+  invite-create --root-dir managed-saas --tenant alpha --email analyst@example.com [--name "Analyst"] [--role analyst] [--ttl-minutes 10080]
+  invite-accept --root-dir managed-saas --invite-token pinv_x [--email analyst@example.com] [--name "Analyst"]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1524,6 +1535,55 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, setupRepairApplyToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "onboarding-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await workspaceOnboardingStatus({
+      rootDir,
+      configPath,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, onboardingStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "invite-create") {
+    for (const required of ["tenant", "email"]) {
+      if (!args[required]) throw new Error(`invite-create requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await createWorkspaceInvitation({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      email: String(args.email),
+      name: args.name ? String(args.name) : "",
+      role: args.role ? String(args.role) : "analyst",
+      scopes: parseCsvList(args.scopes),
+      ttlMinutes: args["ttl-minutes"] && args["ttl-minutes"] !== true ? Number(args["ttl-minutes"]) : undefined,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, inviteCreateToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "invite-accept") {
+    if (!args["invite-token"]) throw new Error("invite-accept requires --invite-token");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await acceptWorkspaceInvitation({
+      rootDir,
+      configPath,
+      inviteToken: String(args["invite-token"]),
+      email: args.email ? String(args.email) : undefined,
+      name: args.name ? String(args.name) : undefined,
+      sessionTtlMinutes: args["ttl-minutes"] && args["ttl-minutes"] !== true ? Number(args["ttl-minutes"]) : undefined,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, inviteAcceptToHumanReport(result), result);
     return;
   }
 

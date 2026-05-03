@@ -1,0 +1,65 @@
+{
+  "invitation": {
+    "id": "invite_6676a598d9dd",
+    "email": "artifact.analyst@example.com",
+    "name": "Artifact Analyst",
+    "tenant_slug": "alpha",
+    "role": "analyst",
+    "invite_token_hash": "2c76e4893cf368792b99a33ffb9405d84a427e3c7503fb7a5d616a3f4940c616",
+    "created_at": "2026-05-03T11:00:00Z",
+    "expires_at": "2026-05-04T11:00:00.000Z",
+    "accepted_at": "2026-05-03T11:00:00Z",
+    "accepted_principal_id": "principal_ba27b413471b",
+    "accepted_session_id": "session_3430ea35159d",
+    "revoked_at": "",
+    "invited_by": "phase_17_artifact",
+    "raw_invite_token_stored": false,
+    "raw_session_token_stored": false,
+    "status": "accepted"
+  },
+  "principal": {
+    "id": "principal_ba27b413471b",
+    "email": "artifact.analyst@example.com",
+    "name": "Artifact Analyst",
+    "status": "active",
+    "platform_admin": false,
+    "memberships": [
+      {
+        "tenant_slug": "alpha",
+        "role": "analyst",
+        "scopes": [
+          "tenant:read",
+          "analysis:create",
+          "storage:read",
+          "storage:write"
+        ]
+      }
+    ],
+    "created_at": "2026-05-03T11:00:00Z",
+    "updated_at": "2026-05-03T11:00:00Z"
+  },
+  "session": {
+    "id": "session_3430ea35159d",
+    "principal_id": "principal_ba27b413471b",
+    "email": "artifact.analyst@example.com",
+    "tenant_slug": "alpha",
+    "role": "analyst",
+    "scopes": [
+      "tenant:read",
+      "analysis:create",
+      "storage:read",
+      "storage:write"
+    ],
+    "token_hash": "c2fbf268c7175719146416d5ccd58f9fd572d9861f66d427858df1b04d21d648",
+    "issued_at": "2026-05-03T11:00:00Z",
+    "expires_at": "2026-05-03T15:00:00.000Z",
+    "revoked_at": "",
+    "raw_session_token_stored": false
+  },
+  "session_token_returned_once": true,
+  "raw_invite_token_stored": false,
+  "raw_session_token_stored": false,
+  "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/workspace-invitations.json",
+  "directory_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/identity-directory.json",
+  "session_token_redacted": true
+}

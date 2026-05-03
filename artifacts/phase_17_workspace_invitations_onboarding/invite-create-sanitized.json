@@ -1,0 +1,27 @@
+{
+  "invitation": {
+    "id": "invite_6676a598d9dd",
+    "email": "artifact.analyst@example.com",
+    "name": "Artifact Analyst",
+    "tenant_slug": "alpha",
+    "role": "analyst",
+    "invite_token_hash": "2c76e4893cf368792b99a33ffb9405d84a427e3c7503fb7a5d616a3f4940c616",
+    "created_at": "2026-05-03T11:00:00Z",
+    "expires_at": "2026-05-04T11:00:00.000Z",
+    "accepted_at": "",
+    "accepted_principal_id": "",
+    "accepted_session_id": "",
+    "revoked_at": "",
+    "invited_by": "phase_17_artifact",
+    "raw_invite_token_stored": false,
+    "raw_session_token_stored": false,
+    "status": "pending"
+  },
+  "invite_token_returned_once": true,
+  "raw_invite_token_stored": false,
+  "raw_session_token_stored": false,
+  "invitation_count": 1,
+  "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/workspace-invitations.json",
+  "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/workspace-onboarding-events.jsonl",
+  "invite_token_redacted": true
+}

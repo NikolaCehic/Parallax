@@ -1,0 +1,25 @@
+Parallax Workspace Onboarding
+=============================
+
+Status: ready_for_workspace_user_onboarding
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas
+Invitations: 0
+Pending: 0
+Accepted: 0
+Expired: 0
+Revoked: 0
+Principals: 1
+Active sessions: 0
+Raw invite token stored: no
+Raw session token stored: no
+
+Invitations
+No invitations.
+
+Controls
+  - managed_tenant_available | passed | At least one managed SaaS tenant can receive invitations.
+  - identity_foundation_ready | passed | Accepted invitees become identity principals with hash-only sessions.
+  - invitations_hash_only | passed | Persisted invitations contain token hashes only.
+  - invitation_tenants_valid | passed | Every invitation points at a known tenant.
+  - accepted_invites_bind_principals | passed | Accepted invitations record the principal and session IDs, not raw bearer values.
+  - raw_invite_token_storage_blocked | passed | Workspace invite policy blocks raw invite token storage.

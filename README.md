@@ -35,6 +35,7 @@ Parallax tries to sit in the middle:
 - Phase 14 external LLM provider boundary adds replay-only model adapter contracts, provider-specific eval suites, evidence-only contexts, hosted replay analysis, and model-network/secret gates.
 - Phase 15 hosted research console turns readiness, onboarding, tenant analysis, provider/data/model boundaries, and tenant libraries into one usable product shell.
 - Phase 16 guided connector repair turns blocked readiness into previewable and actionable local setup actions for control-plane, identity, storage, data-vendor, and LLM-provider readiness.
+- Phase 17 workspace onboarding adds hash-only invitations, public invite acceptance, scoped identity-session issuance, console onboarding controls, and CLI invite workflows.
 
 Instead of asking:
 
@@ -127,6 +128,7 @@ TypeScript owns:
 - identity-session and durable-storage foundation.
 - external data vendor boundary and tenant-scoped imported data packs.
 - external LLM provider boundary and replay analysis records.
+- workspace invitation and user-account onboarding.
 
 Python owns:
 
@@ -616,6 +618,24 @@ npm run setup-repair-apply -- \
   --action next
 ```
 
+Invite a workspace user without sharing the service token:
+
+```bash
+npm run invite-create -- \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --email analyst@example.com \
+  --name "Analyst" \
+  --role analyst
+
+npm run invite-accept -- \
+  --root-dir managed-saas \
+  --invite-token "$PARALLAX_INVITE_TOKEN" \
+  --email analyst@example.com
+
+npm run onboarding-status -- --root-dir managed-saas
+```
+
 Tenant-scoped API calls must include both bearer auth and the matching tenant header:
 
 ```bash
@@ -873,7 +893,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 66 tests:
+The suite currently includes 68 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -896,6 +916,7 @@ The suite currently includes 66 tests:
 - Phase 14 external-LLM-provider adapter registration, provider-specific eval suite, replay analysis, evidence-only context, hosted API analysis, unsafe `data_dir` denial, secret-payload rejection, and CLI tests;
 - Phase 15 hosted-research-console onboarding, readiness rail, analysis form, tenant library, control-plane overview, redaction, and hosted route tests;
 - Phase 16 guided connector repair planner, hosted API repair application, console repair controls, convergence, redaction, and CLI tests;
+- Phase 17 workspace invitation creation, public invite acceptance, identity-session issuance, tenant access, console onboarding UI, redaction, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -933,7 +954,7 @@ src/
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, LLM-provider boundary, hosted API, provider manifests, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, LLM-provider boundary, workspace onboarding, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -945,7 +966,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, onboarding, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -980,8 +1001,8 @@ Current intentional limits:
 - partner production adapter is locked by default;
 - no live external market data vendor network call yet; Phase 13 imports licensed vendor-shaped local replay packs and blocks unsafe licenses/paths first;
 - no live external LLM API call yet; Phase 14 registers replay-only external-model adapter contracts, runs provider-specific evals, and blocks raw secrets/model networking first;
-- no external SSO provider yet; Phase 12 has a local identity-session foundation and validates identity-provider manifests, but does not connect a real SSO provider;
-- no hosted cloud tenancy yet; Phase 12 provides a local multi-tenant hosted API plus identity/storage contracts, not cloud infrastructure;
+- no external SSO provider yet; Phase 17 has local hash-only invitations and identity sessions, but does not connect a real SSO provider;
+- no hosted cloud tenancy yet; Phase 17 provides local multi-tenant API, identity/storage, repair, and invitation onboarding contracts, not cloud infrastructure;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -1054,7 +1075,8 @@ Current state:
 - external LLM provider replay adapter registry;
 - provider-specific LLM eval suite and hosted replay analysis;
 - guided connector setup repair planner and local apply workflow;
-- 64 passing tests.
+- workspace invitation and account onboarding workflow;
+- 68 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

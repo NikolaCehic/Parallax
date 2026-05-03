@@ -6,7 +6,7 @@ Scope: analysis-first trading thesis council with lifecycle monitoring
 
 Implementation language split:
 
-- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, external data vendor import contracts, and external LLM provider replay contracts.
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, external data vendor import contracts, external LLM provider replay contracts, and workspace invitation/account onboarding.
 - Python owns deterministic quant-style analytics.
 
 ## 1. Product Definition
@@ -32,6 +32,7 @@ The system must preserve the reasoning chain that produced the answer.
 - No cross-tenant state leakage.
 - No raw secret, raw token, or broker credential persistence.
 - No raw identity-session token persistence.
+- No raw workspace-invite token persistence.
 - No tenant storage object outside a tenant-scoped storage prefix.
 - No imported market-data pack outside a tenant-scoped data-vendor prefix.
 - No restricted, unlicensed, or unknown-license vendor data in analysis-ready imported packs.
@@ -455,6 +456,7 @@ Later phases add:
 - external LLM provider adapter readiness with replay eval, evidence-only context, budget, and tenant path gates;
 - hosted research console readiness with onboarding, tenant analysis, readiness rails, and redacted boundary status;
 - guided connector repair readiness with previewable setup actions, apply-next convergence, and redacted repair artifacts;
+- workspace invitation readiness with hash-only invites, public invite acceptance, scoped identity sessions, and duplicate-accept protection;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

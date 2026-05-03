@@ -1,0 +1,62 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T11:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/managed-saas.json",
+  "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/workspace-invitations.json",
+  "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_17_workspace_invitations_onboarding/managed-saas/workspace-onboarding-events.jsonl",
+  "status": "ready_for_workspace_user_onboarding",
+  "summary": {
+    "invite_count": 0,
+    "pending_count": 0,
+    "accepted_count": 0,
+    "expired_count": 0,
+    "revoked_count": 0,
+    "principal_count": 1,
+    "active_session_count": 0,
+    "event_count": 0,
+    "raw_invite_token_stored": false,
+    "raw_session_token_stored": false,
+    "required_failure_count": 0
+  },
+  "controls": [
+    {
+      "id": "managed_tenant_available",
+      "passed": true,
+      "severity": "required",
+      "detail": "At least one managed SaaS tenant can receive invitations."
+    },
+    {
+      "id": "identity_foundation_ready",
+      "passed": true,
+      "severity": "required",
+      "detail": "Accepted invitees become identity principals with hash-only sessions."
+    },
+    {
+      "id": "invitations_hash_only",
+      "passed": true,
+      "severity": "required",
+      "detail": "Persisted invitations contain token hashes only."
+    },
+    {
+      "id": "invitation_tenants_valid",
+      "passed": true,
+      "severity": "required",
+      "detail": "Every invitation points at a known tenant."
+    },
+    {
+      "id": "accepted_invites_bind_principals",
+      "passed": true,
+      "severity": "required",
+      "detail": "Accepted invitations record the principal and session IDs, not raw bearer values."
+    },
+    {
+      "id": "raw_invite_token_storage_blocked",
+      "passed": true,
+      "severity": "required",
+      "detail": "Workspace invite policy blocks raw invite token storage."
+    }
+  ],
+  "invitations": [],
+  "latest_events": []
+}

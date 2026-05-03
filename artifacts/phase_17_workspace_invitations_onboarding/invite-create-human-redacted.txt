@@ -1,0 +1,14 @@
+Parallax Workspace Invitation
+=============================
+
+Invitation ID: invite_6676a598d9dd
+Email: artifact.analyst@example.com
+Tenant: alpha
+Role: analyst
+Status: pending
+Expires at: 2026-05-04T11:00:00.000Z
+Raw invite token stored: no
+Raw session token stored: no
+
+Invite token
+  [redacted_invite_token_returned_once]

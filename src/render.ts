@@ -1310,6 +1310,81 @@ export function identitySessionToHumanReport(result: any) {
   ]);
 }
 
+export function onboardingStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  const invitations = status.invitations.map((invitation: any) =>
+    [
+      `  - ${invitation.email}`,
+      invitation.status,
+      invitation.tenant_slug,
+      invitation.role,
+      `expires=${invitation.expires_at}`
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Workspace Onboarding",
+    "=============================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Invitations: ${status.summary.invite_count}`,
+    `Pending: ${status.summary.pending_count}`,
+    `Accepted: ${status.summary.accepted_count}`,
+    `Expired: ${status.summary.expired_count}`,
+    `Revoked: ${status.summary.revoked_count}`,
+    `Principals: ${status.summary.principal_count}`,
+    `Active sessions: ${status.summary.active_session_count}`,
+    `Raw invite token stored: ${status.summary.raw_invite_token_stored ? "yes" : "no"}`,
+    `Raw session token stored: ${status.summary.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Invitations",
+    invitations.length ? invitations.join("\n") : "No invitations.",
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
+export function inviteCreateToHumanReport(result: any) {
+  return lines([
+    "Parallax Workspace Invitation",
+    "=============================",
+    "",
+    `Invitation ID: ${result.invitation.id}`,
+    `Email: ${result.invitation.email}`,
+    `Tenant: ${result.invitation.tenant_slug}`,
+    `Role: ${result.invitation.role}`,
+    `Status: ${result.invitation.status}`,
+    `Expires at: ${result.invitation.expires_at}`,
+    `Raw invite token stored: ${result.raw_invite_token_stored ? "yes" : "no"}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Invite token",
+    `  ${result.invite_token}`
+  ]);
+}
+
+export function inviteAcceptToHumanReport(result: any) {
+  return lines([
+    "Parallax Workspace Invite Accepted",
+    "==================================",
+    "",
+    `Invitation ID: ${result.invitation.id}`,
+    `Principal: ${result.principal.email}`,
+    `Tenant: ${result.invitation.tenant_slug}`,
+    `Role: ${result.invitation.role}`,
+    `Session ID: ${result.session.id}`,
+    `Expires at: ${result.session.expires_at}`,
+    `Raw invite token stored: ${result.raw_invite_token_stored ? "yes" : "no"}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Session token",
+    `  ${result.session_token}`
+  ]);
+}
+
 export function durableStorageStatusToHumanReport(status: any) {
   const controls = status.controls.map((control: any) =>
     `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`

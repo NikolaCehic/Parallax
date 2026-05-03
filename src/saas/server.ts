@@ -40,6 +40,12 @@ import {
   applyConnectorRepair,
   connectorRepairStatus
 } from "./setup_repair.js";
+import {
+  acceptWorkspaceInvitation,
+  createWorkspaceInvitation,
+  revokeWorkspaceInvitation,
+  workspaceOnboardingStatus
+} from "./onboarding.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -410,6 +416,26 @@ export function createHostedRequestHandler({
         return;
       }
 
+      if (req.method === "POST" && url.pathname === "/api/onboarding/accept") {
+        const body = await readJsonBody(req);
+        if (!body.invite_token) {
+          jsonResponse(res, 400, { error: "bad_request", message: "invite_token is required." });
+          return;
+        }
+        const result = await acceptWorkspaceInvitation({
+          rootDir,
+          configPath,
+          inviteToken: String(body.invite_token),
+          email: body.email ? String(body.email) : undefined,
+          name: body.name ? String(body.name) : undefined,
+          sessionTtlMinutes: body.session_ttl_minutes ? Number(body.session_ttl_minutes) : undefined,
+          actor: body.actor ? String(body.actor) : "hosted_onboarding",
+          now: body.now ? String(body.now) : now
+        });
+        jsonResponse(res, 201, result);
+        return;
+      }
+
       const auth = await authenticateRequest({ req, rootDir, apiTokenHash, now });
       if (!auth) {
         jsonResponse(res, 401, {
@@ -428,8 +454,60 @@ export function createHostedRequestHandler({
           durable_storage: await durableStorageStatus({ rootDir, configPath, now }),
           data_vendor: await dataVendorStatus({ rootDir, configPath, now }),
           llm_provider: await llmProviderStatus({ rootDir, configPath, now }),
-          setup_repair: await connectorRepairStatus({ rootDir, configPath, apiTokenHash, now })
+          setup_repair: await connectorRepairStatus({ rootDir, configPath, apiTokenHash, now }),
+          onboarding: await workspaceOnboardingStatus({ rootDir, configPath, now })
         });
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/api/onboarding/status") {
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await workspaceOnboardingStatus({ rootDir, configPath, now }));
+        return;
+      }
+
+      if (req.method === "POST" && url.pathname === "/api/onboarding/invitations") {
+        await requireAuthScope({ auth, rootDir, now, scope: "identity:write" });
+        const body = await readJsonBody(req);
+        for (const required of ["email", "tenant_slug"]) {
+          if (!body[required]) {
+            jsonResponse(res, 400, { error: "bad_request", message: `${required} is required.` });
+            return;
+          }
+        }
+        const result = await createWorkspaceInvitation({
+          rootDir,
+          configPath,
+          email: String(body.email),
+          name: body.name ? String(body.name) : "",
+          tenantSlug: String(body.tenant_slug),
+          role: body.role ? String(body.role) : "analyst",
+          scopes: Array.isArray(body.scopes) ? body.scopes.map(String) : undefined,
+          ttlMinutes: body.ttl_minutes ? Number(body.ttl_minutes) : undefined,
+          actor: auth.principal?.email ?? "hosted_api",
+          now: body.now ? String(body.now) : now
+        });
+        jsonResponse(res, 201, result);
+        return;
+      }
+
+      const onboardingParts = routeParts(url.pathname);
+      if (
+        req.method === "POST" &&
+        onboardingParts[0] === "api" &&
+        onboardingParts[1] === "onboarding" &&
+        onboardingParts[2] === "invitations" &&
+        onboardingParts[3] &&
+        onboardingParts[4] === "revoke"
+      ) {
+        await requireAuthScope({ auth, rootDir, now, scope: "identity:write" });
+        const result = await revokeWorkspaceInvitation({
+          rootDir,
+          invitationId: onboardingParts[3],
+          actor: auth.principal?.email ?? "hosted_api",
+          now
+        });
+        jsonResponse(res, 200, result);
         return;
       }
 

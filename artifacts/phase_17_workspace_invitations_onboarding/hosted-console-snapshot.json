@@ -1,0 +1,11 @@
+{
+  "has_workspace_onboarding": true,
+  "has_create_invite": true,
+  "has_accept_invite": true,
+  "calls_invitation_api": true,
+  "calls_accept_api": true,
+  "raw_service_token_present": false,
+  "raw_invite_token_present": false,
+  "raw_session_token_present": false,
+  "secret_ref_present": false
+}

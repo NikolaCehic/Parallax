@@ -30,6 +30,7 @@ Calm, exacting, accountable. The product should feel like a serious research des
 - Research, not execution: product copy and affordances must avoid live-order framing in general workflows.
 - Make gates visible: readiness, provider, data, identity, storage, and model controls should be inspectable at a glance.
 - Repair with restraint: setup flows should explain and apply local-safe fixes without hiding policy or secret boundaries.
+- Onboard without shared secrets: invite flows should show one-time tokens clearly while proving persisted state keeps only hashes and scoped identity records.
 - Dense but calm: analysts need enough information to scan, compare, and act without visual noise.
 - Auditability over charm: every generated answer should point back to artifacts, dossier records, or validation evidence.
 
