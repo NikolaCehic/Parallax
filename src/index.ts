@@ -23,7 +23,8 @@ export async function analyzeThesis({
   auditDir = "audits",
   councilMode = "deterministic",
   llmScenario = "safe",
-  llmBudget = undefined
+  llmBudget = undefined,
+  llmProviderOptions = undefined
 }) {
   const policyReview = reviewProductPolicy({
     symbol,
@@ -37,13 +38,14 @@ export async function analyzeThesis({
   assertEvidenceSnapshot(snapshot);
 
   const toolOutputs = runAnalytics(snapshot, { now });
-  const councilRun = runCouncilProvider({
+  const councilRun = await runCouncilProvider({
     snapshot,
     toolOutputs,
     policyReview,
     councilMode,
     llmScenario,
-    llmBudget
+    llmBudget,
+    llmProviderOptions
   });
   const claimPackets = councilRun.claim_packets;
   const crossExamination = crossExamine(claimPackets);
@@ -108,6 +110,11 @@ export { evaluateClaimPackets, runCouncilProvider } from "./council/provider.js"
 export { promptRegistrySnapshot } from "./llm/registry.js";
 export { runLLMEvalSuite } from "./llm/evals.js";
 export { buildEvidenceOnlyContext } from "./llm/context.js";
+export {
+  liveLLMHealthCheck,
+  resolveLiveLLMConfig,
+  runLiveLLMCouncil
+} from "./llm/live.js";
 export {
   runExternalLLMProviderEvalSuite,
   runExternalLLMReplayCouncil
@@ -230,3 +237,4 @@ export {
   registerLLMProviderAdapter,
   runLLMProviderReplayAnalysis
 } from "./saas/llm_provider.js";
+export { parallaxDoctor } from "./doctor.js";

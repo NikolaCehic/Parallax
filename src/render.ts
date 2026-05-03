@@ -1700,6 +1700,36 @@ export function llmProviderRunToHumanReport(result: any) {
   ]);
 }
 
+export function doctorToHumanReport(result: any) {
+  return lines([
+    "Parallax CLI Doctor",
+    "===================",
+    "",
+    `Status: ${result.status}`,
+    "",
+    "Runtime",
+    `  Node: ${result.node.ok ? "ready" : "blocked"} (${result.node.version}, required ${result.node.required})`,
+    `  Python: ${result.python.ok ? "ready" : "blocked"} (${result.python.command}${result.python.version ? ` ${result.python.version}` : ""})`,
+    "",
+    "Live LLM",
+    `  Provider: ${result.llm.provider}`,
+    `  Model: ${result.llm.model}`,
+    `  Base URL: ${result.llm.base_url}`,
+    `  API key: ${result.llm.api_key_present ? `present via ${result.llm.api_key_env}` : `missing ${result.llm.api_key_env}`}`,
+    `  Timeout: ${result.llm.timeout_ms}ms`,
+    `  Max output tokens: ${result.llm.max_output_tokens}`,
+    result.live_check
+      ? `  Network check: ${result.live_check.ok ? "passed" : "failed"}${result.live_check.message ? ` (${result.live_check.message})` : ""}`
+      : "  Network check: skipped; pass --live to verify the provider.",
+    "",
+    "Checks",
+    result.checks.map((check: any) => `  - ${check.id}: ${check.ok ? "passed" : "failed"} | ${check.detail}`).join("\n"),
+    "",
+    "Next Live Command",
+    `  ${result.next_live_command}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

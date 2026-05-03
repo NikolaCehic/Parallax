@@ -82,6 +82,7 @@ Parallax currently includes:
 - Thesis analysis CLI with human-readable and JSON output.
 - Deterministic council review for replayable local results.
 - Scripted LLM council harness with evidence-only context windows and red-team scenarios.
+- Live Responses-compatible LLM council mode for API-key based CLI use.
 - Prompt, persona, and provider registry inspection.
 - Python-backed analytics worker with fixture-driven data inputs.
 - Local audit library, watchlist, source inspection, feedback, import, and export.
@@ -179,6 +180,12 @@ Run the included demo thesis:
 npm run demo
 ```
 
+Check the CLI runtime and live LLM configuration:
+
+```bash
+npm run doctor
+```
+
 Run your own thesis:
 
 ```bash
@@ -274,6 +281,67 @@ Inspect the prompt, persona, and provider registry:
 ```bash
 npm run cli -- prompt-registry
 ```
+
+### Use A Real LLM API Key
+
+Parallax can keep the CLI-first workflow while using a live Responses-compatible LLM provider for the council.
+
+Set an API key:
+
+```bash
+export OPENAI_API_KEY="sk-..."
+```
+
+Check that the local runtime sees Python and the LLM key:
+
+```bash
+npm run doctor -- \
+  --llm-model gpt-5-mini
+```
+
+Optionally perform a small live provider request:
+
+```bash
+npm run doctor -- \
+  --llm-model gpt-5-mini \
+  --live
+```
+
+Run a live LLM council analysis:
+
+```bash
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --horizon swing \
+  --thesis "post-earnings continuation with controlled risk" \
+  --ceiling watchlist \
+  --council-mode llm-live \
+  --llm-model gpt-5-mini
+```
+
+You can also use a provider-specific key variable:
+
+```bash
+export PARALLAX_LLM_API_KEY="provider-key"
+
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --horizon swing \
+  --thesis "semiconductor leadership continuation if breadth confirms" \
+  --council-mode llm-live \
+  --llm-api-key-env PARALLAX_LLM_API_KEY \
+  --llm-base-url https://api.openai.com/v1 \
+  --llm-model gpt-5-mini
+```
+
+Live mode still uses the Parallax safety rails:
+
+- evidence-only context windows;
+- JSON-schema claim packets;
+- no raw API key persistence;
+- deterministic Python analytics as the source of numeric facts;
+- validation for hallucinated refs, unsupported calculations, hidden recommendation language, prompt-injection obedience, action ceilings, and budget limits;
+- fail-closed behavior when the key is missing, the provider fails, or claim validation fails.
 
 ### Use Local Fixture Data
 
@@ -732,6 +800,12 @@ Common environment variables:
 
 ```bash
 PARALLAX_PYTHON=/path/to/python3
+OPENAI_API_KEY=sk-...
+PARALLAX_LLM_API_KEY=provider-key
+PARALLAX_LLM_API_KEY_ENV=PARALLAX_LLM_API_KEY
+PARALLAX_LLM_MODEL=gpt-5-mini
+PARALLAX_LLM_BASE_URL=https://api.openai.com/v1
+PARALLAX_LLM_TIMEOUT_MS=45000
 PARALLAX_BETA_API_TOKEN=dev-secret-token
 PARALLAX_HOSTED_API_TOKEN=dev-secret-token
 ```
@@ -755,7 +829,11 @@ Common CLI flags:
 --root-dir managed-saas
 --user-class self_directed_investor|independent_analyst|research_team|trading_educator|professional_reviewer
 --intended-use research|education|paper_trading|team_review|governance_review
---council-mode deterministic|llm-scripted
+--council-mode deterministic|llm-scripted|llm-live
+--llm-provider openai
+--llm-model gpt-5-mini
+--llm-base-url https://api.openai.com/v1
+--llm-api-key-env OPENAI_API_KEY
 --ceiling no_trade|research_needed|watchlist|paper_trade_candidate|order_ticket_candidate
 ```
 

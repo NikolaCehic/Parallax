@@ -25,6 +25,7 @@ import {
   dataVendorAdapterToHumanReport,
   dataVendorImportToHumanReport,
   dataVendorStatusToHumanReport,
+  doctorToHumanReport,
   dossierToHumanReport,
   dossierToMarkdown,
   durableObjectToHumanReport,
@@ -94,6 +95,7 @@ import {
   externalIntegrationToHumanReport,
   observabilityEventToHumanReport
 } from "../render.js";
+import { parallaxDoctor } from "../doctor.js";
 import { createPaperTicket, simulatePaperFill } from "../paper/trading.js";
 import {
   closeLedgerTrade,
@@ -240,6 +242,7 @@ function usage() {
 
 Commands:
   analyze --symbol NVDA --horizon swing --thesis "post-earnings continuation" [--ceiling watchlist]
+  doctor [--live] [--llm-model gpt-5-mini] [--llm-api-key-env OPENAI_API_KEY]
   llm-eval [--out artifacts/phase_3_llm_council_beta/llm-eval.json]
   prompt-registry
   replay --audit audits/dos_x.json
@@ -335,10 +338,17 @@ Common flags:
   --audit-dir audits     Directory where analyze writes audit artifacts.
   --user-class           self_directed_investor, independent_analyst, research_team, trading_educator, professional_reviewer.
   --intended-use         research, education, paper_trading, team_review, governance_review.
-  --council-mode         deterministic or llm-scripted.
+  --council-mode         deterministic, llm-scripted, or llm-live.
   --llm-scenario         safe, hallucinated_ref, numeric_fabrication, hidden_recommendation, prompt_injection_obedience.
   --llm-budget-tokens    Maximum context tokens for LLM provider path.
   --llm-budget-usd       Maximum estimated cost for LLM provider path.
+  --llm-provider         Live LLM provider label. Default: openai.
+  --llm-model            Live LLM model. Default: PARALLAX_LLM_MODEL or gpt-5-mini.
+  --llm-base-url         Responses-compatible base URL. Default: https://api.openai.com/v1.
+  --llm-api-key-env      Environment variable containing the LLM API key. Default: PARALLAX_LLM_API_KEY or OPENAI_API_KEY.
+  --llm-timeout-ms       Live LLM request timeout.
+  --llm-max-output-tokens Maximum output tokens per persona.
+  --live                 For doctor, perform a small live provider request.
   --events               Symbol event flags, for alerts: NVDA=true,TSLA=false.
   --vols                 Symbol volatility overrides, for alerts: NVDA=0.9.
   --tags                 Comma-separated governance comment tags.
@@ -406,6 +416,18 @@ function parseLLMBudget(args: CliArgs) {
   return Object.keys(budget).length ? budget : undefined;
 }
 
+function parseLiveLLMOptions(args: CliArgs) {
+  const options: any = {};
+  if (args["llm-provider"] && args["llm-provider"] !== true) options.provider = String(args["llm-provider"]);
+  if (args["llm-model"] && args["llm-model"] !== true) options.model = String(args["llm-model"]);
+  if (args["llm-base-url"] && args["llm-base-url"] !== true) options.baseUrl = String(args["llm-base-url"]);
+  if (args["llm-api-key-env"] && args["llm-api-key-env"] !== true) options.apiKeyEnv = String(args["llm-api-key-env"]);
+  if (args["llm-timeout-ms"] && args["llm-timeout-ms"] !== true) options.timeoutMs = Number(args["llm-timeout-ms"]);
+  if (args["llm-max-output-tokens"] && args["llm-max-output-tokens"] !== true) options.maxOutputTokens = Number(args["llm-max-output-tokens"]);
+  if (args["llm-max-retries"] && args["llm-max-retries"] !== true) options.maxRetries = Number(args["llm-max-retries"]);
+  return Object.keys(options).length ? options : undefined;
+}
+
 function parseJsonObject(value?: string | boolean) {
   if (!value || value === true) return {};
   const parsed = JSON.parse(String(value));
@@ -435,6 +457,15 @@ async function main() {
     return;
   }
 
+  if (command === "doctor") {
+    const result = await parallaxDoctor({
+      live: args.live === true,
+      llmProviderOptions: parseLiveLLMOptions(args)
+    });
+    printResult(args, doctorToHumanReport(result), result);
+    return;
+  }
+
   if (command === "analyze") {
     if (!args.symbol || !args.thesis) throw new Error("analyze requires --symbol and --thesis");
     const auditDir = String(args["audit-dir"] ?? "audits");
@@ -451,7 +482,8 @@ async function main() {
       auditDir,
       councilMode: String(args["council-mode"] ?? "deterministic"),
       llmScenario: String(args["llm-scenario"] ?? "safe"),
-      llmBudget: parseLLMBudget(args)
+      llmBudget: parseLLMBudget(args),
+      llmProviderOptions: parseLiveLLMOptions(args)
     });
     const auditPath = path.join(auditDir, `${dossier.id}.json`);
     const markdownPath = path.join(auditDir, `${dossier.id}.md`);

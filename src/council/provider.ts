@@ -2,6 +2,7 @@ import { ACTION_RANK, assertPersonaClaimPacket } from "../core/schemas.js";
 import { makeId, stableHash } from "../core/ids.js";
 import { PERSONAS, runPersona } from "./personas.js";
 import { runScriptedLLMCouncil, type ScriptedLLMScenario } from "../llm/scripted.js";
+import { runLiveLLMCouncil } from "../llm/live.js";
 
 export const DEFAULT_COUNCIL_PROVIDER = {
   id: "deterministic_rule_council_v0",
@@ -90,6 +91,10 @@ export function evaluateClaimPackets({
       }
     }
 
+    if (isLLMProvider && packet.evidence_refs.length === 0) {
+      problems.push(`${packet.persona_id} returned no evidence_refs.`);
+    }
+
     if (packet.claim_type === "calculation" && !hasToolRef(packet, toolOutputs)) {
       problems.push(`${packet.persona_id} made a calculation claim without a tool-output reference.`);
     }
@@ -125,7 +130,7 @@ export function evaluateClaimPackets({
   return finalizeEvalReport(body);
 }
 
-export function runCouncilProvider({
+export async function runCouncilProvider({
   snapshot,
   toolOutputs,
   personas = PERSONAS,
@@ -133,7 +138,8 @@ export function runCouncilProvider({
   provider = DEFAULT_COUNCIL_PROVIDER,
   councilMode = "deterministic",
   llmScenario = "safe",
-  llmBudget
+  llmBudget,
+  llmProviderOptions
 }: {
   snapshot: any;
   toolOutputs: any[];
@@ -146,7 +152,44 @@ export function runCouncilProvider({
     maxContextTokens?: number;
     maxEstimatedCostUsd?: number;
   };
+  llmProviderOptions?: any;
 }) {
+  if (councilMode === "llm-live" || provider.kind === "llm_live_openai_responses") {
+    const liveRun = await runLiveLLMCouncil({
+      snapshot,
+      toolOutputs,
+      personas,
+      policyReview,
+      providerOptions: llmProviderOptions,
+      budget: llmBudget
+    });
+    let evalReport = evaluateClaimPackets({
+      provider: liveRun.provider,
+      snapshot,
+      toolOutputs,
+      claimPackets: liveRun.claim_packets,
+      policyReview,
+      expectedPersonas: personas,
+      strictActionCeiling: true,
+      contextWarnings: liveRun.context_warnings
+    });
+    if (liveRun.failure) {
+      evalReport = finalizeEvalReport({
+        ...evalReport,
+        passed: false,
+        problems: [...evalReport.problems, `Provider failure: ${liveRun.failure}.`]
+      });
+    }
+
+    return {
+      provider: liveRun.provider,
+      claim_packets: liveRun.claim_packets,
+      eval_report: evalReport,
+      contexts: liveRun.contexts,
+      usage: liveRun.usage
+    };
+  }
+
   if (councilMode === "llm-scripted" || provider.kind === "llm_scripted") {
     const llmRun = runScriptedLLMCouncil({
       snapshot,

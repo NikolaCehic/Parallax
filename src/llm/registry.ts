@@ -50,6 +50,19 @@ export const LLM_PROVIDER_REGISTRY = {
     max_context_tokens: 50000,
     max_estimated_cost_usd: 0.2,
     cost_per_1k_context_tokens_usd: 0.0005
+  },
+  openai_responses_live_v0: {
+    id: "openai_responses_live_v0",
+    kind: "llm_live_openai_responses",
+    model_registry_ref: "gpt-5-mini",
+    version: "0.1.0",
+    prompt_ids: ["claim_packet_v0", "critique_packet_v0"],
+    validation_status: "live_provider_contract_validated",
+    max_context_tokens: 50000,
+    max_estimated_cost_usd: 0.5,
+    cost_per_1k_context_tokens_usd: 0.001,
+    direct_model_network_connection: true,
+    raw_secret_stored: false
   }
 } as const;
 

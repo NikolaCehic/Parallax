@@ -10,6 +10,7 @@
   "scripts": {
     "build": "tsc",
     "cli": "npm run build --silent && node dist/src/cli/parallax.js",
+    "doctor": "npm run build --silent && node dist/src/cli/parallax.js doctor",
     "analyze": "npm run build --silent && node dist/src/cli/parallax.js analyze",
     "policy": "npm run build --silent && node dist/src/cli/parallax.js policy",
     "library": "npm run build --silent && node dist/src/cli/parallax.js library",
