@@ -1,165 +1,179 @@
 # Parallax
 
-Parallax is an experimental trading-thesis analysis agent.
+> A governed trading thesis analysis agent for research, paper trading, team review, and productized investment-research workflows.
 
-It does not try to be a magic trading bot. It takes a market idea, gathers evidence, runs deterministic analytics, asks a council of specialized reviewers to challenge the idea, then returns a clear decision dossier with risks, vetoes, invalidation triggers, and next steps.
+Parallax helps analysts turn a market idea into a falsifiable, evidence-backed thesis dossier. It does not try to be a magic trading bot. It takes a specific trading or investment thesis, gathers a frozen evidence snapshot, runs deterministic analytics, sends the thesis through a council of specialized reviewers, challenges the result, applies hard product and risk gates, and produces a human-readable decision package with audit artifacts.
 
-The goal is simple:
+The operating principle is simple:
 
 > Make unsupported conviction hard to hide.
 
-Parallax is a prototype. It is not investment advice, not a live trading system, and not connected to a real broker.
+Parallax is built with TypeScript and Python. TypeScript owns the agent orchestration, CLI, governance, SaaS scaffolding, hosted API, and product boundaries. Python owns numerical market analytics such as returns, volatility, drawdown, liquidity checks, transaction-cost proxies, dependency correlation, and portfolio exposure checks.
 
-## Why This Exists
+## Safety Notice
 
-Most trading tools either give you numbers without enough judgment, or persuasive narratives without enough proof.
+Parallax is research software. It is not investment advice, not a registered adviser, not a broker, and not a live trading system.
 
-Parallax tries to sit in the middle:
+The current product ceiling intentionally stops below live execution. Parallax can produce research dossiers, watchlist candidates, paper-trade candidates, governance packages, partner-control records, and sandbox outputs. It should not be connected to a production brokerage or used to place real trades without separate legal, compliance, market-access, and human-approval systems.
 
-- Python calculates the market facts.
-- TypeScript orchestrates the agent workflow.
-- Specialist personas review the thesis from different angles.
-- The Phase 3 LLM council harness can run the same council boundary through evidence-only prompt contexts.
-- Hard gates stop bad data, bad risk, restricted symbols, stale theses, and unsafe escalation.
-- A lifecycle engine keeps every thesis temporary, monitored, and invalidatable.
-- Phase 4 lifecycle alerts track change since the last run, custom triggers, preferences, and a local notification inbox.
-- Phase 5 paper trading stores simulated positions, outcomes, attribution, and reviews without unlocking live execution.
-- Phase 6 team governance adds role-aware review assignments, comments, approvals, release controls, and governance exports.
-- Phase 7 partner execution adds legal approval, market-access review, human approval, kill switch, post-trade review, and a locked production-adapter boundary.
-- Phase 8 beta deployment adds an authenticated local API, readiness checks, deployment config, Docker scaffold, and beta export package.
-- Phase 9 managed SaaS scaffolding adds tenant isolation, external secret references, provider manifests, observability events, and readiness/export checks for a future hosted product.
-- Phase 10 provider validation adds contract checks for external manifests and a static hosted console for managed-beta review.
-- Phase 11 hosted API adds tenant-scoped persistence, HTTP tenant isolation, hosted API readiness, and CLI controls for local multi-tenant operation.
-- Phase 12 identity/storage foundation adds hash-only identity sessions, scoped tenant API access, durable storage object manifests, and checkpoint evidence.
-- Phase 13 external data vendor boundary adds licensed vendor adapter contracts, tenant-scoped vendor data packs, provenance hashes, and hosted import controls.
-- Phase 14 external LLM provider boundary adds replay-only model adapter contracts, provider-specific eval suites, evidence-only contexts, hosted replay analysis, and model-network/secret gates.
-- Phase 15 hosted research console turns readiness, onboarding, tenant analysis, provider/data/model boundaries, and tenant libraries into one usable product shell.
-- Phase 16 guided connector repair turns blocked readiness into previewable and actionable local setup actions for control-plane, identity, storage, data-vendor, and LLM-provider readiness.
-- Phase 17 workspace onboarding adds hash-only invitations, public invite acceptance, scoped identity-session issuance, console onboarding controls, and CLI invite workflows.
-- Phase 18 account onboarding adds public invite-link and tenant-console shells, account profile self-service, role management, and active-session scope updates.
+## What Parallax Does
 
-Instead of asking:
+Parallax answers a narrower and more useful question than "Should I buy this?"
 
-> Is this stock good?
+It asks:
 
-Parallax asks:
+> Is this specific thesis, at this specific time, with this evidence and this portfolio context, still justified?
 
-> Is this specific thesis, at this specific time, with this evidence and portfolio context, still justified?
+For each thesis, Parallax can:
 
-## What It Produces
+- build a structured thesis input from CLI arguments or fixture data;
+- load local market, event, and portfolio evidence;
+- run Python analytics over that evidence;
+- ask deterministic or scripted LLM-style council personas to review the thesis;
+- force the bull case and bear case to confront the same evidence;
+- detect unsupported claims, stale evidence, risk problems, and restricted escalation;
+- produce a decision class such as `no_trade`, `research_needed`, `watchlist`, or `paper_trade_candidate`;
+- write immutable audit JSON and Markdown reports;
+- monitor the thesis after creation with lifecycle triggers and alerts;
+- simulate paper trades and post-trade reviews;
+- support team review, comments, assignments, approvals, and governance exports;
+- scaffold a managed SaaS control plane with tenant isolation, identity, storage, invite onboarding, account self-service, hosted setup repair, and provider boundaries.
 
-When you analyze a thesis, Parallax creates a **Trade Thesis Dossier**.
+## Why A Thesis Council Works When Markets Change
 
-The dossier includes:
+Markets change constantly, so Parallax does not treat a thesis as permanent truth.
 
-- the original thesis;
-- a frozen evidence snapshot;
-- deterministic analytics;
-- council review;
-- strongest bull case;
-- strongest bear case;
-- required checks;
-- hard vetoes, if any;
-- action class;
-- confidence and freshness;
-- lifecycle triggers;
-- audit JSON;
-- markdown report.
+Every dossier is time-bounded. The system freezes the evidence used at analysis time, attaches freshness metadata, adds invalidation triggers, and can later re-check the thesis against new prices, volatility, events, and portfolio context. The council does not say "this is true forever." It says "given this snapshot, here is the strongest supported interpretation, here is what would break it, and here is what must be watched next."
 
-Example action classes:
+That design makes Parallax closer to an operating discipline than a prediction machine:
 
-- `no_trade`: blocked or not worth pursuing;
-- `research_needed`: interesting, but missing evidence;
-- `watchlist`: valid enough to monitor, not executable;
-- `paper_trade_candidate`: eligible for simulation only;
-- `order_ticket_candidate`: future permissioned mode, still requiring approval.
+- the thesis must be explicit;
+- the evidence must be inspectable;
+- the council must show disagreement;
+- the action must pass product and risk gates;
+- the lifecycle engine must know when to re-check, escalate, or retire the thesis.
 
-## How The Pipeline Works
+## Core Concepts
 
-```text
-User thesis
-  -> Evidence snapshot
-  -> Python analytics
-  -> Council personas or LLM council harness
-  -> Cross-examination
-  -> Synthesis
-  -> Decision gate
-  -> Lifecycle engine
-  -> Audit bundle
-  -> Optional paper/team/partner-control path
+### Trade Thesis Dossier
+
+A dossier is the main output of Parallax. It contains the original thesis, the evidence snapshot, analytics, council notes, hard vetoes, required checks, lifecycle triggers, and generated audit artifacts.
+
+### Council Personas
+
+The council is a set of specialized reviewers. Each persona examines the same thesis through a different lens, such as quantitative evidence, risk, market structure, model validation, compliance, and adversarial challenge.
+
+### Decision Gates
+
+Parallax separates research language from execution language. A thesis can be interesting and still be blocked. Hard gates can veto the output because of missing evidence, stale data, excessive risk, unsupported claims, restricted product ceiling, or unsafe escalation.
+
+### Lifecycle Triggers
+
+A thesis is only useful if it can be invalidated. Lifecycle triggers define what should cause a re-check, escalation, downgrade, or retirement.
+
+### Product Ceiling
+
+The product ceiling controls how far an output can go. For example, a self-directed investor workflow may stop at watchlist research, while a controlled internal sandbox may allow paper-trade simulation. Live execution remains locked.
+
+## Feature Overview
+
+Parallax currently includes:
+
+- Thesis analysis CLI with human-readable and JSON output.
+- Deterministic council review for replayable local results.
+- Scripted LLM council harness with evidence-only context windows and red-team scenarios.
+- Prompt, persona, and provider registry inspection.
+- Python-backed analytics worker with fixture-driven data inputs.
+- Local audit library, watchlist, source inspection, feedback, import, and export.
+- Lifecycle alerts, preferences, custom triggers, notification inbox, and monitoring.
+- Paper-trading lab with open, close, ledger, attribution, and review workflows.
+- Team governance with members, review assignments, comments, approvals, reports, and export packages.
+- Partner execution-control boundary with legal approval, market-access review, kill switch, human approval, ticketing, post-trade review, and locked production adapter behavior.
+- Beta local API and deployment scaffold.
+- Managed SaaS control-plane scaffold with tenants, external secret references, provider manifests, observability events, readiness checks, and export packages.
+- Hosted API with tenant-scoped persistence and HTTP tenant isolation.
+- Identity and storage foundation with hash-only identity sessions and durable object manifests.
+- External data-vendor boundary with licensed adapter contracts, provenance hashes, and tenant-scoped imports.
+- External LLM-provider boundary with replay-only model adapter contracts and claim-packet eval gates.
+- Hosted research console shell.
+- Guided setup repair for blocked control-plane, identity, storage, data-vendor, and LLM-provider readiness.
+- Workspace invitations, public invite acceptance, account profile self-service, role management, and tenant console shells.
+
+## Architecture
+
+```mermaid
+flowchart TD
+  A["User thesis"] --> B["Evidence snapshot"]
+  B --> C["Python analytics worker"]
+  C --> D["Council review"]
+  D --> E["Cross-examination"]
+  E --> F["Synthesis"]
+  F --> G["Decision gates"]
+  G --> H["Lifecycle engine"]
+  H --> I["Audit JSON and Markdown dossier"]
+  I --> J["Library, alerts, paper lab, team governance"]
+  J --> K["Hosted API and managed SaaS scaffold"]
 ```
-
-The important design choice: generated reasoning does not own the numbers. The Python analytics worker produces the calculations. The council can interpret and challenge those results, but numeric claims must be tied back to tool outputs.
-
-## LLM Council Beta
-
-Phase 3 adds the LLM provider harness without requiring cloud credentials.
-
-The default LLM path is `scripted_llm_council_v0`: a deterministic local stand-in for a future model adapter. It builds evidence-only context windows for each persona, tracks token and cost budgets, validates claim packets, and runs red-team cases against hallucinated references, unsupported calculations, hidden recommendation language, prompt-injection obedience, and budget overruns.
-
-Phase 14 adds a production-shaped external LLM provider boundary without live model networking. It registers tenant-scoped model adapter contracts, runs a provider-specific replay eval suite, records replay analysis runs, and lets hosted/CLI workflows use an external-model-shaped council only after the claim-packet eval passes.
-
-This means the product can test LLM-style behavior while keeping CI deterministic and every output replayable.
-
-## Current Architecture
-
-Parallax is split between TypeScript and Python.
 
 TypeScript owns:
 
-- CLI;
+- CLI and command routing;
 - schemas and contracts;
 - evidence orchestration;
-- council personas;
-- prompt/persona/provider registries;
+- council personas and runners;
+- prompt, persona, and provider registries;
 - scripted LLM council harness;
-- external LLM provider replay boundary and eval contracts;
-- cross-examination;
-- synthesis;
-- decision gates;
-- lifecycle state;
+- external LLM replay boundary;
+- cross-examination, synthesis, and decision gates;
+- lifecycle state and alerting;
 - audit replay;
+- local library and dashboard generation;
+- paper trading and sandbox controls;
 - team governance;
-- paper trading;
-- sandbox and partner execution controls.
-- beta API and deployment readiness.
-- managed SaaS control-plane scaffolding.
-- provider contract validation and hosted research console generation.
-- hosted multi-tenant API and tenant persistence;
-- identity-session and durable-storage foundation.
-- external data vendor boundary and tenant-scoped imported data packs.
-- external LLM provider boundary and replay analysis records.
-- workspace invitation and user-account onboarding.
-- public invite links, tenant console, account settings, and membership role management.
+- partner execution-control records;
+- beta and hosted HTTP servers;
+- managed SaaS, tenant persistence, identity, storage, onboarding, and account flows.
 
 Python owns:
 
-- returns;
-- volatility;
-- drawdown;
+- returns and volatility calculations;
+- drawdown analysis;
 - liquidity checks;
-- transaction-cost proxy;
+- transaction-cost proxy calculations;
 - dependency correlation;
 - portfolio exposure checks;
 - event filtering;
 - data-quality checks.
 
-## Quick Start
+## Requirements
 
-Requirements:
-
-- Node.js 20+
+- Node.js 20 or newer
 - npm
 - Python 3 available as `python3`
 
-Install and test:
+If you want to force Parallax to use a specific Python binary:
 
 ```bash
+PARALLAX_PYTHON="$(command -v python3)" npm test
+```
+
+## Quick Start
+
+Clone and install:
+
+```bash
+git clone https://github.com/NikolaCehic/Parallax.git
+cd Parallax
 npm install
+```
+
+Build and run the full test suite:
+
+```bash
 npm test
 ```
 
-Run the demo:
+Run the included demo thesis:
 
 ```bash
 npm run demo
@@ -176,59 +190,7 @@ npm run analyze --silent -- \
   --now 2026-05-01T14:30:00Z
 ```
 
-Show the product boundary:
-
-```bash
-npm run policy
-```
-
-Run the Phase 3 LLM council safety eval:
-
-```bash
-npm run cli -- llm-eval
-```
-
-Inspect the prompt, persona, and provider registry:
-
-```bash
-npm run cli -- prompt-registry
-```
-
-Scan lifecycle alerts:
-
-```bash
-npm run alerts -- \
-  --audit-dir audits \
-  --prices NVDA=111 \
-  --events NVDA=false
-```
-
-Edit alert preferences:
-
-```bash
-npm run alert-prefs -- \
-  --audit-dir audits \
-  --mute TSLA
-```
-
-Add a custom lifecycle trigger without changing the immutable audit bundle:
-
-```bash
-npm run cli -- trigger-add \
-  --audit audits/dos_x.json \
-  --kind escalate \
-  --condition-type event \
-  --condition "material_event_arrives == true" \
-  --rationale "Material event requires immediate review."
-```
-
-Read the local notification inbox:
-
-```bash
-npm run notifications -- --audit-dir audits
-```
-
-Run a thesis through the local scripted LLM council harness:
+Print machine-readable JSON instead of the human report:
 
 ```bash
 npm run analyze --silent -- \
@@ -236,11 +198,12 @@ npm run analyze --silent -- \
   --horizon swing \
   --thesis "post-earnings continuation with controlled risk" \
   --ceiling watchlist \
-  --council-mode llm-scripted \
-  --now 2026-05-01T14:30:00Z
+  --format json
 ```
 
-By default, Parallax prints a human-readable report with the full workflow:
+## Example Output Shape
+
+A normal analysis prints a human-readable report with sections like:
 
 ```text
 Parallax Analysis
@@ -260,80 +223,112 @@ Outputs
 Next Commands
 ```
 
-For scripts or automation, use JSON output:
+The CLI also writes audit artifacts into the audit directory, usually `audits/`:
+
+```text
+audits/
+  dos_<id>.json
+  dos_<id>.md
+  library.json
+  lifecycle-checks.json
+  notifications.jsonl
+```
+
+## Common Workflows
+
+### Analyze A Thesis
+
+```bash
+npm run analyze --silent -- \
+  --symbol TSLA \
+  --horizon intraday \
+  --thesis "range expansion after catalyst if liquidity remains stable" \
+  --ceiling watchlist \
+  --user-class independent_analyst \
+  --intended-use research
+```
+
+### Use The Scripted LLM Council Harness
+
+The default LLM path is deterministic and local. It exercises LLM-style evidence windows, budget checks, claim-packet validation, and red-team cases without requiring cloud credentials.
 
 ```bash
 npm run analyze --silent -- \
   --symbol NVDA \
   --horizon swing \
   --thesis "post-earnings continuation with controlled risk" \
-  --json
+  --ceiling watchlist \
+  --council-mode llm-scripted \
+  --llm-budget-tokens 4000 \
+  --llm-budget-usd 0.05
 ```
 
-## Local Alpha Workspace
-
-Every CLI analysis writes an audit bundle, markdown dossier, and local library entry.
-
-List saved dossiers:
+Run the LLM safety eval suite:
 
 ```bash
-npm run cli -- library --audit-dir audits
+npm run cli -- llm-eval
 ```
 
-Show active watchlist and paper-trade candidates:
+Inspect the prompt, persona, and provider registry:
 
 ```bash
-npm run cli -- watchlist --audit-dir audits
+npm run cli -- prompt-registry
 ```
 
-Scan the workspace for theses that need attention:
+### Use Local Fixture Data
+
+The repository includes sample market, event, and portfolio data under `fixtures/`.
 
 ```bash
-npm run cli -- alerts \
-  --audit-dir audits \
-  --prices NVDA=111,TSLA=240
+npm run data-status -- --symbol NVDA --data-dir fixtures
 ```
 
-Lifecycle alert scans now persist change-since-last-run state in the local workspace. Custom trigger overlays, alert preferences, and notifications are stored beside the audit library so audit bundles remain replayable.
-
-Inspect the exact evidence and tool-output hashes behind a dossier:
+Analyze with fixture-backed evidence:
 
 ```bash
+npm run analyze --silent -- \
+  --symbol NVDA \
+  --horizon swing \
+  --thesis "semiconductor leadership continuation if breadth confirms" \
+  --data-dir fixtures \
+  --ceiling watchlist
+```
+
+### Inspect The Local Library
+
+```bash
+npm run library -- --audit-dir audits
+npm run watchlist -- --audit-dir audits
 npm run cli -- sources --audit audits/dos_x.json
 ```
 
-Record alpha feedback:
+### Monitor A Thesis
 
 ```bash
-npm run cli -- feedback \
-  --audit audits/dos_x.json \
-  --rating useful \
-  --notes "clear invalidators"
-```
-
-Export the local workspace:
-
-```bash
-npm run cli -- export \
+npm run alerts -- \
   --audit-dir audits \
-  --out parallax-workspace.json
+  --prices NVDA=111,TSLA=240 \
+  --events NVDA=false,TSLA=true
 ```
 
-Import a portable workspace:
+Add a custom lifecycle trigger:
 
 ```bash
-npm run cli -- import \
-  --in parallax-workspace.json \
-  --audit-dir imported-audits
+npm run cli -- trigger-add \
+  --audit audits/dos_x.json \
+  --kind escalate \
+  --condition-type event \
+  --condition "material_event_arrives == true" \
+  --rationale "Material event requires immediate review."
 ```
 
-Summarize alpha feedback:
+Read the local notification inbox:
 
 ```bash
-npm run cli -- feedback-summary --audit-dir audits
+npm run notifications -- --audit-dir audits
 ```
 
-Generate a local dashboard:
+### Generate A Local HTML Dashboard
 
 ```bash
 npm run app -- \
@@ -341,199 +336,110 @@ npm run app -- \
   --out audits/parallax-dashboard.html
 ```
 
-The local workspace is intentionally file-based. It is easy to inspect, easy to delete, and does not require a cloud account.
+Then open `audits/parallax-dashboard.html` in a browser.
 
-## Team Governance
+### Paper Trading Lab
 
-Phase 6 adds a local governance ledger for small teams.
+Paper trading is simulation only. It does not unlock live execution.
 
-Initialize a team workspace:
+```bash
+npm run paper-open -- \
+  --audit audits/dos_x.json \
+  --risk-budget 0.01 \
+  --market-price 115
+```
+
+```bash
+npm run paper-ledger -- --audit-dir audits
+```
+
+```bash
+npm run paper-close -- \
+  --trade paper_trade_x \
+  --exit-price 118 \
+  --reason target_reached
+```
+
+```bash
+npm run paper-review -- \
+  --trade paper_trade_x \
+  --rating disciplined \
+  --notes "Followed invalidation and sizing rules."
+```
+
+### Team Governance
 
 ```bash
 npm run team-init -- \
   --audit-dir audits \
   --workspace-name "Research Desk" \
-  --owner "Nikola"
+  --owner "Owner"
 ```
-
-Add reviewers:
 
 ```bash
-npm run cli -- team-member-add --audit-dir audits --name "Lena Lead" --role lead_analyst --actor "Nikola"
-npm run cli -- team-member-add --audit-dir audits --name "Ravi Risk" --role risk_reviewer --actor "Nikola"
-npm run cli -- team-member-add --audit-dir audits --name "Casey Compliance" --role compliance_reviewer --actor "Nikola"
-npm run cli -- team-member-add --audit-dir audits --name "Mira Model" --role model_validator --actor "Nikola"
+npm run cli -- team-member-add \
+  --name "Risk Reviewer" \
+  --role risk_reviewer \
+  --actor "Owner" \
+  --email risk@example.com
 ```
-
-Assign, comment, and approve a dossier:
 
 ```bash
 npm run cli -- team-assign \
   --audit audits/dos_x.json \
   --type risk_review \
-  --assignee "Ravi Risk" \
-  --requester "Nikola"
-
-npm run cli -- team-comment \
-  --audit audits/dos_x.json \
-  --author "Casey Compliance" \
-  --body "Research-only boundary is clear."
-
-npm run cli -- team-approve \
-  --audit-dir audits \
-  --assignment review_x \
-  --approver "Ravi Risk" \
-  --decision approved \
-  --rationale "Sizing and invalidators are acceptable for paper simulation."
+  --assignee "Risk Reviewer" \
+  --requester "Owner"
 ```
-
-Show release readiness and SOC 2-style control status:
 
 ```bash
 npm run team-report -- --audit-dir audits
+npm run team-export -- --audit-dir audits --out governance-package.json
 ```
 
-Export the governance package:
+### Partner Execution Controls
 
-```bash
-npm run team-export -- \
-  --audit-dir audits \
-  --out governance-package.json
-```
-
-## Partner Execution Controls
-
-Phase 7 adds a partner-execution ledger for regulated-partner handoff review. It does not connect Parallax to a live broker by itself.
-
-The controlled path is:
-
-```text
-team-release-ready dossier
-  -> registered regulated partner
-  -> legal/compliance approval
-  -> market-access review
-  -> partner ticket
-  -> human approval
-  -> execution controls
-  -> partner sandbox handoff
-  -> post-trade review
-```
-
-Register a partner sandbox:
+This path models permissioned execution controls, but the production adapter remains locked.
 
 ```bash
 npm run cli -- partner-register \
-  --audit-dir audits \
   --partner-id sandbox_a \
   --name "Regulated Partner Sandbox"
 ```
 
-Record legal/compliance approval and market-access review:
-
 ```bash
 npm run cli -- partner-legal-approve \
-  --audit-dir audits \
   --partner-id sandbox_a \
   --approver "Counsel" \
   --scope sandbox
-
-npm run cli -- partner-market-review \
-  --audit-dir audits \
-  --partner-id sandbox_a \
-  --reviewer "Market Access Principal" \
-  --allowed-symbols NVDA \
-  --max-order-notional 2000 \
-  --max-daily-notional 3000
 ```
 
-Create, approve, check, and submit a partner sandbox ticket:
+```bash
+npm run cli -- partner-market-review \
+  --partner-id sandbox_a \
+  --reviewer "Market Access" \
+  --allowed-symbols NVDA
+```
 
 ```bash
 npm run cli -- partner-ticket \
   --audit audits/dos_x.json \
-  --audit-dir audits \
   --partner-id sandbox_a \
-  --risk-budget 0.005
-
-npm run cli -- partner-approve \
-  --audit-dir audits \
-  --ticket partner_ticket_x \
-  --approver "Human Trader" \
-  --rationale "Approved after all controls."
-
-npm run cli -- partner-controls \
-  --audit-dir audits \
-  --ticket partner_ticket_x
-
-npm run cli -- partner-submit \
-  --audit-dir audits \
-  --ticket partner_ticket_x
+  --environment sandbox
 ```
 
-Record post-trade review and report the ledger:
-
 ```bash
-npm run cli -- partner-post-review \
-  --audit-dir audits \
-  --submission partner_submission_x \
-  --reviewer "Execution Ops" \
-  --outcome acceptable
-
+npm run cli -- partner-controls --ticket partner_ticket_x
+npm run cli -- partner-approve --ticket partner_ticket_x --approver "human"
+npm run cli -- partner-submit --ticket partner_ticket_x
 npm run partner-report -- --audit-dir audits
 ```
 
-Production partner submission remains locked unless an explicitly configured regulated production adapter is enabled by compliance.
+## Hosted Product Shell
 
-## Beta Deployment
+Parallax includes a local managed SaaS scaffold for testing product workflows before connecting real external services.
 
-Phase 8 adds a deployable beta surface around the local workspace.
-
-Initialize beta config with a hashed API token:
-
-```bash
-npm run beta-init -- \
-  --audit-dir audits \
-  --workspace-name "Parallax Beta" \
-  --api-token "$PARALLAX_BETA_API_TOKEN"
-```
-
-Check readiness:
-
-```bash
-npm run beta-readiness -- --audit-dir audits
-```
-
-Start the beta API/dashboard server:
-
-```bash
-npm run beta-serve -- \
-  --audit-dir audits \
-  --host 127.0.0.1 \
-  --port 8787
-```
-
-Authenticated API calls use:
-
-```bash
-curl -H "Authorization: Bearer $PARALLAX_BETA_API_TOKEN" \
-  http://127.0.0.1:8787/api/status
-```
-
-Export a beta deployment package:
-
-```bash
-npm run cli -- beta-export \
-  --audit-dir audits \
-  --out beta-deployment-package.json
-```
-
-Deployment files live in [deploy/README.md](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/deploy/README.md), with a root [Dockerfile](/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/Dockerfile).
-
-## Managed SaaS Scaffold
-
-Phase 9 adds the first managed-product control plane. It is not a real hosted cloud deployment yet; it is the auditable scaffold for one.
-
-Initialize a managed SaaS root:
+Initialize a managed SaaS workspace:
 
 ```bash
 npm run saas-init -- \
@@ -541,7 +447,7 @@ npm run saas-init -- \
   --owner "Platform Owner"
 ```
 
-Create a tenant workspace:
+Create a tenant:
 
 ```bash
 npm run cli -- tenant-create \
@@ -550,77 +456,82 @@ npm run cli -- tenant-create \
   --name "Alpha Research"
 ```
 
-Register external secret references and provider manifests. Parallax stores references and hashes, not raw secrets:
-
-```bash
-npm run cli -- secret-ref-add \
-  --root-dir managed-saas \
-  --name MARKET_DATA_VENDOR \
-  --scope market_data_vendor \
-  --ref secret://vendor/market-data
-
-npm run cli -- integration-add \
-  --root-dir managed-saas \
-  --kind market_data_vendor \
-  --name "Licensed Market Data" \
-  --provider "licensed_us_equities_vendor" \
-  --secret-ref MARKET_DATA_VENDOR \
-  --tenant alpha
-```
-
-Check and export managed readiness:
+Run readiness:
 
 ```bash
 npm run saas-readiness -- --root-dir managed-saas
-
-npm run saas-export -- \
-  --root-dir managed-saas \
-  --out managed-saas-package.json
 ```
 
-Validate provider contracts and write the hosted research console:
-
-```bash
-npm run provider-validate -- --root-dir managed-saas
-
-npm run hosted-console -- \
-  --root-dir managed-saas \
-  --out managed-saas/parallax-hosted-console.html \
-  --api-token "$PARALLAX_HOSTED_API_TOKEN"
-```
-
-Check hosted API readiness, write tenant state, and run the local hosted API:
-
-```bash
-npm run hosted-api-status -- \
-  --root-dir managed-saas \
-  --api-token "$PARALLAX_HOSTED_API_TOKEN"
-
-npm run tenant-state-set -- \
-  --root-dir managed-saas \
-  --tenant alpha \
-  --key screen.settings \
-  --value '{"symbols":["NVDA"],"mode":"research"}'
-
-npm run hosted-serve -- \
-  --root-dir managed-saas \
-  --api-token "$PARALLAX_HOSTED_API_TOKEN"
-```
-
-Preview and apply guided connector setup repairs:
+Preview setup issues and suggested repairs:
 
 ```bash
 npm run setup-repair-status -- \
   --root-dir managed-saas \
+  --tenant alpha \
+  --symbol NVDA \
   --api-token "$PARALLAX_HOSTED_API_TOKEN"
+```
 
+Apply the next safe setup action:
+
+```bash
 npm run setup-repair-apply -- \
   --root-dir managed-saas \
+  --tenant alpha \
+  --symbol NVDA \
   --api-token "$PARALLAX_HOSTED_API_TOKEN" \
   --action next
 ```
 
-Invite a workspace user without sharing the service token:
+Start the hosted API:
+
+```bash
+npm run hosted-serve -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN" \
+  --host 127.0.0.1 \
+  --port 8888
+```
+
+Useful hosted routes:
+
+- `GET /healthz`
+- `GET /readyz`
+- `GET /join`
+- `GET /tenant-console`
+- `GET /console`
+- `GET /api/control-plane`
+- `GET /api/onboarding/status`
+- `POST /api/onboarding/invitations`
+- `POST /api/onboarding/accept`
+- `GET /api/account/me`
+- `POST /api/account/profile`
+- `POST /api/account/memberships`
+- `GET /api/setup-repair`
+- `POST /api/setup-repair`
+- `GET /api/foundation`
+- `GET /api/identity/status`
+- `GET /api/storage/status`
+- `GET /api/data-vendors/status`
+- `GET /api/llm-providers/status`
+- `GET /api/tenants`
+
+Authenticated API calls require:
+
+```bash
+curl -H "Authorization: Bearer $PARALLAX_HOSTED_API_TOKEN" \
+  http://127.0.0.1:8888/api/control-plane
+```
+
+Tenant-scoped calls also use:
+
+```bash
+-H "x-parallax-tenant: alpha"
+```
+
+## Invitations And Account Onboarding
+
+Create an invite:
 
 ```bash
 npm run invite-create -- \
@@ -629,39 +540,39 @@ npm run invite-create -- \
   --email analyst@example.com \
   --name "Analyst" \
   --role analyst
-
-npm run invite-accept -- \
-  --root-dir managed-saas \
-  --invite-token "$PARALLAX_INVITE_TOKEN" \
-  --email analyst@example.com
-
-npm run onboarding-status -- --root-dir managed-saas
 ```
 
-Open the public invite and tenant-user surfaces:
+Accept the invite:
 
 ```bash
-npm run hosted-serve -- \
+npm run invite-accept -- \
   --root-dir managed-saas \
-  --api-token "$PARALLAX_HOSTED_API_TOKEN"
-
-open "http://127.0.0.1:8888/join?token=$PARALLAX_INVITE_TOKEN"
-open "http://127.0.0.1:8888/tenant-console?tenant=alpha"
+  --invite-token pinv_x \
+  --email analyst@example.com \
+  --name "Analyst"
 ```
 
-Inspect or update an invited user account:
+Inspect the account:
 
 ```bash
 npm run account-me -- \
   --root-dir managed-saas \
-  --session-token "$PARALLAX_SESSION_TOKEN"
+  --session-token psess_x
+```
 
+Update the profile:
+
+```bash
 npm run account-profile-update -- \
   --root-dir managed-saas \
-  --session-token "$PARALLAX_SESSION_TOKEN" \
-  --name "Analyst" \
+  --session-token psess_x \
+  --name "Analyst Prime" \
   --default-tenant alpha
+```
 
+Set a workspace role:
+
+```bash
 npm run membership-role-set -- \
   --root-dir managed-saas \
   --email analyst@example.com \
@@ -669,50 +580,23 @@ npm run membership-role-set -- \
   --role reviewer
 ```
 
-Tenant-scoped API calls must include both bearer auth and the matching tenant header:
+The public invite shell is available at:
 
-```bash
-curl -H "Authorization: Bearer $PARALLAX_HOSTED_API_TOKEN" \
-  -H "x-parallax-tenant: alpha" \
-  http://127.0.0.1:8888/api/tenants/alpha/state
+```text
+http://127.0.0.1:8888/join?token=pinv_x
 ```
 
-Add the Phase 12 identity and durable-storage foundation:
+The public tenant console shell is available at:
 
-```bash
-npm run cli -- identity-init --root-dir managed-saas
-
-npm run cli -- identity-principal-add \
-  --root-dir managed-saas \
-  --email analyst@example.com \
-  --name "Analyst" \
-  --tenant alpha \
-  --role tenant_admin
-
-npm run cli -- identity-session-issue \
-  --root-dir managed-saas \
-  --email analyst@example.com \
-  --tenant alpha
-
-npm run cli -- storage-init --root-dir managed-saas
-
-npm run cli -- storage-object-put \
-  --root-dir managed-saas \
-  --tenant alpha \
-  --key screen.cache \
-  --value '{"symbols":["NVDA"],"mode":"research"}'
-
-npm run cli -- storage-checkpoint \
-  --root-dir managed-saas \
-  --tenant alpha \
-  --label baseline
-
-npm run hosted-foundation-status -- \
-  --root-dir managed-saas \
-  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+```text
+http://127.0.0.1:8888/tenant-console
 ```
 
-Register and import an external-data-vendor-shaped local replay pack:
+## External Provider Boundaries
+
+Parallax has production-shaped boundaries for external systems, but local operation remains deterministic and replayable.
+
+### Market Data Vendor Boundary
 
 ```bash
 npm run cli -- data-vendor-register \
@@ -720,22 +604,26 @@ npm run cli -- data-vendor-register \
   --tenant alpha \
   --adapter licensed-local \
   --name "Licensed Local Vendor" \
-  --provider licensed_us_equities_vendor \
+  --provider licensed_vendor \
   --secret-ref MARKET_DATA_VENDOR \
   --data-license licensed_for_internal_research \
-  --allowed-symbols NVDA
+  --allowed-symbols NVDA,QQQ
+```
 
+```bash
 npm run cli -- data-vendor-import \
   --root-dir managed-saas \
   --tenant alpha \
   --adapter licensed-local \
   --symbol NVDA \
   --source-dir fixtures
-
-npm run data-vendor-status -- --root-dir managed-saas
 ```
 
-Register and run an external-LLM-provider-shaped replay adapter:
+```bash
+npm run data-vendor-status -- --root-dir managed-saas --tenant alpha
+```
+
+### LLM Provider Boundary
 
 ```bash
 npm run cli -- llm-provider-register \
@@ -745,375 +633,215 @@ npm run cli -- llm-provider-register \
   --name "Model Gateway Replay" \
   --provider model_gateway \
   --secret-ref LLM_PROVIDER \
-  --model model_gateway_replay_v0
+  --model model_gateway_replay_v0 \
+  --allowed-personas quant_researcher,model_validator
+```
 
+```bash
 npm run cli -- llm-provider-analyze \
   --root-dir managed-saas \
   --tenant alpha \
   --adapter model-gateway-replay \
   --symbol NVDA \
   --thesis "post-earnings continuation with controlled risk"
-
-npm run llm-provider-status -- --root-dir managed-saas
 ```
-
-## Data-Backed Research
-
-Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
-
-Expected local data layout:
-
-```text
-data/
-  manifest.json
-  market/NVDA.csv
-  fundamentals/NVDA.json
-  events/NVDA.json
-  news/NVDA.json
-  actions/NVDA.json
-  portfolio/default.json
-```
-
-Check data freshness and licensing:
 
 ```bash
-npm run data-status -- \
-  --symbol NVDA \
-  --data-dir data \
-  --now 2026-05-01T14:30:00Z
+npm run llm-provider-status -- --root-dir managed-saas --tenant alpha
 ```
-
-Import a broker-style portfolio CSV:
-
-```bash
-npm run cli -- portfolio-import \
-  --csv broker.csv \
-  --out data/portfolio/default.json \
-  --account-id local_broker_export
-```
-
-Run a data-backed dossier:
-
-```bash
-npm run analyze --silent -- \
-  --symbol NVDA \
-  --thesis "data-backed continuation thesis" \
-  --data-dir data \
-  --ceiling paper_trade_candidate
-```
-
-If you need a specific Python interpreter:
-
-```bash
-PARALLAX_PYTHON=/path/to/python3 npm test
-```
-
-## Example Output
-
-A successful watchlist result looks like this:
-
-```text
-Decision
-  Action class: WATCHLIST
-  Thesis state: active
-  Confidence: 0.63
-  Freshness: 1
-  Confidence cap: required_checks
-  Next review trigger: Volatility regime changes materially.
-
-Strongest Bull Case
-  The 20-period momentum is positive, but the edge remains conditional on costs, volatility, and confirmation.
-
-Strongest Bear Case
-  The strongest countercase is that this thesis is chasing already-visible price action without enough validated edge.
-```
-
-This means Parallax is not saying “buy.” It is saying:
-
-> This thesis is currently worth watching, but it has required checks and can become stale or invalidated.
-
-## Monitoring A Thesis
-
-Every dossier has lifecycle triggers. For example, a thesis may invalidate if price breaks below a threshold.
-
-Replay an audit bundle:
-
-```bash
-node dist/src/cli/parallax.js replay --audit audits/dos_x.json
-```
-
-Check whether market movement changes the thesis state:
-
-```bash
-node dist/src/cli/parallax.js monitor \
-  --audit audits/dos_x.json \
-  --price 111 \
-  --now 2026-05-01T15:00:00Z
-```
-
-If a trigger fires, Parallax may return:
-
-```text
-Current state: invalidated
-
-Interpretation
-  This thesis is no longer actionable until a new analysis is run.
-```
-
-## Paper And Sandbox Modes
-
-Parallax includes a paper-trading lab and sandbox execution helpers, but they are intentionally gated.
-
-Paper tickets require:
-
-- an active thesis;
-- no hard vetoes;
-- an action class of `paper_trade_candidate`;
-- risk budget checks.
-
-Open a paper trade from a paper-eligible dossier:
-
-```bash
-npm run cli -- paper-open \
-  --audit audits/dos_x.json \
-  --audit-dir audits \
-  --risk-budget 0.01 \
-  --market-price 115
-```
-
-Close and attribute it:
-
-```bash
-npm run cli -- paper-close \
-  --audit-dir audits \
-  --trade paper_trade_x \
-  --exit-price 118 \
-  --reason target_reached
-```
-
-Review the process:
-
-```bash
-npm run cli -- paper-review \
-  --audit-dir audits \
-  --trade paper_trade_x \
-  --rating disciplined \
-  --notes "followed the invalidation plan"
-```
-
-Show the paper ledger and calibration summary:
-
-```bash
-npm run paper-ledger -- --audit-dir audits
-```
-
-Sandbox submission requires:
-
-- a paper-style ticket;
-- approval;
-- unexpired approval;
-- active lifecycle state;
-- pre-trade controls;
-- kill switch not active.
-
-There is no direct live broker integration in this prototype. Partner production submission is represented as a controlled handoff boundary and is locked by default.
 
 ## Testing
 
-Run:
+Run all tests:
 
 ```bash
 npm test
 ```
 
-The suite currently includes 70 tests:
+The suite currently covers the thesis pipeline, local workspace, lifecycle alerts, LLM council harness, paper lab, team governance, partner controls, beta deployment, managed SaaS, provider validation, hosted API, identity and storage foundation, data-vendor boundary, LLM-provider boundary, hosted research console, guided setup repair, workspace invitations, and account onboarding.
 
-- CLI human-output tests;
-- JSON output tests;
-- product-boundary tests;
-- council-provider evaluation tests;
-- local workspace tests;
-- Phase 1 local-alpha E2E tests;
-- Phase 2 data-backed research E2E tests;
-- Phase 3 LLM council provider, prompt-registry, adversarial-eval, and CLI smoke tests;
-- Phase 4 lifecycle trigger-editor, alert-preference, change-since-last-run, notification, and dashboard tests;
-- Phase 5 paper-ledger, risk-reservation, attribution, review, export/import, and CLI tests;
-- Phase 6 team-governance role, assignment, approval, release-readiness, export/import, dashboard, and CLI tests;
-- Phase 7 partner-execution legal approval, market-access review, human approval, kill switch, production lock, post-trade review, export/import, dashboard, and CLI tests;
-- Phase 8 beta-deployment readiness, authenticated API, analysis endpoint, dashboard endpoint, export, and CLI tests;
-- Phase 9 managed-SaaS tenant isolation, secret-reference hygiene, provider manifest, observability, export, and CLI tests;
-- Phase 10 provider-contract validation, hosted-console generation, raw-secret redaction, blocking checks, and CLI tests;
-- Phase 11 hosted API readiness, tenant state persistence, HTTP tenant isolation, analysis/library endpoints, hosted-console serving, secret-payload rejection, and CLI tests;
-- Phase 12 identity-session, scoped hosted API access, durable-storage object/checkpoint, raw-token redaction, cross-tenant denial, and CLI tests;
-- Phase 13 external-data-vendor adapter registration, tenant-scoped import, provenance/license gates, hosted API import, unsafe `data_dir` denial, and CLI tests;
-- Phase 14 external-LLM-provider adapter registration, provider-specific eval suite, replay analysis, evidence-only context, hosted API analysis, unsafe `data_dir` denial, secret-payload rejection, and CLI tests;
-- Phase 15 hosted-research-console onboarding, readiness rail, analysis form, tenant library, control-plane overview, redaction, and hosted route tests;
-- Phase 16 guided connector repair planner, hosted API repair application, console repair controls, convergence, redaction, and CLI tests;
-- Phase 17 workspace invitation creation, public invite acceptance, identity-session issuance, tenant access, console onboarding UI, redaction, and CLI tests;
-- Phase 18 public join page, tenant console shell, account profile self-service, membership role management, active-session role updates, scoped denial, redaction, and CLI tests;
-- synthetic end-to-end scenarios;
-- stale-data veto tests;
-- restricted-symbol veto tests;
-- concentration-risk tests;
-- high-volatility dissent tests;
-- future/past event handling tests;
-- lifecycle invalidation tests;
-- audit replay tests;
-- paper-trading tests;
-- sandbox approval and kill-switch tests.
+The tests are intentionally fixture-heavy. They generate arbitrary local data and validate that the system behaves correctly across e2e and smoke paths without requiring external credentials.
 
-The synthetic E2E suite creates temporary market, event, and portfolio data, then runs the full TypeScript + Python pipeline.
+Useful focused checks:
 
-More detail: [E2E_TESTING.md](E2E_TESTING.md)
+```bash
+npm run build
+npm run cli -- llm-eval
+npm run policy
+npm run data-status -- --symbol NVDA --data-dir fixtures
+```
 
 ## Repository Map
 
 ```text
 src/
-  app/            Static local alpha dashboard and hosted research console generators
-  analytics/      TypeScript bridge to Python analytics
-  beta/           Beta deployment readiness and authenticated API server
-  cli/            Parallax CLI
-  core/           IDs, schemas, shared contracts
-  council/        Personas and council runner
-  data/           Local data adapters, portfolio import, freshness status
-  decision/       Decision gate
-  evidence/       Evidence loading and snapshots
-  execution/      Sandbox and partner execution controls
-  governance/     Registry and calibration helpers
-  lifecycle/      Thesis state, trigger engine, alert prefs, overrides, notifications
-  library/        Local dossier library, source view, feedback, export
-  llm/            Prompt registry, evidence-only contexts, scripted provider, external replay provider, eval suites
-  paper/          Paper-trading helpers
-                  and persistent paper lab ledger
-  product/        Product boundary and prohibited-claim policy
-  providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, account self-service, durable storage, data-vendor boundary, LLM-provider boundary, workspace onboarding, hosted API, provider manifests, and readiness scaffold
-  team/           Team governance ledger, approvals, release controls, SOC 2 readiness
+  analytics/          TypeScript bridge to the Python analytics worker
+  app/                Static dashboards and hosted console rendering
+  audit.ts            Audit bundle read/write/replay
+  beta/               Local beta API and deployment readiness
+  cli/                Parallax CLI
+  core/               Shared schemas and identifiers
+  council/            Deterministic council personas and runner
+  data/               Fixture data adapters and portfolio import
+  decision/           Product and risk gates
+  evidence/           Evidence loading and storage
+  execution/          Sandbox and partner-control boundaries
+  lifecycle/          Monitoring, triggers, alerts, notifications
+  library/            Local audit library, watchlist, import/export
+  llm/                Scripted and external replay LLM boundaries
+  paper/              Paper trading lab
+  product/            Product policy and ceiling
+  providers/          External provider contract validation
+  saas/               Managed SaaS, hosted API, identity, storage, onboarding, account flows
+  team/               Team governance
 
 python/
   parallax_analytics.py
 
-fixtures/
-  market/
-  events/
-  portfolio/
-
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, onboarding, account console, and pipeline tests
+  *.test.ts           E2E, smoke, product-boundary, and phase-validation tests
+
+fixtures/
+  market/             Sample CSV market data
+  events/             Sample event data
+  portfolio/          Sample portfolio context
 
 TradeAgent/
-  design specs, iteration logs, and phased implementation plans
+  SPEC.md             Original product specification and thesis-agent design record
+  iteration_log.md    Iterative design log
+  PHASED_IMPLEMENTATION_PLAN.md
+
+artifacts/
+  phase_*             Generated validation reports, dashboards, JSON exports, and proof artifacts
 ```
 
-## Design Docs
+## Documentation
 
-- [SPEC.md](TradeAgent/SPEC.md)
-- [Phased Implementation Plan](TradeAgent/PHASED_IMPLEMENTATION_PLAN.md)
-- [Implementation Status](IMPLEMENTATION_STATUS.md)
-- [E2E Testing](E2E_TESTING.md)
-- [Productization Plan](PRODUCTIZATION_PLAN.md)
-- [Product Boundaries](PRODUCT_BOUNDARIES.md)
-- [Best Solution Notes](TradeAgent/best_solution.md)
+- [SPEC](TradeAgent/SPEC.md)
+- [Productization plan](PRODUCTIZATION_PLAN.md)
+- [Product boundaries](PRODUCT_BOUNDARIES.md)
+- [E2E testing plan](E2E_TESTING.md)
+- [Implementation status](IMPLEMENTATION_STATUS.md)
+- [Product notes](PRODUCT.md)
+- [Deployment scaffold](deploy/README.md)
+- [Example dossier](examples/sample_dossier.md)
 
-## Safety Boundaries
+## Configuration
 
-Parallax is intentionally conservative.
+Common environment variables:
 
-It can say:
+```bash
+PARALLAX_PYTHON=/path/to/python3
+PARALLAX_BETA_API_TOKEN=dev-secret-token
+PARALLAX_HOSTED_API_TOKEN=dev-secret-token
+```
 
-- no trade;
-- research needed;
-- watchlist;
-- paper-trade candidate.
+Common directories:
 
-It should not pretend to know the future. It should not hide uncertainty. It should not turn generated prose into live orders.
+```text
+audits/          Local analysis outputs
+fixtures/        Sample data inputs
+managed-saas/    Local managed SaaS control-plane state
+artifacts/       Generated validation artifacts
+```
 
-Current intentional limits:
+Common CLI flags:
 
-- no direct live broker integration;
-- partner production adapter is locked by default;
-- no live external market data vendor network call yet; Phase 13 imports licensed vendor-shaped local replay packs and blocks unsafe licenses/paths first;
-- no live external LLM API call yet; Phase 14 registers replay-only external-model adapter contracts, runs provider-specific evals, and blocks raw secrets/model networking first;
-- no external SSO provider yet; Phase 18 has local hash-only invitations, identity sessions, account settings, and role management, but does not connect a real SSO provider;
-- no hosted cloud tenancy yet; Phase 18 provides local multi-tenant API, identity/storage, repair, invitation onboarding, account settings, and tenant-console contracts, not cloud infrastructure;
-- no tax/legal/compliance advice;
-- no claim of trading profitability.
+```text
+--format json
+--json
+--data-dir fixtures
+--audit-dir audits
+--root-dir managed-saas
+--user-class self_directed_investor|independent_analyst|research_team|trading_educator|professional_reviewer
+--intended-use research|education|paper_trading|team_review|governance_review
+--council-mode deterministic|llm-scripted
+--ceiling no_trade|research_needed|watchlist|paper_trade_candidate|order_ticket_candidate
+```
 
-These are safety boundaries, not accidental omissions.
+## Security And Data Handling
+
+Parallax is designed to avoid accidental escalation:
+
+- no live brokerage adapter is enabled;
+- production partner routing is locked behind explicit controls;
+- external provider integrations use manifests and secret references, not raw persisted secrets;
+- identity sessions are stored hash-only;
+- tenant data is scoped by tenant identifiers;
+- external LLM behavior is replay-only by default;
+- evidence snapshots and audit bundles are written locally for inspection;
+- setup repair actions are previewable and bounded.
+
+Do not commit real API keys, brokerage credentials, private market data, or user secrets into fixtures, audits, artifacts, or managed SaaS state.
+
+## Use Cases
+
+Parallax is useful for:
+
+- self-directed research workflows that need stronger thesis discipline;
+- analyst notebooks where every market claim needs a supporting audit trail;
+- paper-trading labs that track thesis quality, not only PnL;
+- investment clubs and research teams that need review assignments and approvals;
+- trading educators who want to show why a thesis passes or fails;
+- product teams exploring a governed AI research assistant;
+- compliance-aware prototypes that need clear boundaries before external provider integrations.
+
+## What Parallax Is Not
+
+Parallax is not:
+
+- a financial adviser;
+- a signal service;
+- a portfolio manager;
+- a broker;
+- a live order router;
+- a guarantee of profitability;
+- a substitute for legal, compliance, or professional investment review.
+
+## Roadmap
+
+The product-shaped direction is:
+
+- richer thesis templates and guided onboarding;
+- expanded asset-class support;
+- stronger data-vendor adapters with explicit licensing controls;
+- real LLM-provider adapters behind strict claim-packet validation;
+- better hosted UI for tenant users;
+- richer team workflows and reviewer queues;
+- improved observability and deployment packaging;
+- optional regulated partner integrations only behind separate approval and compliance work.
+
+## Contributing
+
+This repository is still early, but useful contributions should preserve the core boundaries:
+
+- keep tests deterministic;
+- prefer local fixtures over network calls in CI;
+- keep numeric claims tied to analytics outputs;
+- keep research outputs separate from execution language;
+- add product gates when adding powerful behavior;
+- add e2e or smoke tests for user-facing workflows;
+- do not weaken tenant, identity, provider, or secret boundaries.
+
+Before opening a pull request:
+
+```bash
+npm install
+npm test
+```
+
+For docs-only changes, also run:
+
+```bash
+git diff --check
+```
+
+## License
+
+The repository currently declares `UNLICENSED` in `package.json`. Before publishing this as open source, choose and add an explicit license file, then update `package.json`. Common choices for this kind of developer-facing tool are MIT or Apache-2.0, but the right choice depends on how you want others to use, modify, and commercialize Parallax.
 
 ## Status
 
-Current state:
+Parallax is a local-first, productized prototype. The core analysis engine, CLI, tests, paper lab, governance workflows, provider boundaries, hosted API scaffold, onboarding, and account flows are implemented and covered by e2e or smoke tests.
 
-- TypeScript + Python prototype;
-- human-readable CLI;
-- machine-readable JSON mode;
-- product-boundary policy;
-- council provider/evaluation boundary;
-- local dossier library;
-- source viewer;
-- workspace lifecycle alerts;
-- portable workspace import/export;
-- local dashboard generator;
-- market, fundamentals, news, event, corporate-action, and portfolio adapters;
-- data freshness status;
-- portfolio CSV import;
-- scripted LLM council provider harness;
-- prompt, persona, and provider registry;
-- adversarial LLM eval suite;
-- lifecycle alert preferences;
-- custom lifecycle trigger overlays;
-- change-since-last-run monitor state;
-- local notification inbox;
-- persistent paper trading ledger;
-- paper risk-budget reservation;
-- paper outcome attribution and review notes;
-- paper calibration dashboard section;
-- team governance ledger;
-- role-aware review assignments;
-- comments and approvals;
-- release readiness controls;
-- governance export package;
-- SOC 2-style readiness program;
-- alpha feedback capture;
-- deterministic analytics;
-- full audit replay;
-- lifecycle monitoring;
-- paper, sandbox, and partner-control paths;
-- partner execution ledger and control report;
-- legal/compliance approval records;
-- market-access review records;
-- partner sandbox handoff;
-- production-adapter lock;
-- post-trade review records;
-- beta deployment config and readiness report;
-- authenticated beta API server;
-- Docker deployment scaffold;
-- beta export package;
-- managed SaaS control-plane config;
-- tenant workspace isolation;
-- external secret-reference registry;
-- external provider manifest registry;
-- managed observability event log;
-- managed SaaS readiness and export package;
-- provider contract validation report;
-- hosted research console with onboarding, analysis form, readiness rails, and tenant library panes;
-- hosted multi-tenant API server;
-- tenant state and event persistence;
-- hash-only local identity sessions;
-- scoped tenant API access;
-- durable storage object manifest and checkpoints;
-- external data vendor adapter registry;
-- tenant-scoped vendor data pack import;
-- external LLM provider replay adapter registry;
-- provider-specific LLM eval suite and hosted replay analysis;
-- guided connector setup repair planner and local apply workflow;
-- workspace invitation and account onboarding workflow;
-- public invite-link and tenant-console shells;
-- account profile and membership role management;
-- 70 passing tests.
-
-Within the prototype scope, Parallax is designed to answer:
-
-> Given the current evidence, what is the most defensible action class for this thesis, and what would prove it wrong?
+The system is intentionally conservative: it is designed to make thesis reasoning inspectable, falsifiable, and governable before any future work touches real external data, model networking, or regulated execution.
