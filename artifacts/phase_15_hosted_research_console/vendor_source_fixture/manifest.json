@@ -1,0 +1,22 @@
+{
+  "provider": "phase15_vendor_replay",
+  "license": "licensed_for_internal_research",
+  "sources": {
+    "market:NVDA": {
+      "source": "vendor-replay:market/NVDA.csv",
+      "license": "licensed_for_internal_research"
+    },
+    "events:NVDA": {
+      "source": "vendor-replay:events/NVDA.json",
+      "license": "licensed_for_internal_research"
+    },
+    "actions:NVDA": {
+      "source": "vendor-replay:actions/NVDA.json",
+      "license": "licensed_for_internal_research"
+    },
+    "portfolio:default": {
+      "source": "vendor-replay:portfolio/default.json",
+      "license": "internal"
+    }
+  }
+}

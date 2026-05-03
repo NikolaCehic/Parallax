@@ -33,6 +33,7 @@ Parallax tries to sit in the middle:
 - Phase 12 identity/storage foundation adds hash-only identity sessions, scoped tenant API access, durable storage object manifests, and checkpoint evidence.
 - Phase 13 external data vendor boundary adds licensed vendor adapter contracts, tenant-scoped vendor data packs, provenance hashes, and hosted import controls.
 - Phase 14 external LLM provider boundary adds replay-only model adapter contracts, provider-specific eval suites, evidence-only contexts, hosted replay analysis, and model-network/secret gates.
+- Phase 15 hosted research console turns readiness, onboarding, tenant analysis, provider/data/model boundaries, and tenant libraries into one usable product shell.
 
 Instead of asking:
 
@@ -120,7 +121,7 @@ TypeScript owns:
 - sandbox and partner execution controls.
 - beta API and deployment readiness.
 - managed SaaS control-plane scaffolding.
-- provider contract validation and hosted console generation.
+- provider contract validation and hosted research console generation.
 - hosted multi-tenant API and tenant persistence;
 - identity-session and durable-storage foundation.
 - external data vendor boundary and tenant-scoped imported data packs.
@@ -572,14 +573,15 @@ npm run saas-export -- \
   --out managed-saas-package.json
 ```
 
-Validate provider contracts and write the hosted console:
+Validate provider contracts and write the hosted research console:
 
 ```bash
 npm run provider-validate -- --root-dir managed-saas
 
 npm run hosted-console -- \
   --root-dir managed-saas \
-  --out managed-saas/parallax-hosted-console.html
+  --out managed-saas/parallax-hosted-console.html \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
 ```
 
 Check hosted API readiness, write tenant state, and run the local hosted API:
@@ -857,7 +859,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 62 tests:
+The suite currently includes 64 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -878,6 +880,7 @@ The suite currently includes 62 tests:
 - Phase 12 identity-session, scoped hosted API access, durable-storage object/checkpoint, raw-token redaction, cross-tenant denial, and CLI tests;
 - Phase 13 external-data-vendor adapter registration, tenant-scoped import, provenance/license gates, hosted API import, unsafe `data_dir` denial, and CLI tests;
 - Phase 14 external-LLM-provider adapter registration, provider-specific eval suite, replay analysis, evidence-only context, hosted API analysis, unsafe `data_dir` denial, secret-payload rejection, and CLI tests;
+- Phase 15 hosted-research-console onboarding, readiness rail, analysis form, tenant library, control-plane overview, redaction, and hosted route tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -897,7 +900,7 @@ More detail: [E2E_TESTING.md](E2E_TESTING.md)
 
 ```text
 src/
-  app/            Static local alpha dashboard generator
+  app/            Static local alpha dashboard and hosted research console generators
   analytics/      TypeScript bridge to Python analytics
   beta/           Beta deployment readiness and authenticated API server
   cli/            Parallax CLI
@@ -927,7 +930,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, data-vendor, LLM-provider, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -1025,7 +1028,7 @@ Current state:
 - managed observability event log;
 - managed SaaS readiness and export package;
 - provider contract validation report;
-- static hosted console generator;
+- hosted research console with onboarding, analysis form, readiness rails, and tenant library panes;
 - hosted multi-tenant API server;
 - tenant state and event persistence;
 - hash-only local identity sessions;
@@ -1035,7 +1038,7 @@ Current state:
 - tenant-scoped vendor data pack import;
 - external LLM provider replay adapter registry;
 - provider-specific LLM eval suite and hosted replay analysis;
-- 62 passing tests.
+- 64 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

@@ -276,7 +276,7 @@ Commands:
   saas-export --root-dir managed-saas --out managed-saas-package.json
   provider-validate [--root-dir managed-saas] [--out managed-saas/provider-validation.json]
   provider-status [--root-dir managed-saas]
-  hosted-console [--root-dir managed-saas] [--out managed-saas/parallax-hosted-console.html]
+  hosted-console [--root-dir managed-saas] [--out managed-saas/parallax-hosted-console.html] [--api-token "..."]
   hosted-api-status [--root-dir managed-saas] [--api-token "..."]
   tenant-persistence [--root-dir managed-saas] [--tenant alpha]
   tenant-state-set --root-dir managed-saas --tenant alpha --key watchlist.filter --value '{"symbols":["NVDA"]}'
@@ -1185,6 +1185,7 @@ async function main() {
       configPath,
       validationPath: providerValidationPath(rootDir),
       out: args.out && args.out !== true ? String(args.out) : undefined,
+      apiTokenHash: args["api-token"] && args["api-token"] !== true ? hostedApiTokenHash(String(args["api-token"])) : "",
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, hostedConsoleToHumanReport(result), result);

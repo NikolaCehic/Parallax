@@ -1,0 +1,15 @@
+{
+  "status": 200,
+  "bytes": 44009,
+  "contains": {
+    "Hosted Research Console": true,
+    "Readiness Checklist": true,
+    "Run Analysis": true,
+    "Boundary Status": true,
+    "Tenant Library": true,
+    "Control Plane JSON": true,
+    "sessionStorage": true
+  },
+  "raw_token_present": false,
+  "raw_secret_ref_present": false
+}

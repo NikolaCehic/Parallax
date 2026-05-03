@@ -1,0 +1,39 @@
+{
+  "schema_version": "0.1.0",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+  "storage_root": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage",
+  "provider": "local_durable_storage",
+  "region": "local_dev",
+  "created_at": "2026-05-03T10:00:00Z",
+  "durability_model": {
+    "mode": "local_durable_storage_contract",
+    "tenant_prefix_required": true,
+    "checkpoint_required": true,
+    "backup_retention_days": 30,
+    "encryption_at_rest": "local_dev_envelope_placeholder",
+    "raw_secret_storage_allowed": false,
+    "direct_cloud_storage_connection": false
+  },
+  "objects": [
+    {
+      "id": "storage_obj_034c63d023c0",
+      "tenant_slug": "alpha",
+      "key": "console.seed",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage/tenants/alpha/objects/console.seed.json",
+      "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+      "updated_at": "2026-05-03T10:00:00Z",
+      "raw_secret_stored": false
+    }
+  ],
+  "checkpoints": [
+    {
+      "id": "storage_checkpoint_ea6514b3afb5",
+      "label": "phase15-console",
+      "tenant_slug": "alpha",
+      "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage/checkpoints/storage_checkpoint_ea6514b3afb5.json",
+      "object_count": 1,
+      "created_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "updated_at": "2026-05-03T10:21:17.389Z"
+}

@@ -114,7 +114,8 @@ The current repo already has the right skeleton:
 - identity-session and durable-storage foundation;
 - external data vendor adapter boundary;
 - external LLM provider adapter boundary;
-- 62 tests;
+- hosted research console UX and onboarding shell;
+- 64 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -208,7 +209,9 @@ Implemented on 2026-05-02:
 - external LLM provider replay adapter registry;
 - provider-specific external LLM eval suite;
 - Phase 14 artifact bundle;
-- 62 passing tests.
+- hosted research console UX and onboarding shell;
+- Phase 15 artifact bundle;
+- 64 passing tests.
 
 ## Knowledge Gathered
 
@@ -1174,6 +1177,37 @@ Exit criteria:
 - external model replay cannot escalate to order-ticket candidates inside the general product boundary;
 - hosted replay analysis rejects explicit `data_dir` paths outside the tenant workspace;
 - direct live model networking remains disabled.
+
+### Phase 15: Hosted Research Console UX And Onboarding
+
+Status: Complete for local hosted console scope.
+
+Goal:
+
+Turn the hosted API and readiness reports into a usable research console that lets a new operator see setup status, inspect boundaries, run a tenant-scoped analysis, and review tenant library state without memorizing CLI commands.
+
+Deliverables:
+
+- product context document for UI work;
+- hosted research console app shell;
+- readiness checklist;
+- readiness metric rail;
+- provider, identity, storage, data-vendor, and LLM-provider boundary panels;
+- tenant analysis form backed by the hosted API;
+- tenant library and tenant event panes;
+- control-plane overview includes data/model boundary state;
+- redaction and hosted-route tests;
+- Phase 15 artifact bundle.
+
+Exit criteria:
+
+- console renders a first-run setup checklist from live readiness state;
+- console exposes provider/data/model/identity/storage status without raw secrets;
+- hosted `/console` route serves the research shell behind auth;
+- control-plane overview includes data-vendor and LLM-provider status;
+- hosted analysis can create a tenant dossier and refresh tenant library state;
+- generated HTML contains no raw secret refs or hosted API token;
+- responsive layout keeps operational content scannable on desktop and mobile.
 
 ## Team Needed
 

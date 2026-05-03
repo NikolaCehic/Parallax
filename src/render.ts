@@ -1129,6 +1129,7 @@ export function hostedConsoleToHumanReport(result: any) {
     "",
     `Output: ${result.out}`,
     `Root dir: ${result.root_dir}`,
+    `Console kind: ${result.console_kind ?? "hosted_console"}`,
     `Provider validation: ${result.validation_path}`,
     `Bytes: ${result.bytes}`,
     `Generated at: ${result.generated_at}`

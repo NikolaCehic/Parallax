@@ -117,11 +117,13 @@ function assertTenantScopedDataDir(tenant: any, dataDir: string) {
 async function authenticateRequest({
   req,
   rootDir,
-  apiTokenHash
+  apiTokenHash,
+  now
 }: {
   req: http.IncomingMessage;
   rootDir: string;
   apiTokenHash: string;
+  now?: string;
 }) {
   const token = bearerToken(req);
   if (verifyHostedApiToken(apiTokenHash, token)) {
@@ -137,7 +139,7 @@ async function authenticateRequest({
   }
   if (!token) return null;
   try {
-    const identity = await verifyIdentitySession({ rootDir, sessionToken: token });
+    const identity = await verifyIdentitySession({ rootDir, sessionToken: token, now });
     return {
       kind: "identity_session",
       token,
@@ -153,12 +155,14 @@ async function requireAuthScope({
   auth,
   rootDir,
   tenantSlug = "",
-  scope
+  scope,
+  now
 }: {
   auth: any;
   rootDir: string;
   tenantSlug?: string;
   scope: string;
+  now?: string;
 }) {
   if (auth?.kind === "api_token") return auth;
   if (!auth) throw requestError(401, "Provide Authorization: Bearer <hosted_api_token_or_identity_session>.");
@@ -166,7 +170,8 @@ async function requireAuthScope({
     rootDir,
     sessionToken: auth.token,
     tenantSlug,
-    requiredScope: scope
+    requiredScope: scope,
+    now
   });
   return {
     ...auth,
@@ -341,12 +346,14 @@ export function createHostedRequestHandler({
   rootDir = "managed-saas",
   configPath = managedSaasConfigPath(rootDir),
   dataDir = "fixtures",
-  apiTokenHash = ""
+  apiTokenHash = "",
+  now
 }: {
   rootDir?: string;
   configPath?: string;
   dataDir?: string;
   apiTokenHash?: string;
+  now?: string;
 } = {}) {
   return async function hostedRequestHandler(req: http.IncomingMessage, res: http.ServerResponse) {
     withCors(res);
@@ -369,7 +376,7 @@ export function createHostedRequestHandler({
       }
 
       if (req.method === "GET" && url.pathname === "/readyz") {
-        const readiness = await hostedApiStatus({ rootDir, configPath, apiTokenHash });
+        const readiness = await hostedApiStatus({ rootDir, configPath, apiTokenHash, now });
         jsonResponse(res, readiness.status === "ready_for_hosted_multi_tenant_api" ? 200 : 503, readiness);
         return;
       }
@@ -399,7 +406,7 @@ export function createHostedRequestHandler({
         return;
       }
 
-      const auth = await authenticateRequest({ req, rootDir, apiTokenHash });
+      const auth = await authenticateRequest({ req, rootDir, apiTokenHash, now });
       if (!auth) {
         jsonResponse(res, 401, {
           error: "unauthorized",
@@ -409,49 +416,51 @@ export function createHostedRequestHandler({
       }
 
       if (req.method === "GET" && url.pathname === "/api/control-plane") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
         jsonResponse(res, 200, {
-          hosted_api: await hostedApiStatus({ rootDir, configPath, apiTokenHash }),
-          managed_saas: await managedSaasStatus({ rootDir, configPath }),
-          identity: await identityStatus({ rootDir, configPath }),
-          durable_storage: await durableStorageStatus({ rootDir, configPath })
+          hosted_api: await hostedApiStatus({ rootDir, configPath, apiTokenHash, now }),
+          managed_saas: await managedSaasStatus({ rootDir, configPath, now }),
+          identity: await identityStatus({ rootDir, configPath, now }),
+          durable_storage: await durableStorageStatus({ rootDir, configPath, now }),
+          data_vendor: await dataVendorStatus({ rootDir, configPath, now }),
+          llm_provider: await llmProviderStatus({ rootDir, configPath, now })
         });
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/foundation") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        const status = await hostedFoundationStatus({ rootDir, configPath, apiTokenHash });
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        const status = await hostedFoundationStatus({ rootDir, configPath, apiTokenHash, now });
         jsonResponse(res, status.status === "ready_for_identity_storage_foundation" ? 200 : 503, status);
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/identity/status") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        jsonResponse(res, 200, await identityStatus({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await identityStatus({ rootDir, configPath, now }));
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/storage/status") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        jsonResponse(res, 200, await durableStorageStatus({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await durableStorageStatus({ rootDir, configPath, now }));
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/data-vendors/status") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        jsonResponse(res, 200, await dataVendorStatus({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await dataVendorStatus({ rootDir, configPath, now }));
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/api/llm-providers/status") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        jsonResponse(res, 200, await llmProviderStatus({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await llmProviderStatus({ rootDir, configPath, now }));
         return;
       }
 
       if (req.method === "POST" && url.pathname === "/api/storage/checkpoints") {
-        await requireAuthScope({ auth, rootDir, scope: "storage:checkpoint" });
+        await requireAuthScope({ auth, rootDir, now, scope: "storage:checkpoint" });
         const body = await readJsonBody(req);
         const result = await createStorageCheckpoint({
           rootDir,
@@ -466,14 +475,14 @@ export function createHostedRequestHandler({
       }
 
       if (req.method === "GET" && url.pathname === "/api/tenants") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        jsonResponse(res, 200, await tenantPersistenceStatus({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        jsonResponse(res, 200, await tenantPersistenceStatus({ rootDir, configPath, now }));
         return;
       }
 
       if (req.method === "GET" && url.pathname === "/console") {
-        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
-        textResponse(res, 200, await buildHostedConsoleHtml({ rootDir, configPath }));
+        await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
+        textResponse(res, 200, await buildHostedConsoleHtml({ rootDir, configPath, apiTokenHash, now }));
         return;
       }
 
@@ -484,29 +493,30 @@ export function createHostedRequestHandler({
         const tenant = await tenantFromRoute({ req, rootDir, configPath, tenantSlug });
 
         if (req.method === "GET" && action === "status") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await tenantPersistenceStatus({
             rootDir,
             configPath,
-            tenantSlug: tenant.tenant_slug
+            tenantSlug: tenant.tenant_slug,
+            now
           }));
           return;
         }
 
         if (req.method === "GET" && action === "library") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await listLibraryEntries({ auditDir: tenant.audit_dir }));
           return;
         }
 
         if (req.method === "GET" && action === "state") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await readTenantState({ rootDir, configPath, tenantSlug: tenant.tenant_slug }));
           return;
         }
 
         if (req.method === "POST" && action === "state") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
           const body = await readJsonBody(req);
           if (!body.key) {
             jsonResponse(res, 400, { error: "bad_request", message: "key is required." });
@@ -526,14 +536,14 @@ export function createHostedRequestHandler({
         }
 
         if (req.method === "GET" && action === "events") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
           jsonResponse(res, 200, await readTenantEvents({ rootDir, configPath, tenantSlug: tenant.tenant_slug }));
           return;
         }
 
         if (action === "storage") {
           if (req.method === "GET") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "storage:read" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "storage:read" });
             const key = url.searchParams.get("key");
             if (!key) {
               jsonResponse(res, 400, { error: "bad_request", message: "key query parameter is required." });
@@ -547,7 +557,7 @@ export function createHostedRequestHandler({
             return;
           }
           if (req.method === "POST") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "storage:write" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "storage:write" });
             const body = await readJsonBody(req);
             if (!body.key) {
               jsonResponse(res, 400, { error: "bad_request", message: "key is required." });
@@ -569,16 +579,17 @@ export function createHostedRequestHandler({
 
         if (action === "data-vendor") {
           if (req.method === "GET") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
             jsonResponse(res, 200, await dataVendorStatus({
               rootDir,
               configPath,
-              tenantSlug: tenant.tenant_slug
+              tenantSlug: tenant.tenant_slug,
+              now
             }));
             return;
           }
           if (req.method === "POST") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:write" });
             const body = await readJsonBody(req);
             if (!body.adapter_id || !body.symbol || !body.payload) {
               jsonResponse(res, 400, { error: "bad_request", message: "adapter_id, symbol, and payload are required." });
@@ -601,16 +612,17 @@ export function createHostedRequestHandler({
 
         if (action === "llm-provider") {
           if (req.method === "GET") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
             jsonResponse(res, 200, await llmProviderStatus({
               rootDir,
               configPath,
-              tenantSlug: tenant.tenant_slug
+              tenantSlug: tenant.tenant_slug,
+              now
             }));
             return;
           }
           if (req.method === "POST" && parts[4] === "analyze") {
-            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
+            await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
             const body = await readJsonBody(req);
             if (!body.adapter_id || !body.symbol || !body.thesis) {
               jsonResponse(res, 400, { error: "bad_request", message: "adapter_id, symbol, and thesis are required." });
@@ -674,7 +686,7 @@ export function createHostedRequestHandler({
         }
 
         if (req.method === "POST" && action === "analyze") {
-          await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
+          await requireAuthScope({ auth, rootDir, now, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
           const body = await readJsonBody(req);
           if (!body.symbol || !body.thesis) {
             jsonResponse(res, 400, { error: "bad_request", message: "symbol and thesis are required." });
@@ -749,6 +761,7 @@ export function createHostedServer(options: {
   configPath?: string;
   dataDir?: string;
   apiTokenHash?: string;
+  now?: string;
 } = {}) {
   return http.createServer(createHostedRequestHandler(options));
 }
@@ -759,7 +772,8 @@ export async function startHostedServer({
   dataDir = "fixtures",
   apiToken,
   host = "127.0.0.1",
-  port = 8888
+  port = 8888,
+  now
 }: {
   rootDir?: string;
   configPath?: string;
@@ -767,12 +781,13 @@ export async function startHostedServer({
   apiToken: string;
   host?: string;
   port?: number;
+  now?: string;
 }) {
   if (!apiToken || apiToken.length < 8) {
     throw new Error("hosted-serve requires --api-token with at least 8 characters.");
   }
   const apiTokenHash = hostedApiTokenHash(apiToken);
-  const server = createHostedServer({ rootDir, configPath, dataDir, apiTokenHash });
+  const server = createHostedServer({ rootDir, configPath, dataDir, apiTokenHash, now });
   await new Promise<void>((resolve) => server.listen(port, host, resolve));
   const address = server.address();
   const actualPort = typeof address === "object" && address ? address.port : port;

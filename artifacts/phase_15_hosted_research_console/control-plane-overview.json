@@ -1,0 +1,2123 @@
+{
+  "hosted_api": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+    "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+    "status": "ready_for_hosted_multi_tenant_api",
+    "summary": {
+      "tenant_count": 2,
+      "provider_count": 5,
+      "required_failure_count": 0,
+      "total_dossier_count": 2,
+      "raw_token_stored": false,
+      "direct_live_broker_connection": false
+    },
+    "controls": [
+      {
+        "id": "api_auth_configured",
+        "passed": true,
+        "severity": "required",
+        "detail": "Hosted API bearer auth token hash is configured at runtime."
+      },
+      {
+        "id": "provider_contracts_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Provider contract validation passed."
+      },
+      {
+        "id": "tenant_persistence_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant persistence paths are isolated and readable."
+      },
+      {
+        "id": "tenant_count",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant exists."
+      },
+      {
+        "id": "no_production_providers",
+        "passed": true,
+        "severity": "required",
+        "detail": "No provider manifest is enabled for production."
+      }
+    ],
+    "provider_validation": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+      "status": "ready_for_provider_contract_beta",
+      "summary": {
+        "provider_count": 5,
+        "contract_validated_count": 5,
+        "required_failure_count": 0,
+        "warning_count": 0,
+        "missing_required_kinds": [],
+        "managed_saas_status": "ready_for_managed_beta_scaffold",
+        "production_provider_count": 0
+      },
+      "controls": [
+        {
+          "id": "managed_saas_ready",
+          "passed": true,
+          "detail": "Managed SaaS scaffold readiness passed.",
+          "severity": "required"
+        },
+        {
+          "id": "required_provider_manifests",
+          "passed": true,
+          "detail": "Required provider manifests exist.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_contracts_validated",
+          "passed": true,
+          "detail": "Provider contract checks passed.",
+          "severity": "required"
+        },
+        {
+          "id": "no_production_providers",
+          "passed": true,
+          "detail": "No external provider is enabled for production.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_sanitized",
+          "passed": true,
+          "detail": "Provider report exposes secret names and hashes only.",
+          "severity": "required"
+        },
+        {
+          "id": "external_production_validation_pending",
+          "passed": true,
+          "detail": "External providers remain pending production validation.",
+          "severity": "warning"
+        }
+      ],
+      "providers": [
+        {
+          "id": "provider_val_3ea7b79f3a5a",
+          "integration_id": "integration_44881b64238c",
+          "kind": "identity_provider",
+          "name": "OIDC Contract",
+          "provider": "enterprise_oidc",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "IDENTITY_PROVIDER",
+          "secret_ref_hash": "c8388d9797093c5fcf687d462740b73853ef9000ebaa6dee156645dd774ade05",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "oidc_endpoint_https",
+              "passed": true,
+              "detail": "Identity provider endpoint is HTTPS.",
+              "severity": "required"
+            },
+            {
+              "id": "sso_not_live",
+              "passed": true,
+              "detail": "SSO is not treated as live production.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_61d09c106406",
+          "integration_id": "integration_98d3a7e5f24a",
+          "kind": "market_data_vendor",
+          "name": "Licensed Market Data Contract",
+          "provider": "licensed_us_equities_vendor",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha",
+          "secret_ref_name": "MARKET_DATA_VENDOR",
+          "secret_ref_hash": "7433f0c69c34b878f59b2f4963014361c36c5ee1bd8e7c5528e40a2ed30bdb03",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "data_license_declared",
+              "passed": true,
+              "detail": "Market-data license status is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "market_data_not_live",
+              "passed": true,
+              "detail": "Market-data vendor is not treated as production live.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ab25f2e0b150",
+          "integration_id": "integration_e63485ee9cc0",
+          "kind": "llm_provider",
+          "name": "Model Gateway Contract",
+          "provider": "model_gateway",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "LLM_PROVIDER",
+          "secret_ref_hash": "5ba49551d11ce4a6ba66889e0e98bea38e458d6730561c36111aef3d31ef3b5c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_provider_not_live",
+              "passed": true,
+              "detail": "External LLM provider is not treated as production live.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_notes_present",
+              "passed": true,
+              "detail": "LLM manifest records validation or local-harness notes.",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_5c79520ac5fe",
+          "integration_id": "integration_e11b96b8cf40",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Contract",
+          "provider": "regulated_execution_partner",
+          "manifest_status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "REGULATED_PARTNER",
+          "secret_ref_hash": "3d479c06a4fe52af60699a15c982ad6468513ab5407684730834b93f597262bb",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "production_partner_locked",
+              "passed": true,
+              "detail": "Regulated partner production adapter is locked.",
+              "severity": "required"
+            },
+            {
+              "id": "legal_approval_not_assumed",
+              "passed": true,
+              "detail": "Legal/compliance approval is not assumed from the manifest.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ff263ac9762c",
+          "integration_id": "integration_0b5518b4b841",
+          "kind": "observability",
+          "name": "Managed Logs Contract",
+          "provider": "managed_logs_metrics",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "OBSERVABILITY_VENDOR",
+          "secret_ref_hash": "111c5f403880e861f903ac57acb4233f79615aacf398e4957c217708835f630c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "observability_events_present",
+              "passed": true,
+              "detail": "At least one managed observability event exists.",
+              "severity": "required"
+            },
+            {
+              "id": "pii_not_logged_by_policy",
+              "passed": true,
+              "detail": "Observability scaffold stores local events only and blocks secret-like metadata.",
+              "severity": "required"
+            }
+          ]
+        }
+      ],
+      "validation_path": ""
+    },
+    "tenant_persistence": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+      "status": "ready_for_tenant_persistence",
+      "summary": {
+        "tenant_count": 2,
+        "total_state_key_count": 0,
+        "total_event_count": 2,
+        "total_dossier_count": 2,
+        "tenant_paths_isolated": true
+      },
+      "tenants": [
+        {
+          "tenant_slug": "alpha",
+          "tenant_name": "Alpha Research",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/audits",
+          "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/tenant-state.json",
+          "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/tenant-events.jsonl",
+          "state_key_count": 0,
+          "event_count": 2,
+          "dossier_count": 2,
+          "latest_event": {
+            "id": "tenant_evt_75356553d7aa",
+            "tenant_slug": "alpha",
+            "event_type": "tenant_analysis_created",
+            "actor": "hosted_api",
+            "payload": {
+              "dossier_id": "dos_037e17203db8",
+              "symbol": "NVDA",
+              "action_class": "watchlist"
+            },
+            "created_at": "2026-05-03T10:00:00Z"
+          }
+        },
+        {
+          "tenant_slug": "beta",
+          "tenant_name": "Beta Research",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/beta/audits",
+          "state_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/beta/tenant-state.json",
+          "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/beta/tenant-events.jsonl",
+          "state_key_count": 0,
+          "event_count": 0,
+          "dossier_count": 0,
+          "latest_event": null
+        }
+      ]
+    }
+  },
+  "managed_saas": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "readiness": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "status": "ready_for_managed_beta_scaffold",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+      "summary": {
+        "tenant_count": 2,
+        "secret_ref_count": 5,
+        "integration_count": 5,
+        "observability_event_count": 1,
+        "required_failed_count": 0,
+        "integration_kinds": {
+          "identity_provider": 1,
+          "market_data_vendor": 1,
+          "llm_provider": 1,
+          "regulated_partner": 1,
+          "storage": 0,
+          "observability": 1
+        }
+      },
+      "controls": [
+        {
+          "id": "tenant_isolation",
+          "passed": true,
+          "detail": "Tenant audit dirs stay inside the managed SaaS root.",
+          "severity": "required"
+        },
+        {
+          "id": "tenant_count",
+          "passed": true,
+          "detail": "At least one tenant workspace exists.",
+          "severity": "required"
+        },
+        {
+          "id": "cross_tenant_queries_disabled",
+          "passed": true,
+          "detail": "Cross-tenant queries are disabled by default.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_only",
+          "passed": true,
+          "detail": "Only external secret references are stored.",
+          "severity": "required"
+        },
+        {
+          "id": "identity_provider_manifest",
+          "passed": true,
+          "detail": "Identity provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "market_data_vendor_manifest",
+          "passed": true,
+          "detail": "Market-data vendor manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "llm_provider_manifest",
+          "passed": true,
+          "detail": "LLM provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "regulated_partner_manifest",
+          "passed": true,
+          "detail": "Regulated partner manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "observability_manifest",
+          "passed": true,
+          "detail": "Observability provider manifest exists.",
+          "severity": "required"
+        },
+        {
+          "id": "observability_enabled",
+          "passed": true,
+          "detail": "Observability manifest and events exist.",
+          "severity": "required"
+        },
+        {
+          "id": "production_execution_locked",
+          "passed": true,
+          "detail": "Regulated partner production integration is not enabled by manifest.",
+          "severity": "required"
+        },
+        {
+          "id": "external_integrations_not_validated",
+          "passed": true,
+          "detail": "External integrations are visible but not treated as production validated.",
+          "severity": "warning"
+        }
+      ],
+      "tenants": [
+        {
+          "id": "tenant_70f3bb2980c1",
+          "slug": "alpha",
+          "name": "Alpha Research",
+          "owner": "Alpha Research Owner",
+          "plan": "private_beta",
+          "region": "local_dev",
+          "data_residency": "local_dev",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/audits",
+          "created_at": "2026-05-03T10:00:00Z"
+        },
+        {
+          "id": "tenant_bd32cad09ea4",
+          "slug": "beta",
+          "name": "Beta Research",
+          "owner": "Beta Research Owner",
+          "plan": "private_beta",
+          "region": "local_dev",
+          "data_residency": "local_dev",
+          "status": "active",
+          "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/beta/audits",
+          "created_at": "2026-05-03T10:00:00Z"
+        }
+      ],
+      "secret_refs": [
+        {
+          "id": "secret_ref_f523463d0d91",
+          "name": "IDENTITY_PROVIDER",
+          "provider": "external_secret_manager",
+          "scope": "identity_provider",
+          "secret_ref_hash": "c8388d9797093c5fcf687d462740b73853ef9000ebaa6dee156645dd774ade05",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_de7c9929ff5b",
+          "name": "MARKET_DATA_VENDOR",
+          "provider": "external_secret_manager",
+          "scope": "market_data_vendor",
+          "secret_ref_hash": "7433f0c69c34b878f59b2f4963014361c36c5ee1bd8e7c5528e40a2ed30bdb03",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_3fe71e94a43b",
+          "name": "LLM_PROVIDER",
+          "provider": "external_secret_manager",
+          "scope": "llm_provider",
+          "secret_ref_hash": "5ba49551d11ce4a6ba66889e0e98bea38e458d6730561c36111aef3d31ef3b5c",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_8544bedc3b7a",
+          "name": "REGULATED_PARTNER",
+          "provider": "external_secret_manager",
+          "scope": "regulated_partner",
+          "secret_ref_hash": "3d479c06a4fe52af60699a15c982ad6468513ab5407684730834b93f597262bb",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        },
+        {
+          "id": "secret_ref_7f7fc1c90587",
+          "name": "OBSERVABILITY_VENDOR",
+          "provider": "external_secret_manager",
+          "scope": "observability",
+          "secret_ref_hash": "111c5f403880e861f903ac57acb4233f79615aacf398e4957c217708835f630c",
+          "raw_secret_stored": false,
+          "rotation_days": 90
+        }
+      ],
+      "integrations": [
+        {
+          "id": "integration_44881b64238c",
+          "kind": "identity_provider",
+          "name": "OIDC Contract",
+          "provider": "enterprise_oidc",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "IDENTITY_PROVIDER",
+          "data_license": "",
+          "endpoint": "https://idp.example.invalid/oauth2",
+          "notes": "OIDC discovery document must be validated before production.",
+          "created_at": "2026-05-03T10:00:00Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_98d3a7e5f24a",
+          "kind": "market_data_vendor",
+          "name": "Licensed Market Data Contract",
+          "provider": "licensed_us_equities_vendor",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha",
+          "secret_ref": "MARKET_DATA_VENDOR",
+          "data_license": "licensed_for_internal_research",
+          "endpoint": "",
+          "notes": "License and redistribution status must be approved before production.",
+          "created_at": "2026-05-03T10:00:00Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_e63485ee9cc0",
+          "kind": "llm_provider",
+          "name": "Model Gateway Contract",
+          "provider": "model_gateway",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "LLM_PROVIDER",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "External model adapter must pass the council eval suite before production.",
+          "created_at": "2026-05-03T10:00:00Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_e11b96b8cf40",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Contract",
+          "provider": "regulated_execution_partner",
+          "status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "REGULATED_PARTNER",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "Legal, market-access, and production-adapter approvals are not assumed.",
+          "created_at": "2026-05-03T10:00:00Z",
+          "raw_secret_stored": false
+        },
+        {
+          "id": "integration_0b5518b4b841",
+          "kind": "observability",
+          "name": "Managed Logs Contract",
+          "provider": "managed_logs_metrics",
+          "status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref": "OBSERVABILITY_VENDOR",
+          "data_license": "",
+          "endpoint": "",
+          "notes": "Production exporter must pass PII and retention checks.",
+          "created_at": "2026-05-03T10:00:00Z",
+          "raw_secret_stored": false
+        }
+      ],
+      "observability": {
+        "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+        "event_count": 1,
+        "by_severity": {
+          "info": 1
+        },
+        "by_type": {
+          "research_console_artifact_fixture": 1
+        },
+        "by_tenant": {
+          "alpha": 1
+        },
+        "latest": [
+          {
+            "id": "obs_b61745f8d625",
+            "tenant_slug": "alpha",
+            "event_type": "research_console_artifact_fixture",
+            "severity": "info",
+            "message": "Phase 15 research console artifact fixture.",
+            "metadata": {
+              "phase": 15
+            },
+            "created_at": "2026-05-03T10:00:00Z"
+          }
+        ]
+      }
+    },
+    "control_plane_id": "saas_cp_b2b4c2240f8d",
+    "environment": "managed_beta",
+    "tenancy": {
+      "isolation_model": "tenant_directory_per_workspace",
+      "path_traversal_protection": true,
+      "cross_tenant_queries_allowed": false,
+      "default_region": "local_dev",
+      "pii_storage": "not_configured"
+    },
+    "production_boundaries": {
+      "direct_broker_connection": false,
+      "production_partner_adapter_default": "locked",
+      "external_provider_credentials_required": true
+    }
+  },
+  "identity": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+    "directory_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/identity-directory.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/identity-events.jsonl",
+    "status": "ready_for_identity_foundation",
+    "summary": {
+      "principal_count": 1,
+      "tenant_membership_count": 1,
+      "session_count": 1,
+      "active_session_count": 1,
+      "event_count": 3,
+      "raw_session_token_stored": false,
+      "required_failure_count": 0
+    },
+    "controls": [
+      {
+        "id": "identity_directory_initialized",
+        "passed": true,
+        "severity": "required",
+        "detail": "Identity directory is initialized."
+      },
+      {
+        "id": "principal_count",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one identity principal exists."
+      },
+      {
+        "id": "tenant_memberships_valid",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant memberships refer to known managed SaaS tenants."
+      },
+      {
+        "id": "sessions_hash_only",
+        "passed": true,
+        "severity": "required",
+        "detail": "Persisted sessions contain hashes only, never raw bearer values."
+      },
+      {
+        "id": "raw_session_token_storage_blocked",
+        "passed": true,
+        "severity": "required",
+        "detail": "Identity token policy blocks raw session token storage."
+      }
+    ],
+    "principals": [
+      {
+        "id": "principal_5594b208b328",
+        "email": "analyst@example.com",
+        "name": "Phase Fifteen Analyst",
+        "status": "active",
+        "platform_admin": false,
+        "memberships": [
+          {
+            "tenant_slug": "alpha",
+            "role": "tenant_admin",
+            "scopes": [
+              "tenant:read",
+              "tenant:write",
+              "analysis:create",
+              "storage:read",
+              "storage:write",
+              "console:read"
+            ]
+          }
+        ]
+      }
+    ],
+    "sessions": [
+      {
+        "id": "session_86043c21313d",
+        "email": "analyst@example.com",
+        "tenant_slug": "alpha",
+        "role": "tenant_admin",
+        "scopes": [
+          "tenant:read",
+          "tenant:write",
+          "analysis:create",
+          "storage:read",
+          "storage:write",
+          "console:read"
+        ],
+        "issued_at": "2026-05-03T10:00:00Z",
+        "expires_at": "2026-05-03T11:00:00.000Z",
+        "revoked_at": "",
+        "raw_session_token_stored": false
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "identity_evt_f1f2941c348f",
+        "event_type": "identity_session_issued",
+        "actor": "identity_provider",
+        "payload": {
+          "session_id": "session_86043c21313d",
+          "principal_id": "principal_5594b208b328",
+          "email": "analyst@example.com",
+          "tenant_slug": "alpha",
+          "expires_at": "2026-05-03T11:00:00.000Z"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_cb5d1befe247",
+        "event_type": "identity_principal_registered",
+        "actor": "platform",
+        "payload": {
+          "principal_id": "principal_5594b208b328",
+          "email": "analyst@example.com",
+          "tenant_slug": "alpha",
+          "role": "tenant_admin"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "identity_evt_d120f4336b76",
+        "event_type": "identity_directory_initialized",
+        "actor": "platform",
+        "payload": {
+          "issuer": "parallax-local-identity"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ]
+  },
+  "durable_storage": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+    "storage_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage-events.jsonl",
+    "status": "ready_for_durable_storage_foundation",
+    "summary": {
+      "object_count": 1,
+      "checkpoint_count": 1,
+      "event_count": 3,
+      "required_failure_count": 0,
+      "raw_secret_stored": false,
+      "direct_cloud_storage_connection": false
+    },
+    "controls": [
+      {
+        "id": "durable_storage_initialized",
+        "passed": true,
+        "severity": "required",
+        "detail": "Durable storage manifest exists."
+      },
+      {
+        "id": "storage_root_inside_managed_root",
+        "passed": true,
+        "severity": "required",
+        "detail": "Storage root stays inside the managed SaaS root."
+      },
+      {
+        "id": "tenant_object_paths_isolated",
+        "passed": true,
+        "severity": "required",
+        "detail": "Tenant object paths use tenant-scoped storage prefixes."
+      },
+      {
+        "id": "checkpoint_exists",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one durability checkpoint exists."
+      },
+      {
+        "id": "checkpoint_paths_isolated",
+        "passed": true,
+        "severity": "required",
+        "detail": "Checkpoint files stay under the durable storage checkpoint prefix."
+      },
+      {
+        "id": "raw_secret_storage_blocked",
+        "passed": true,
+        "severity": "required",
+        "detail": "Storage manifest and object records do not store raw secrets."
+      },
+      {
+        "id": "direct_cloud_storage_connection_disabled",
+        "passed": true,
+        "severity": "required",
+        "detail": "This phase defines the durable storage contract without connecting production cloud storage."
+      }
+    ],
+    "storage": {
+      "storage_root": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage",
+      "provider": "local_durable_storage",
+      "region": "local_dev",
+      "durability_model": {
+        "mode": "local_durable_storage_contract",
+        "tenant_prefix_required": true,
+        "checkpoint_required": true,
+        "backup_retention_days": 30,
+        "encryption_at_rest": "local_dev_envelope_placeholder",
+        "raw_secret_storage_allowed": false,
+        "direct_cloud_storage_connection": false
+      }
+    },
+    "objects": [
+      {
+        "id": "storage_obj_034c63d023c0",
+        "tenant_slug": "alpha",
+        "key": "console.seed",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage/tenants/alpha/objects/console.seed.json",
+        "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f",
+        "updated_at": "2026-05-03T10:00:00Z",
+        "raw_secret_stored": false
+      }
+    ],
+    "checkpoints": [
+      {
+        "id": "storage_checkpoint_ea6514b3afb5",
+        "label": "phase15-console",
+        "tenant_slug": "alpha",
+        "path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/durable-storage/checkpoints/storage_checkpoint_ea6514b3afb5.json",
+        "object_count": 1,
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "storage_evt_330dc5befb2b",
+        "event_type": "durable_storage_checkpoint_created",
+        "actor": "storage_api",
+        "payload": {
+          "checkpoint_id": "storage_checkpoint_ea6514b3afb5",
+          "tenant_slug": "alpha",
+          "object_count": 1
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_30ec94e46e3f",
+        "event_type": "durable_object_written",
+        "actor": "storage_api",
+        "payload": {
+          "tenant_slug": "alpha",
+          "key": "console.seed",
+          "value_hash": "46e9129e681264396f530ae1612db7908b427b69813ed9195ef937df0d1f535f"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "storage_evt_cbe7f98a0e9a",
+        "event_type": "durable_storage_initialized",
+        "actor": "platform",
+        "payload": {
+          "provider": "local_durable_storage",
+          "region": "local_dev"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ]
+  },
+  "data_vendor": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+    "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+    "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/data-vendor-adapters.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/data-vendor-events.jsonl",
+    "status": "ready_for_external_data_vendor_boundary",
+    "summary": {
+      "adapter_count": 1,
+      "import_count": 1,
+      "event_count": 2,
+      "required_failure_count": 0,
+      "data_status_failed_count": 0,
+      "raw_secret_stored": false,
+      "direct_vendor_network_connection": false
+    },
+    "controls": [
+      {
+        "id": "market_data_provider_contract_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Managed market-data provider contract is validated."
+      },
+      {
+        "id": "adapter_registered",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant-scoped data vendor adapter is registered."
+      },
+      {
+        "id": "vendor_pack_imported",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant-scoped vendor data pack has been imported."
+      },
+      {
+        "id": "data_status_passed",
+        "passed": true,
+        "severity": "required",
+        "detail": "Imported vendor packs pass freshness and license checks."
+      },
+      {
+        "id": "licenses_allowed",
+        "passed": true,
+        "severity": "required",
+        "detail": "Vendor adapter and import licenses are declared and not restricted."
+      },
+      {
+        "id": "tenant_data_paths_isolated",
+        "passed": true,
+        "severity": "required",
+        "detail": "Vendor data packs are stored under tenant-scoped data-vendor prefixes."
+      },
+      {
+        "id": "no_raw_vendor_secrets",
+        "passed": true,
+        "severity": "required",
+        "detail": "Vendor registry stores secret reference names and hashes only."
+      },
+      {
+        "id": "direct_vendor_network_disabled",
+        "passed": true,
+        "severity": "required",
+        "detail": "Phase 13 uses local replay contracts, not live vendor networking."
+      }
+    ],
+    "adapters": [
+      {
+        "id": "data_vendor_adapter_fa84f793de7c",
+        "adapter_id": "licensed-local",
+        "name": "Licensed Local Vendor",
+        "provider": "licensed_us_equities_vendor",
+        "tenant_slug": "alpha",
+        "secret_ref_name": "MARKET_DATA_VENDOR",
+        "endpoint": "",
+        "data_license": "licensed_for_internal_research",
+        "allowed_symbols": [
+          "NVDA"
+        ],
+        "max_staleness_minutes": 1440,
+        "mode": "local_vendor_replay_contract",
+        "direct_vendor_network_connection": false,
+        "raw_secret_stored": false,
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ],
+    "imports": [
+      {
+        "id": "data_vendor_import_e3157c139cdd",
+        "adapter_id": "licensed-local",
+        "tenant_slug": "alpha",
+        "symbol": "NVDA",
+        "data_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/data-vendors/licensed-local/NVDA",
+        "imported_at": "2026-05-03T10:00:00Z",
+        "imported_by": "data_vendor_import",
+        "license": "licensed_for_internal_research",
+        "provider": "licensed_us_equities_vendor",
+        "provenance_hash": "c16b765089687ea418a0fcba8f3779cb69c975ebe0f0b2d798f95fe552eddb24",
+        "data_status_passed": true,
+        "stale_item_count": 0,
+        "restricted_item_count": 0,
+        "direct_vendor_network_connection": false,
+        "raw_secret_stored": false
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "data_vendor_evt_b66cf72e38f6",
+        "event_type": "data_vendor_pack_imported",
+        "actor": "data_vendor_import",
+        "payload": {
+          "import_id": "data_vendor_import_e3157c139cdd",
+          "adapter_id": "licensed-local",
+          "tenant_slug": "alpha",
+          "symbol": "NVDA",
+          "data_status_passed": true,
+          "provenance_hash": "c16b765089687ea418a0fcba8f3779cb69c975ebe0f0b2d798f95fe552eddb24"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "data_vendor_evt_f02b8f7891fe",
+        "event_type": "data_vendor_adapter_registered",
+        "actor": "platform",
+        "payload": {
+          "adapter_id": "licensed-local",
+          "tenant_slug": "alpha",
+          "provider": "licensed_us_equities_vendor",
+          "data_license": "licensed_for_internal_research"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ],
+    "provider_validation": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+      "status": "ready_for_provider_contract_beta",
+      "summary": {
+        "provider_count": 5,
+        "contract_validated_count": 5,
+        "required_failure_count": 0,
+        "warning_count": 0,
+        "missing_required_kinds": [],
+        "managed_saas_status": "ready_for_managed_beta_scaffold",
+        "production_provider_count": 0
+      },
+      "controls": [
+        {
+          "id": "managed_saas_ready",
+          "passed": true,
+          "detail": "Managed SaaS scaffold readiness passed.",
+          "severity": "required"
+        },
+        {
+          "id": "required_provider_manifests",
+          "passed": true,
+          "detail": "Required provider manifests exist.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_contracts_validated",
+          "passed": true,
+          "detail": "Provider contract checks passed.",
+          "severity": "required"
+        },
+        {
+          "id": "no_production_providers",
+          "passed": true,
+          "detail": "No external provider is enabled for production.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_sanitized",
+          "passed": true,
+          "detail": "Provider report exposes secret names and hashes only.",
+          "severity": "required"
+        },
+        {
+          "id": "external_production_validation_pending",
+          "passed": true,
+          "detail": "External providers remain pending production validation.",
+          "severity": "warning"
+        }
+      ],
+      "providers": [
+        {
+          "id": "provider_val_3ea7b79f3a5a",
+          "integration_id": "integration_44881b64238c",
+          "kind": "identity_provider",
+          "name": "OIDC Contract",
+          "provider": "enterprise_oidc",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "IDENTITY_PROVIDER",
+          "secret_ref_hash": "c8388d9797093c5fcf687d462740b73853ef9000ebaa6dee156645dd774ade05",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "oidc_endpoint_https",
+              "passed": true,
+              "detail": "Identity provider endpoint is HTTPS.",
+              "severity": "required"
+            },
+            {
+              "id": "sso_not_live",
+              "passed": true,
+              "detail": "SSO is not treated as live production.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_61d09c106406",
+          "integration_id": "integration_98d3a7e5f24a",
+          "kind": "market_data_vendor",
+          "name": "Licensed Market Data Contract",
+          "provider": "licensed_us_equities_vendor",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha",
+          "secret_ref_name": "MARKET_DATA_VENDOR",
+          "secret_ref_hash": "7433f0c69c34b878f59b2f4963014361c36c5ee1bd8e7c5528e40a2ed30bdb03",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "data_license_declared",
+              "passed": true,
+              "detail": "Market-data license status is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "market_data_not_live",
+              "passed": true,
+              "detail": "Market-data vendor is not treated as production live.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ab25f2e0b150",
+          "integration_id": "integration_e63485ee9cc0",
+          "kind": "llm_provider",
+          "name": "Model Gateway Contract",
+          "provider": "model_gateway",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "LLM_PROVIDER",
+          "secret_ref_hash": "5ba49551d11ce4a6ba66889e0e98bea38e458d6730561c36111aef3d31ef3b5c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_provider_not_live",
+              "passed": true,
+              "detail": "External LLM provider is not treated as production live.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_notes_present",
+              "passed": true,
+              "detail": "LLM manifest records validation or local-harness notes.",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_5c79520ac5fe",
+          "integration_id": "integration_e11b96b8cf40",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Contract",
+          "provider": "regulated_execution_partner",
+          "manifest_status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "REGULATED_PARTNER",
+          "secret_ref_hash": "3d479c06a4fe52af60699a15c982ad6468513ab5407684730834b93f597262bb",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "production_partner_locked",
+              "passed": true,
+              "detail": "Regulated partner production adapter is locked.",
+              "severity": "required"
+            },
+            {
+              "id": "legal_approval_not_assumed",
+              "passed": true,
+              "detail": "Legal/compliance approval is not assumed from the manifest.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ff263ac9762c",
+          "integration_id": "integration_0b5518b4b841",
+          "kind": "observability",
+          "name": "Managed Logs Contract",
+          "provider": "managed_logs_metrics",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "OBSERVABILITY_VENDOR",
+          "secret_ref_hash": "111c5f403880e861f903ac57acb4233f79615aacf398e4957c217708835f630c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "observability_events_present",
+              "passed": true,
+              "detail": "At least one managed observability event exists.",
+              "severity": "required"
+            },
+            {
+              "id": "pii_not_logged_by_policy",
+              "passed": true,
+              "detail": "Observability scaffold stores local events only and blocks secret-like metadata.",
+              "severity": "required"
+            }
+          ]
+        }
+      ],
+      "validation_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/provider-validation.json"
+    }
+  },
+  "llm_provider": {
+    "schema_version": "0.1.0",
+    "generated_at": "2026-05-03T10:00:00Z",
+    "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+    "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+    "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/llm-provider-adapters.json",
+    "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/llm-provider-events.jsonl",
+    "status": "ready_for_external_llm_provider_boundary",
+    "summary": {
+      "adapter_count": 1,
+      "run_count": 1,
+      "event_count": 2,
+      "required_failure_count": 0,
+      "failed_replay_run_count": 0,
+      "raw_secret_stored": false,
+      "direct_model_network_connection": false
+    },
+    "controls": [
+      {
+        "id": "llm_provider_contract_ready",
+        "passed": true,
+        "severity": "required",
+        "detail": "Managed LLM provider contract is validated."
+      },
+      {
+        "id": "adapter_registered",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant-scoped LLM provider adapter is registered."
+      },
+      {
+        "id": "prompt_contract_known",
+        "passed": true,
+        "severity": "required",
+        "detail": "Adapter prompt ids are present in the prompt registry."
+      },
+      {
+        "id": "provider_eval_suite_passed",
+        "passed": true,
+        "severity": "required",
+        "detail": "Each adapter passed the external LLM replay eval suite."
+      },
+      {
+        "id": "replay_run_recorded",
+        "passed": true,
+        "severity": "required",
+        "detail": "At least one tenant-scoped replay analysis run has been recorded."
+      },
+      {
+        "id": "replay_eval_passed",
+        "passed": true,
+        "severity": "required",
+        "detail": "Recorded replay runs passed claim-packet evaluation."
+      },
+      {
+        "id": "budget_limits_explicit",
+        "passed": true,
+        "severity": "required",
+        "detail": "Adapters declare token/cost budgets and replay runs stay within them."
+      },
+      {
+        "id": "no_order_ticket_escalation",
+        "passed": true,
+        "severity": "required",
+        "detail": "External LLM replay cannot create an order-ticket candidate in the general product boundary."
+      },
+      {
+        "id": "no_raw_model_secrets",
+        "passed": true,
+        "severity": "required",
+        "detail": "LLM provider registry stores secret reference names and hashes only."
+      },
+      {
+        "id": "direct_model_network_disabled",
+        "passed": true,
+        "severity": "required",
+        "detail": "Phase 14 uses local replay contracts, not live model networking."
+      }
+    ],
+    "adapters": [
+      {
+        "id": "llm_provider_adapter_6e9947a9ecc6",
+        "adapter_id": "model-gateway-replay",
+        "name": "Model Gateway Replay",
+        "provider": "model_gateway",
+        "tenant_slug": "alpha",
+        "secret_ref_name": "LLM_PROVIDER",
+        "endpoint": "",
+        "model_registry_ref": "model_gateway_replay_v0",
+        "version": "0.1.0",
+        "prompt_ids": [
+          "claim_packet_v0",
+          "critique_packet_v0"
+        ],
+        "allowed_personas": [
+          "quant_researcher",
+          "data_quality_officer",
+          "model_validator",
+          "red_team_skeptic"
+        ],
+        "max_context_tokens": 50000,
+        "max_estimated_cost_usd": 0.2,
+        "cost_per_1k_context_tokens_usd": 0.0005,
+        "mode": "local_llm_replay_contract",
+        "direct_model_network_connection": false,
+        "raw_secret_stored": false,
+        "created_at": "2026-05-03T10:00:00Z",
+        "eval_suite": {
+          "id": "llm_provider_eval_848fa2ed5e5f",
+          "suite": "phase_14_external_llm_provider_boundary",
+          "passed": true,
+          "case_count": 6,
+          "prompt_registry_hash": "e54769c56702a6fdfcffbc5d41a26dce536f9da5319961913fe8dc401a2bc11d",
+          "created_at": "2026-05-03T10:00:00Z"
+        }
+      }
+    ],
+    "runs": [
+      {
+        "id": "llm_provider_run_b3899b65664a",
+        "adapter_id": "model-gateway-replay",
+        "tenant_slug": "alpha",
+        "dossier_id": "dos_330716dc2f20",
+        "symbol": "NVDA",
+        "horizon": "swing",
+        "scenario": "safe",
+        "model_registry_ref": "model_gateway_replay_v0",
+        "prompt_ids": [
+          "claim_packet_v0",
+          "critique_packet_v0"
+        ],
+        "context_hashes": [
+          "c490a23d24ab5585cc92ba4a92e4c52ab025042a8744529cd0110dcd3a940e91",
+          "0e4b4bd57aa54aab230f9c0c2ced3dc6df20d694d8ab2ec60ad5adc63fd34b15",
+          "b301aa3ef8e8a767924e6c64ac8bbc00fff88df293eba9d5500e00abb46e3636",
+          "b805d4ecdc4988c305ca11e2ef23bc0d41256bc6fccfce57e8273ca1a4b24522"
+        ],
+        "evidence_snapshot_hash": "570984448086a72a62558992abc848bcb6f6c171cb25efea1d6bd5cde18e1790",
+        "council_eval_id": "ceval_b7e7c0b39d16",
+        "council_eval_passed": true,
+        "council_eval_problem_count": 0,
+        "action_class": "watchlist",
+        "usage": {
+          "provider_id": "model-gateway-replay",
+          "prompt_ids": [
+            "claim_packet_v0",
+            "critique_packet_v0"
+          ],
+          "context_count": 4,
+          "context_tokens": 8624,
+          "prompt_tokens": 10,
+          "estimated_cost_usd": 0.004317,
+          "max_context_tokens": 50000,
+          "max_estimated_cost_usd": 0.2,
+          "budget_exceeded": false,
+          "direct_model_network_connection": false
+        },
+        "direct_model_network_connection": false,
+        "raw_secret_stored": false,
+        "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/tenants/alpha/audits/dos_330716dc2f20.json",
+        "created_at": "2026-05-03T10:00:00Z",
+        "created_by": "llm_provider_replay"
+      }
+    ],
+    "latest_events": [
+      {
+        "id": "llm_provider_evt_875b4cd16a6a",
+        "event_type": "llm_provider_replay_analysis_created",
+        "actor": "llm_provider_replay",
+        "payload": {
+          "run_id": "llm_provider_run_b3899b65664a",
+          "adapter_id": "model-gateway-replay",
+          "tenant_slug": "alpha",
+          "dossier_id": "dos_330716dc2f20",
+          "symbol": "NVDA",
+          "council_eval_passed": true,
+          "action_class": "watchlist"
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      },
+      {
+        "id": "llm_provider_evt_66e78a8cfd08",
+        "event_type": "llm_provider_adapter_registered",
+        "actor": "platform",
+        "payload": {
+          "adapter_id": "model-gateway-replay",
+          "tenant_slug": "alpha",
+          "provider": "model_gateway",
+          "model_registry_ref": "model_gateway_replay_v0",
+          "eval_suite_passed": true
+        },
+        "created_at": "2026-05-03T10:00:00Z"
+      }
+    ],
+    "provider_validation": {
+      "schema_version": "0.1.0",
+      "generated_at": "2026-05-03T10:00:00Z",
+      "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+      "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/managed-saas.json",
+      "status": "ready_for_provider_contract_beta",
+      "summary": {
+        "provider_count": 5,
+        "contract_validated_count": 5,
+        "required_failure_count": 0,
+        "warning_count": 0,
+        "missing_required_kinds": [],
+        "managed_saas_status": "ready_for_managed_beta_scaffold",
+        "production_provider_count": 0
+      },
+      "controls": [
+        {
+          "id": "managed_saas_ready",
+          "passed": true,
+          "detail": "Managed SaaS scaffold readiness passed.",
+          "severity": "required"
+        },
+        {
+          "id": "required_provider_manifests",
+          "passed": true,
+          "detail": "Required provider manifests exist.",
+          "severity": "required"
+        },
+        {
+          "id": "provider_contracts_validated",
+          "passed": true,
+          "detail": "Provider contract checks passed.",
+          "severity": "required"
+        },
+        {
+          "id": "no_production_providers",
+          "passed": true,
+          "detail": "No external provider is enabled for production.",
+          "severity": "required"
+        },
+        {
+          "id": "secret_refs_sanitized",
+          "passed": true,
+          "detail": "Provider report exposes secret names and hashes only.",
+          "severity": "required"
+        },
+        {
+          "id": "external_production_validation_pending",
+          "passed": true,
+          "detail": "External providers remain pending production validation.",
+          "severity": "warning"
+        }
+      ],
+      "providers": [
+        {
+          "id": "provider_val_3ea7b79f3a5a",
+          "integration_id": "integration_44881b64238c",
+          "kind": "identity_provider",
+          "name": "OIDC Contract",
+          "provider": "enterprise_oidc",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "IDENTITY_PROVIDER",
+          "secret_ref_hash": "c8388d9797093c5fcf687d462740b73853ef9000ebaa6dee156645dd774ade05",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "oidc_endpoint_https",
+              "passed": true,
+              "detail": "Identity provider endpoint is HTTPS.",
+              "severity": "required"
+            },
+            {
+              "id": "sso_not_live",
+              "passed": true,
+              "detail": "SSO is not treated as live production.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_61d09c106406",
+          "integration_id": "integration_98d3a7e5f24a",
+          "kind": "market_data_vendor",
+          "name": "Licensed Market Data Contract",
+          "provider": "licensed_us_equities_vendor",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "alpha",
+          "secret_ref_name": "MARKET_DATA_VENDOR",
+          "secret_ref_hash": "7433f0c69c34b878f59b2f4963014361c36c5ee1bd8e7c5528e40a2ed30bdb03",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "data_license_declared",
+              "passed": true,
+              "detail": "Market-data license status is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "market_data_not_live",
+              "passed": true,
+              "detail": "Market-data vendor is not treated as production live.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ab25f2e0b150",
+          "integration_id": "integration_e63485ee9cc0",
+          "kind": "llm_provider",
+          "name": "Model Gateway Contract",
+          "provider": "model_gateway",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "LLM_PROVIDER",
+          "secret_ref_hash": "5ba49551d11ce4a6ba66889e0e98bea38e458d6730561c36111aef3d31ef3b5c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_provider_not_live",
+              "passed": true,
+              "detail": "External LLM provider is not treated as production live.",
+              "severity": "required"
+            },
+            {
+              "id": "llm_notes_present",
+              "passed": true,
+              "detail": "LLM manifest records validation or local-harness notes.",
+              "severity": "warning"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_5c79520ac5fe",
+          "integration_id": "integration_e11b96b8cf40",
+          "kind": "regulated_partner",
+          "name": "Regulated Partner Contract",
+          "provider": "regulated_execution_partner",
+          "manifest_status": "disabled_until_legal_approval",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "REGULATED_PARTNER",
+          "secret_ref_hash": "3d479c06a4fe52af60699a15c982ad6468513ab5407684730834b93f597262bb",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "production_partner_locked",
+              "passed": true,
+              "detail": "Regulated partner production adapter is locked.",
+              "severity": "required"
+            },
+            {
+              "id": "legal_approval_not_assumed",
+              "passed": true,
+              "detail": "Legal/compliance approval is not assumed from the manifest.",
+              "severity": "required"
+            }
+          ]
+        },
+        {
+          "id": "provider_val_ff263ac9762c",
+          "integration_id": "integration_0b5518b4b841",
+          "kind": "observability",
+          "name": "Managed Logs Contract",
+          "provider": "managed_logs_metrics",
+          "manifest_status": "disabled_until_configured",
+          "validation_status": "not_validated",
+          "tenant_slug": "",
+          "secret_ref_name": "OBSERVABILITY_VENDOR",
+          "secret_ref_hash": "111c5f403880e861f903ac57acb4233f79615aacf398e4957c217708835f630c",
+          "raw_secret_stored": false,
+          "status": "contract_validated",
+          "required_failure_count": 0,
+          "checks": [
+            {
+              "id": "manifest_present",
+              "passed": true,
+              "detail": "Integration manifest is present.",
+              "severity": "required"
+            },
+            {
+              "id": "provider_named",
+              "passed": true,
+              "detail": "Provider name is declared.",
+              "severity": "required"
+            },
+            {
+              "id": "secret_reference_registered",
+              "passed": true,
+              "detail": "External secret reference is registered.",
+              "severity": "required"
+            },
+            {
+              "id": "raw_secret_not_stored",
+              "passed": true,
+              "detail": "No raw secret is stored in the manifest or secret registry.",
+              "severity": "required"
+            },
+            {
+              "id": "validation_status_declared",
+              "passed": true,
+              "detail": "Validation status is explicit.",
+              "severity": "required"
+            },
+            {
+              "id": "production_not_enabled_by_manifest",
+              "passed": true,
+              "detail": "Provider is not enabled for production by manifest.",
+              "severity": "required"
+            },
+            {
+              "id": "observability_events_present",
+              "passed": true,
+              "detail": "At least one managed observability event exists.",
+              "severity": "required"
+            },
+            {
+              "id": "pii_not_logged_by_policy",
+              "passed": true,
+              "detail": "Observability scaffold stores local events only and blocks secret-like metadata.",
+              "severity": "required"
+            }
+          ]
+        }
+      ],
+      "validation_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas/provider-validation.json"
+    }
+  }
+}

@@ -267,7 +267,8 @@ test("Phase 12 identity sessions and durable storage enforce scoped tenant acces
       rootDir,
       configPath,
       apiToken: TOKEN,
-      port: 0
+      port: 0,
+      now: NOW
     });
 
     const issued = await apiJson(started.url, "/api/identity/sessions", {

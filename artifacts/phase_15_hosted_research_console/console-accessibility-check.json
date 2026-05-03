@@ -1,0 +1,9 @@
+{
+  "lang_attribute": true,
+  "viewport_meta": true,
+  "nav_label": true,
+  "live_region": true,
+  "labeled_form_controls": true,
+  "focus_visible_styles": true,
+  "no_marketing_hero_copy": true
+}

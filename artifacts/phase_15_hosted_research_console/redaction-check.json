@@ -1,0 +1,13 @@
+{
+  "generated_html_raw_token_present": false,
+  "generated_html_raw_secret_ref_present": false,
+  "written_html_raw_token_present": false,
+  "written_html_raw_secret_ref_present": false,
+  "served_html_raw_token_present": false,
+  "served_html_raw_secret_ref_present": false,
+  "api_console_status": 200,
+  "api_analysis_status": 201,
+  "control_plane_status": 200,
+  "library_status": 200,
+  "created_dossier_visible_in_library": true
+}

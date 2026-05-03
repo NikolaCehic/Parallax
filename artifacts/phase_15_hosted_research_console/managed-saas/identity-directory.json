@@ -1,0 +1,60 @@
+{
+  "schema_version": "0.1.0",
+  "issuer": "parallax-local-identity",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_15_hosted_research_console/managed-saas",
+  "created_at": "2026-05-03T10:00:00Z",
+  "token_policy": {
+    "default_ttl_minutes": 60,
+    "max_ttl_minutes": 240,
+    "raw_session_token_storage_allowed": false,
+    "bearer_tokens_are_hash_only": true
+  },
+  "principals": [
+    {
+      "id": "principal_5594b208b328",
+      "email": "analyst@example.com",
+      "name": "Phase Fifteen Analyst",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "tenant_admin",
+          "scopes": [
+            "tenant:read",
+            "tenant:write",
+            "analysis:create",
+            "storage:read",
+            "storage:write",
+            "console:read"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T10:00:00Z",
+      "updated_at": "2026-05-03T10:00:00Z"
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session_86043c21313d",
+      "principal_id": "principal_5594b208b328",
+      "email": "analyst@example.com",
+      "tenant_slug": "alpha",
+      "role": "tenant_admin",
+      "scopes": [
+        "tenant:read",
+        "tenant:write",
+        "analysis:create",
+        "storage:read",
+        "storage:write",
+        "console:read"
+      ],
+      "token_hash": "eb2aa59af5776b57aed5ef30dc544ef7560bbd32b6094b9ee9fe5673f7658f53",
+      "issued_at": "2026-05-03T10:00:00Z",
+      "expires_at": "2026-05-03T11:00:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    }
+  ],
+  "updated_at": "2026-05-03T10:21:17.386Z"
+}

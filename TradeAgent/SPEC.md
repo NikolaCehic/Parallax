@@ -404,6 +404,7 @@ The system must never treat high confidence as actionable when freshness is low.
 - External data vendor imports must preserve provenance hashes, license status, and tenant-scoped paths.
 - External LLM provider replay must use evidence-only contexts, known prompt ids, provider-specific eval suites, and explicit token/cost budgets before it can influence a dossier.
 - Hosted analysis must reject explicit `data_dir` paths outside the tenant workspace.
+- Hosted console surfaces must keep auth-gated routes, readiness state, tenant analysis, and boundary evidence visible without persisting raw tokens or secret refs in generated HTML.
 - External providers must remain disabled until contract, license, legal, security, and production validation are complete.
 
 ## 11. MVP Functional Requirements
@@ -452,6 +453,7 @@ Later phases add:
 - durable storage readiness with tenant object manifests and checkpoint evidence;
 - external data vendor adapter readiness with license, provenance, and tenant path gates;
 - external LLM provider adapter readiness with replay eval, evidence-only context, budget, and tenant path gates;
+- hosted research console readiness with onboarding, tenant analysis, readiness rails, and redacted boundary status;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

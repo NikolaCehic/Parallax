@@ -1,0 +1,20 @@
+{
+  "bytes": 44009,
+  "console_kind": "hosted_research_console",
+  "contains": {
+    "Parallax Hosted Console": true,
+    "Research readiness and tenant analysis workspace": true,
+    "Readiness Checklist": true,
+    "Run Analysis": true,
+    "Boundary Status": true,
+    "Tenant Library": true,
+    "ready_for_external_data_vendor_boundary": true,
+    "ready_for_external_llm_provider_boundary": true,
+    "ready_for_identity_storage_foundation": true,
+    "sessionStorage": true,
+    "/api/tenants/": true
+  },
+  "raw_token_present": false,
+  "raw_secret_ref_present": false,
+  "token_hash_only": true
+}
