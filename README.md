@@ -32,6 +32,7 @@ Parallax tries to sit in the middle:
 - Phase 11 hosted API adds tenant-scoped persistence, HTTP tenant isolation, hosted API readiness, and CLI controls for local multi-tenant operation.
 - Phase 12 identity/storage foundation adds hash-only identity sessions, scoped tenant API access, durable storage object manifests, and checkpoint evidence.
 - Phase 13 external data vendor boundary adds licensed vendor adapter contracts, tenant-scoped vendor data packs, provenance hashes, and hosted import controls.
+- Phase 14 external LLM provider boundary adds replay-only model adapter contracts, provider-specific eval suites, evidence-only contexts, hosted replay analysis, and model-network/secret gates.
 
 Instead of asking:
 
@@ -92,6 +93,8 @@ Phase 3 adds the LLM provider harness without requiring cloud credentials.
 
 The default LLM path is `scripted_llm_council_v0`: a deterministic local stand-in for a future model adapter. It builds evidence-only context windows for each persona, tracks token and cost budgets, validates claim packets, and runs red-team cases against hallucinated references, unsupported calculations, hidden recommendation language, prompt-injection obedience, and budget overruns.
 
+Phase 14 adds a production-shaped external LLM provider boundary without live model networking. It registers tenant-scoped model adapter contracts, runs a provider-specific replay eval suite, records replay analysis runs, and lets hosted/CLI workflows use an external-model-shaped council only after the claim-packet eval passes.
+
 This means the product can test LLM-style behavior while keeping CI deterministic and every output replayable.
 
 ## Current Architecture
@@ -106,6 +109,7 @@ TypeScript owns:
 - council personas;
 - prompt/persona/provider registries;
 - scripted LLM council harness;
+- external LLM provider replay boundary and eval contracts;
 - cross-examination;
 - synthesis;
 - decision gates;
@@ -120,6 +124,7 @@ TypeScript owns:
 - hosted multi-tenant API and tenant persistence;
 - identity-session and durable-storage foundation.
 - external data vendor boundary and tenant-scoped imported data packs.
+- external LLM provider boundary and replay analysis records.
 
 Python owns:
 
@@ -661,6 +666,28 @@ npm run cli -- data-vendor-import \
 npm run data-vendor-status -- --root-dir managed-saas
 ```
 
+Register and run an external-LLM-provider-shaped replay adapter:
+
+```bash
+npm run cli -- llm-provider-register \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --adapter model-gateway-replay \
+  --name "Model Gateway Replay" \
+  --provider model_gateway \
+  --secret-ref LLM_PROVIDER \
+  --model model_gateway_replay_v0
+
+npm run cli -- llm-provider-analyze \
+  --root-dir managed-saas \
+  --tenant alpha \
+  --adapter model-gateway-replay \
+  --symbol NVDA \
+  --thesis "post-earnings continuation with controlled risk"
+
+npm run llm-provider-status -- --root-dir managed-saas
+```
+
 ## Data-Backed Research
 
 Parallax can read a local licensed data pack with market, fundamentals, events, news, corporate actions, and portfolio data.
@@ -830,7 +857,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 60 tests:
+The suite currently includes 62 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -850,6 +877,7 @@ The suite currently includes 60 tests:
 - Phase 11 hosted API readiness, tenant state persistence, HTTP tenant isolation, analysis/library endpoints, hosted-console serving, secret-payload rejection, and CLI tests;
 - Phase 12 identity-session, scoped hosted API access, durable-storage object/checkpoint, raw-token redaction, cross-tenant denial, and CLI tests;
 - Phase 13 external-data-vendor adapter registration, tenant-scoped import, provenance/license gates, hosted API import, unsafe `data_dir` denial, and CLI tests;
+- Phase 14 external-LLM-provider adapter registration, provider-specific eval suite, replay analysis, evidence-only context, hosted API analysis, unsafe `data_dir` denial, secret-payload rejection, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -882,12 +910,12 @@ src/
   governance/     Registry and calibration helpers
   lifecycle/      Thesis state, trigger engine, alert prefs, overrides, notifications
   library/        Local dossier library, source view, feedback, export
-  llm/            Prompt registry, evidence-only contexts, scripted provider, eval suite
+  llm/            Prompt registry, evidence-only contexts, scripted provider, external replay provider, eval suites
   paper/          Paper-trading helpers
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, hosted API, provider manifests, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, LLM-provider boundary, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -899,7 +927,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, data-vendor, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, identity/storage, data-vendor, LLM-provider, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -933,7 +961,7 @@ Current intentional limits:
 - no direct live broker integration;
 - partner production adapter is locked by default;
 - no live external market data vendor network call yet; Phase 13 imports licensed vendor-shaped local replay packs and blocks unsafe licenses/paths first;
-- no external LLM API integration yet; the current LLM path is a local scripted harness and Phase 12 validates manifests only;
+- no live external LLM API call yet; Phase 14 registers replay-only external-model adapter contracts, runs provider-specific evals, and blocks raw secrets/model networking first;
 - no external SSO provider yet; Phase 12 has a local identity-session foundation and validates identity-provider manifests, but does not connect a real SSO provider;
 - no hosted cloud tenancy yet; Phase 12 provides a local multi-tenant hosted API plus identity/storage contracts, not cloud infrastructure;
 - no tax/legal/compliance advice;
@@ -1005,7 +1033,9 @@ Current state:
 - durable storage object manifest and checkpoints;
 - external data vendor adapter registry;
 - tenant-scoped vendor data pack import;
-- 60 passing tests.
+- external LLM provider replay adapter registry;
+- provider-specific LLM eval suite and hosted replay analysis;
+- 62 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

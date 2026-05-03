@@ -6,7 +6,7 @@ Scope: analysis-first trading thesis council with lifecycle monitoring
 
 Implementation language split:
 
-- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, and external data vendor import contracts.
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, external data vendor import contracts, and external LLM provider replay contracts.
 - Python owns deterministic quant-style analytics.
 
 ## 1. Product Definition
@@ -35,6 +35,8 @@ The system must preserve the reasoning chain that produced the answer.
 - No tenant storage object outside a tenant-scoped storage prefix.
 - No imported market-data pack outside a tenant-scoped data-vendor prefix.
 - No restricted, unlicensed, or unknown-license vendor data in analysis-ready imported packs.
+- No live external model call, raw model credential, or external-model output path may bypass evidence-only context and claim-packet evaluation gates.
+- No hosted external-model analysis may use an explicit `data_dir` outside the tenant workspace.
 - No claim that the system provides legal, financial, tax, or investment advice.
 - No high-frequency trading design in the initial system.
 
@@ -400,6 +402,7 @@ The system must never treat high confidence as actionable when freshness is low.
 - Identity-session tokens must be hash-only at persistence boundaries and scope-checked before tenant API access.
 - Durable storage manifests must keep tenant objects and checkpoints inside the managed root.
 - External data vendor imports must preserve provenance hashes, license status, and tenant-scoped paths.
+- External LLM provider replay must use evidence-only contexts, known prompt ids, provider-specific eval suites, and explicit token/cost budgets before it can influence a dossier.
 - Hosted analysis must reject explicit `data_dir` paths outside the tenant workspace.
 - External providers must remain disabled until contract, license, legal, security, and production validation are complete.
 
@@ -448,6 +451,7 @@ Later phases add:
 - identity-session readiness with role/scoped tenant memberships;
 - durable storage readiness with tenant object manifests and checkpoint evidence;
 - external data vendor adapter readiness with license, provenance, and tenant path gates;
+- external LLM provider adapter readiness with replay eval, evidence-only context, budget, and tenant path gates;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

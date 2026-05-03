@@ -1,0 +1,13 @@
+{
+  "generated_at": "2026-05-03T10:00:00Z",
+  "purpose": "prove tenant-filtered LLM provider status does not expose other tenants event payloads",
+  "beta_adapter_id": "model-gateway-beta",
+  "alpha_adapter_count": 1,
+  "alpha_run_count": 1,
+  "alpha_event_tenants": [
+    "alpha",
+    "alpha"
+  ],
+  "alpha_event_scope_passed": true,
+  "beta_event_absent_from_alpha_status": true
+}

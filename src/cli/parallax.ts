@@ -42,6 +42,9 @@ import {
   lifecycleOverridesToHumanReport,
   lifecycleTriggerToHumanReport,
   llmEvalToHumanReport,
+  llmProviderAdapterToHumanReport,
+  llmProviderRunToHumanReport,
+  llmProviderStatusToHumanReport,
   monitorToHumanReport,
   paperCloseToHumanReport,
   paperLedgerToHumanReport,
@@ -185,6 +188,11 @@ import {
   importDataVendorPack,
   registerDataVendorAdapter
 } from "../saas/data_vendor.js";
+import {
+  llmProviderStatus,
+  registerLLMProviderAdapter,
+  runLLMProviderReplayAnalysis
+} from "../saas/llm_provider.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -285,6 +293,9 @@ Commands:
   data-vendor-register --root-dir managed-saas --tenant alpha --adapter licensed-local --name "Licensed Local Vendor" --provider licensed_vendor --secret-ref MARKET_DATA_VENDOR --data-license licensed_for_internal_research [--allowed-symbols NVDA,QQQ]
   data-vendor-import --root-dir managed-saas --tenant alpha --adapter licensed-local --symbol NVDA --source-dir fixtures
   data-vendor-status [--root-dir managed-saas] [--tenant alpha]
+  llm-provider-register --root-dir managed-saas --tenant alpha --adapter model-gateway-replay --name "Model Gateway Replay" --provider model_gateway --secret-ref LLM_PROVIDER --model model_gateway_replay_v0 [--allowed-personas quant_researcher,model_validator]
+  llm-provider-analyze --root-dir managed-saas --tenant alpha --adapter model-gateway-replay --symbol NVDA --thesis "post-earnings continuation"
+  llm-provider-status [--root-dir managed-saas] [--tenant alpha]
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1390,6 +1401,90 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, dataVendorStatusToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "llm-provider-register") {
+    for (const required of ["tenant", "adapter", "name", "provider", "secret-ref"]) {
+      if (!args[required]) throw new Error(`llm-provider-register requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await registerLLMProviderAdapter({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      adapterId: String(args.adapter),
+      name: String(args.name),
+      provider: String(args.provider),
+      secretRef: String(args["secret-ref"]),
+      endpoint: args.endpoint ? String(args.endpoint) : "",
+      modelRegistryRef: args.model ? String(args.model) : undefined,
+      promptIds: parseCsvList(args["prompt-ids"]) ?? undefined,
+      allowedPersonas: parseCsvList(args["allowed-personas"]) ?? undefined,
+      maxContextTokens: args["llm-budget-tokens"] && args["llm-budget-tokens"] !== true ? Number(args["llm-budget-tokens"]) : 50000,
+      maxEstimatedCostUsd: args["llm-budget-usd"] && args["llm-budget-usd"] !== true ? Number(args["llm-budget-usd"]) : 0.2,
+      costPer1kContextTokensUsd: args["llm-cost-per-1k"] && args["llm-cost-per-1k"] !== true ? Number(args["llm-cost-per-1k"]) : 0.0005,
+      evalDataDir: String(args["eval-data-dir"] ?? "fixtures"),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, llmProviderAdapterToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "llm-provider-analyze") {
+    for (const required of ["tenant", "adapter", "symbol", "thesis"]) {
+      if (!args[required]) throw new Error(`llm-provider-analyze requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await runLLMProviderReplayAnalysis({
+      rootDir,
+      configPath,
+      tenantSlug: String(args.tenant),
+      adapterId: String(args.adapter),
+      symbol: String(args.symbol),
+      horizon: String(args.horizon ?? "swing"),
+      thesis: String(args.thesis),
+      dataDir: String(args["data-dir"] ?? "fixtures"),
+      actionCeiling: String(args.ceiling ?? "watchlist"),
+      userClass: String(args["user-class"] ?? "research_team"),
+      intendedUse: String(args["intended-use"] ?? "team_review"),
+      scenario: String(args.scenario ?? "safe"),
+      llmBudget: parseLLMBudget(args),
+      audit: true,
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    const auditPath = result.run.audit_path;
+    const markdownPath = path.join(path.dirname(auditPath), `${result.dossier.id}.md`);
+    await writeFile(markdownPath, dossierToMarkdown(result.dossier));
+    await upsertLibraryEntry({
+      auditDir: path.dirname(auditPath),
+      dossier: result.dossier,
+      auditPath,
+      markdownPath
+    });
+    printResult(args, llmProviderRunToHumanReport(result), {
+      run: result.run,
+      dossier_id: result.dossier.id,
+      action_class: result.dossier.decision_packet.action_class,
+      council_eval_passed: result.run.council_eval_passed,
+      audit_path: auditPath,
+      markdown_path: markdownPath,
+      registry_path: result.registry_path
+    });
+    return;
+  }
+
+  if (command === "llm-provider-status") {
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await llmProviderStatus({
+      rootDir,
+      configPath,
+      tenantSlug: args.tenant ? String(args.tenant) : undefined,
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, llmProviderStatusToHumanReport(result), result);
     return;
   }
 

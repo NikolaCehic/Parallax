@@ -113,7 +113,8 @@ The current repo already has the right skeleton:
 - hosted multi-tenant API and tenant persistence;
 - identity-session and durable-storage foundation;
 - external data vendor adapter boundary;
-- 60 tests;
+- external LLM provider adapter boundary;
+- 62 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -204,7 +205,10 @@ Implemented on 2026-05-02:
 - external data vendor adapter registry;
 - tenant-scoped vendor data pack import;
 - Phase 13 artifact bundle;
-- 60 passing tests.
+- external LLM provider replay adapter registry;
+- provider-specific external LLM eval suite;
+- Phase 14 artifact bundle;
+- 62 passing tests.
 
 ## Knowledge Gathered
 
@@ -1140,6 +1144,36 @@ Exit criteria:
 - hosted analysis can use tenant-scoped imported packs;
 - hosted analysis rejects explicit `data_dir` paths outside the tenant workspace;
 - direct live vendor networking remains disabled.
+
+### Phase 14: External LLM Provider Adapter Boundary
+
+Status: Complete for local model replay scope.
+
+Goal:
+
+Create the first production-shaped external model-provider boundary without making live model network calls or storing raw model credentials.
+
+Deliverables:
+
+- tenant-scoped LLM provider adapter registry;
+- provider-specific replay eval suite;
+- evidence-only context enforcement;
+- known prompt/persona contracts;
+- token and cost budget gates;
+- hosted API replay analysis/status routes;
+- unsafe analysis `data_dir` escape prevention;
+- CLI workflow and tests.
+
+Exit criteria:
+
+- LLM provider contract validation must pass before adapter use;
+- adapter registration stores only secret-reference names and no raw secrets;
+- provider-specific eval suite must pass before readiness;
+- replay analysis must create evidence-only contexts and schema-valid claim packets;
+- recorded replay runs must pass claim-packet evaluation;
+- external model replay cannot escalate to order-ticket candidates inside the general product boundary;
+- hosted replay analysis rejects explicit `data_dir` paths outside the tenant workspace;
+- direct live model networking remains disabled.
 
 ## Team Needed
 

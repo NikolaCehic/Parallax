@@ -1,0 +1,28 @@
+Parallax External LLM Provider Boundary
+=======================================
+
+Status: ready_for_external_llm_provider_boundary
+Root dir: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas
+Adapters: 1
+Replay runs: 1
+Failed replay runs: 0
+Raw secret stored: no
+Direct model network connection: no
+
+Adapters
+  - model-gateway-replay | alpha | model_gateway | model_gateway_replay_v0 | prompts=claim_packet_v0,critique_packet_v0 | personas=4
+
+Replay Runs
+  - alpha/NVDA | model-gateway-replay | eval=passed | watchlist | cost=$0.004326
+
+Controls
+  - llm_provider_contract_ready | passed | Managed LLM provider contract is validated.
+  - adapter_registered | passed | At least one tenant-scoped LLM provider adapter is registered.
+  - prompt_contract_known | passed | Adapter prompt ids are present in the prompt registry.
+  - provider_eval_suite_passed | passed | Each adapter passed the external LLM replay eval suite.
+  - replay_run_recorded | passed | At least one tenant-scoped replay analysis run has been recorded.
+  - replay_eval_passed | passed | Recorded replay runs passed claim-packet evaluation.
+  - budget_limits_explicit | passed | Adapters declare token/cost budgets and replay runs stay within them.
+  - no_order_ticket_escalation | passed | External LLM replay cannot create an order-ticket candidate in the general product boundary.
+  - no_raw_model_secrets | passed | LLM provider registry stores secret reference names and hashes only.
+  - direct_model_network_disabled | passed | Phase 14 uses local replay contracts, not live model networking.

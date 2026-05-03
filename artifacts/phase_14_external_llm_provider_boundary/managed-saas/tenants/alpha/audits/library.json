@@ -1,0 +1,52 @@
+{
+  "schema_version": "0.1.0",
+  "audit_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits",
+  "entries": [
+    {
+      "id": "dos_08eaa86079ff",
+      "title": "NVDA swing thesis dossier",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "thesis": "phase fourteen artifact external model replay thesis",
+      "created_at": "2026-05-03T10:00:00Z",
+      "action_class": "watchlist",
+      "thesis_state": "active",
+      "confidence": 0.46,
+      "freshness_score": 1,
+      "expires_at": "2026-05-04T10:00:00.000Z",
+      "next_review_trigger": "Momentum turns negative.",
+      "veto_count": 0,
+      "required_check_count": 3,
+      "policy_status": "allowed",
+      "policy_ceiling": "watchlist",
+      "council_provider": "model-gateway-replay",
+      "council_eval_passed": true,
+      "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_08eaa86079ff.json",
+      "markdown_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_08eaa86079ff.md",
+      "feedback_count": 0
+    },
+    {
+      "id": "dos_e5ccea2083ff",
+      "title": "NVDA swing thesis dossier",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "thesis": "hosted phase fourteen external model replay thesis",
+      "created_at": "2026-05-03T10:00:00Z",
+      "action_class": "watchlist",
+      "thesis_state": "active",
+      "confidence": 0.46,
+      "freshness_score": 1,
+      "expires_at": "2026-05-04T10:00:00.000Z",
+      "next_review_trigger": "Momentum turns negative.",
+      "veto_count": 0,
+      "required_check_count": 3,
+      "policy_status": "allowed",
+      "policy_ceiling": "watchlist",
+      "council_provider": "model-gateway-replay",
+      "council_eval_passed": true,
+      "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_e5ccea2083ff.json",
+      "markdown_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_e5ccea2083ff.md",
+      "feedback_count": 0
+    }
+  ]
+}

@@ -1422,6 +1422,99 @@ export function dataVendorImportToHumanReport(result: any) {
   ]);
 }
 
+export function llmProviderStatusToHumanReport(status: any) {
+  const controls = status.controls.map((control: any) =>
+    `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`
+  );
+  const adapters = status.adapters.map((adapter: any) =>
+    [
+      `  - ${adapter.adapter_id}`,
+      adapter.tenant_slug,
+      adapter.provider,
+      adapter.model_registry_ref,
+      `prompts=${adapter.prompt_ids.join(",")}`,
+      `personas=${adapter.allowed_personas.length}`
+    ].join(" | ")
+  );
+  const runs = status.runs.map((item: any) =>
+    [
+      `  - ${item.tenant_slug}/${item.symbol}`,
+      item.adapter_id,
+      item.council_eval_passed ? "eval=passed" : "eval=failed",
+      item.action_class,
+      `cost=$${item.usage?.estimated_cost_usd ?? "n/a"}`
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax External LLM Provider Boundary",
+    "=======================================",
+    "",
+    `Status: ${status.status}`,
+    `Root dir: ${status.root_dir}`,
+    `Adapters: ${status.summary.adapter_count}`,
+    `Replay runs: ${status.summary.run_count}`,
+    `Failed replay runs: ${status.summary.failed_replay_run_count}`,
+    `Raw secret stored: ${status.summary.raw_secret_stored ? "yes" : "no"}`,
+    `Direct model network connection: ${status.summary.direct_model_network_connection ? "yes" : "no"}`,
+    "",
+    "Adapters",
+    adapters.length ? adapters.join("\n") : "No LLM provider adapters.",
+    "",
+    "Replay Runs",
+    runs.length ? runs.join("\n") : "No external LLM replay runs.",
+    "",
+    "Controls",
+    controls.length ? controls.join("\n") : "No controls."
+  ]);
+}
+
+export function llmProviderAdapterToHumanReport(result: any) {
+  const adapter = result.adapter;
+  return lines([
+    "Parallax LLM Provider Adapter",
+    "=============================",
+    "",
+    `Adapter: ${adapter.adapter_id}`,
+    `Name: ${adapter.name}`,
+    `Tenant: ${adapter.tenant_slug}`,
+    `Provider: ${adapter.provider}`,
+    `Model: ${adapter.model_registry_ref}`,
+    `Prompts: ${adapter.prompt_ids.join(", ")}`,
+    `Personas: ${adapter.allowed_personas.length}`,
+    `Eval suite: ${adapter.eval_suite.suite}`,
+    `Eval passed: ${adapter.eval_suite.passed ? "yes" : "no"}`,
+    `Max context tokens: ${adapter.max_context_tokens}`,
+    `Max estimated cost: $${adapter.max_estimated_cost_usd}`,
+    `Direct model network connection: ${adapter.direct_model_network_connection ? "yes" : "no"}`,
+    `Raw secret stored: ${adapter.raw_secret_stored ? "yes" : "no"}`,
+    `Registry: ${result.registry_path}`
+  ]);
+}
+
+export function llmProviderRunToHumanReport(result: any) {
+  const run = result.run;
+  return lines([
+    "Parallax LLM Provider Replay",
+    "============================",
+    "",
+    `Run ID: ${run.id}`,
+    `Adapter: ${run.adapter_id}`,
+    `Tenant: ${run.tenant_slug}`,
+    `Symbol: ${run.symbol}`,
+    `Model: ${run.model_registry_ref}`,
+    `Scenario: ${run.scenario}`,
+    `Council eval: ${run.council_eval_passed ? "passed" : "failed"}`,
+    `Eval problems: ${run.council_eval_problem_count}`,
+    `Action class: ${run.action_class}`,
+    `Context tokens: ${run.usage?.context_tokens ?? "n/a"}`,
+    `Estimated cost: $${run.usage?.estimated_cost_usd ?? "n/a"}`,
+    `Budget exceeded: ${run.usage?.budget_exceeded ? "yes" : "no"}`,
+    `Direct model network connection: ${run.direct_model_network_connection ? "yes" : "no"}`,
+    `Raw secret stored: ${run.raw_secret_stored ? "yes" : "no"}`,
+    `Audit path: ${run.audit_path || "not written"}`
+  ]);
+}
+
 export function teamInitToHumanReport(result: any) {
   return lines([
     "Parallax Team Workspace",

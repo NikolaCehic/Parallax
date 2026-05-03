@@ -32,6 +32,10 @@ import {
   dataVendorStatus,
   importDataVendorPack
 } from "./data_vendor.js";
+import {
+  llmProviderStatus,
+  runLLMProviderReplayAnalysis
+} from "./llm_provider.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -440,6 +444,12 @@ export function createHostedRequestHandler({
         return;
       }
 
+      if (req.method === "GET" && url.pathname === "/api/llm-providers/status") {
+        await requireAuthScope({ auth, rootDir, scope: "control_plane:read" });
+        jsonResponse(res, 200, await llmProviderStatus({ rootDir, configPath }));
+        return;
+      }
+
       if (req.method === "POST" && url.pathname === "/api/storage/checkpoints") {
         await requireAuthScope({ auth, rootDir, scope: "storage:checkpoint" });
         const body = await readJsonBody(req);
@@ -589,6 +599,80 @@ export function createHostedRequestHandler({
           }
         }
 
+        if (action === "llm-provider") {
+          if (req.method === "GET") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "tenant:read" });
+            jsonResponse(res, 200, await llmProviderStatus({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug
+            }));
+            return;
+          }
+          if (req.method === "POST" && parts[4] === "analyze") {
+            await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
+            const body = await readJsonBody(req);
+            if (!body.adapter_id || !body.symbol || !body.thesis) {
+              jsonResponse(res, 400, { error: "bad_request", message: "adapter_id, symbol, and thesis are required." });
+              return;
+            }
+            if (body.data_dir) assertTenantScopedDataDir(tenant, String(body.data_dir));
+            const result = await runLLMProviderReplayAnalysis({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug,
+              adapterId: String(body.adapter_id),
+              symbol: String(body.symbol),
+              horizon: String(body.horizon ?? "swing"),
+              thesis: String(body.thesis),
+              dataDir: String(body.data_dir ?? dataDir),
+              actionCeiling: String(body.ceiling ?? "watchlist"),
+              userClass: String(body.user_class ?? "research_team"),
+              intendedUse: String(body.intended_use ?? "team_review"),
+              scenario: String(body.scenario ?? "safe"),
+              llmBudget: body.llm_budget,
+              audit: true,
+              auditDir: tenant.audit_dir,
+              actor: body.actor ? String(body.actor) : "hosted_api",
+              now: body.now ? String(body.now) : undefined
+            });
+            const auditPath = path.join(tenant.audit_dir, `${result.dossier.id}.json`);
+            const markdownPath = path.join(tenant.audit_dir, `${result.dossier.id}.md`);
+            await writeFile(markdownPath, dossierToMarkdown(result.dossier));
+            await upsertLibraryEntry({
+              auditDir: tenant.audit_dir,
+              dossier: result.dossier,
+              auditPath,
+              markdownPath
+            });
+            await appendTenantEvent({
+              rootDir,
+              configPath,
+              tenantSlug: tenant.tenant_slug,
+              eventType: "tenant_llm_provider_analysis_created",
+              actor: body.actor ? String(body.actor) : "hosted_api",
+              payload: {
+                run_id: result.run.id,
+                dossier_id: result.dossier.id,
+                symbol: result.dossier.symbol,
+                council_eval_passed: result.run.council_eval_passed,
+                action_class: result.dossier.decision_packet.action_class
+              },
+              now: body.now ? String(body.now) : undefined
+            });
+            jsonResponse(res, 201, {
+              tenant_slug: tenant.tenant_slug,
+              run: result.run,
+              dossier_id: result.dossier.id,
+              action_class: result.dossier.decision_packet.action_class,
+              council_eval_passed: result.run.council_eval_passed,
+              audit_path: auditPath,
+              markdown_path: markdownPath
+            });
+            return;
+          }
+        }
+
         if (req.method === "POST" && action === "analyze") {
           await requireAuthScope({ auth, rootDir, tenantSlug: tenant.tenant_slug, scope: "analysis:create" });
           const body = await readJsonBody(req);
@@ -648,7 +732,7 @@ export function createHostedRequestHandler({
       jsonResponse(res, 404, { error: "not_found", path: url.pathname });
     } catch (error: any) {
       const statusCode = error.statusCode ?? (
-        /tenant slug|state key|storage object key|data vendor|identity email|sensitive .*payload|unknown tenant|unknown durable object|json/i.test(error.message ?? "")
+        /tenant slug|state key|storage object key|data vendor|llm provider|identity email|sensitive .*payload|unknown tenant|unknown durable object|json/i.test(error.message ?? "")
           ? 400
           : 500
       );

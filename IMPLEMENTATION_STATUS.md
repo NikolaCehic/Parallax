@@ -2,13 +2,13 @@
 
 Status date: 2026-05-03
 
-Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, partner-execution controls, a beta deployment surface, managed SaaS scaffolding, a local hosted multi-tenant API, identity/storage foundation contracts, and an external data vendor boundary.
+Parallax has been migrated to a TypeScript + Python prototype that covers the functional intent of the original documented phases, with direct live execution intentionally locked behind partner-only control boundaries. The productized prototype now includes product-boundary enforcement, local workspace workflows, team governance, partner-execution controls, a beta deployment surface, managed SaaS scaffolding, a local hosted multi-tenant API, identity/storage foundation contracts, an external data vendor boundary, and an external LLM provider boundary.
 
-TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, partner-execution controls, the beta API/deployment layer, managed SaaS control-plane scaffolding, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, and external data vendor import contracts.
+TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox execution controls, partner-execution controls, the beta API/deployment layer, managed SaaS control-plane scaffolding, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, external data vendor import contracts, and external LLM provider replay contracts.
 
 Python owns deterministic quant-style analytics through `python/parallax_analytics.py`.
 
-Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, managed SaaS readiness, provider contract validation, hosted console foundation, tenant persistence, hosted multi-tenant API readiness, identity-session readiness, durable-storage readiness, and data-vendor boundary readiness.
+Productization owns the product safety kernel, prohibited-claim checks, council-provider evaluation boundary, local data adapters, freshness status, portfolio CSV import, local dossier library, watchlist view, workspace lifecycle alerts, source viewer, portable workspace import/export, static local dashboard, alpha feedback capture, prompt/persona/provider registries, scripted LLM council safety evals, custom lifecycle trigger overlays, alert preferences, change-since-last-run state, local notifications, the persistent paper trading lab, the local team governance ledger, the partner-execution ledger, beta deployment readiness, managed SaaS readiness, provider contract validation, hosted console foundation, tenant persistence, hosted multi-tenant API readiness, identity-session readiness, durable-storage readiness, data-vendor boundary readiness, and LLM-provider boundary readiness.
 
 ## Phase Completion Map
 
@@ -40,10 +40,11 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 | 11 Hosted Multi-Tenant API And Persistence | Complete for local hosted API scope | Tenant state/event persistence, hosted API readiness, authenticated tenant-scoped HTTP routes, cross-tenant blocking, phase artifacts |
 | 12 Cloud Identity And Durable Storage Foundation | Complete for local foundation scope | Hash-only identity sessions, scoped tenant API access, durable storage object manifests, checkpoints, hosted foundation readiness, phase artifacts |
 | 13 External Data Vendor Adapter Boundary | Complete for local vendor replay scope | Licensed adapter registry, tenant-scoped data pack import, provenance hashes, hosted import routes, unsafe data-dir blocking, phase artifacts |
+| 14 External LLM Provider Adapter Boundary | Complete for local model replay scope | Replay-only model adapter registry, provider-specific eval suite, evidence-only contexts, hosted replay analysis, unsafe data-dir blocking, phase artifacts |
 
 ## What Is Actually Working
 
-- `npm test` builds TypeScript and runs 60 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, Phase 9 managed-SaaS tests, Phase 10 provider/hosted-console tests, Phase 11 hosted API tests, Phase 12 identity/storage tests, and Phase 13 data-vendor tests.
+- `npm test` builds TypeScript and runs 62 tests, including 10 full E2E synthetic scenarios, CLI human-output coverage, product-boundary tests, council-provider evaluation tests, local workspace tests, Phase 1 local-alpha E2E tests, Phase 2 data-backed research E2E tests, Phase 3 LLM council safety tests, Phase 4 lifecycle-alert tests, Phase 5 paper-lab tests, Phase 6 team-governance tests, Phase 7 partner-execution tests, Phase 8 beta-deployment tests, Phase 9 managed-SaaS tests, Phase 10 provider/hosted-console tests, Phase 11 hosted API tests, Phase 12 identity/storage tests, Phase 13 data-vendor tests, and Phase 14 LLM-provider tests.
 - `npm run demo` generates an audit bundle and markdown dossier.
 - Every analysis calls the Python analytics worker.
 - Every analysis creates a `policy_review` and applies the effective product action ceiling before the decision gate.
@@ -94,6 +95,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - `storage-init`, `storage-object-put`, `storage-checkpoint`, and `storage-status` create a durable-storage manifest, tenant-scoped object writes, and checkpoint evidence.
 - `hosted-foundation-status` validates hosted API, identity, durable storage, token redaction, and no-live-cloud/no-live-broker boundaries together.
 - `data-vendor-register`, `data-vendor-import`, and `data-vendor-status` register licensed market-data adapter contracts, import tenant-scoped vendor packs, and validate provenance/license/freshness boundaries.
+- `llm-provider-register`, `llm-provider-analyze`, and `llm-provider-status` register replay-only model adapter contracts, run provider-specific evals, create evidence-only replay dossiers, and validate budget/secret/network boundaries.
 - The general product ceiling is capped at `paper_trade_candidate`; live-execution and guaranteed-return framing create policy vetoes.
 - CLI analyses now upsert a local `library.json` entry.
 - The CLI can list the local library, show a watchlist, scan workspace lifecycle alerts, inspect sources, capture feedback, summarize feedback, export/import the workspace, and generate a local dashboard.
@@ -114,6 +116,7 @@ Productization owns the product safety kernel, prohibited-claim checks, council-
 - Phase 11 artifacts live under `artifacts/phase_11_hosted_multi_tenant_api/`.
 - Phase 12 artifacts live under `artifacts/phase_12_identity_storage_foundation/`.
 - Phase 13 artifacts live under `artifacts/phase_13_external_data_vendor_boundary/`.
+- Phase 14 artifacts live under `artifacts/phase_14_external_llm_provider_boundary/`.
 - Stale data vetoes escalation.
 - Lifecycle invalidators can move an active thesis to invalidated.
 - Expired theses become stale.
@@ -144,6 +147,7 @@ It covers:
 - hosted API readiness, tenant state/event persistence, HTTP auth, cross-tenant blocking, tenant-scoped analysis/library separation, hosted-console serving, secret-payload rejection, and CLI smoke coverage.
 - identity directory readiness, hash-only identity sessions, role/scope enforcement, tenant-scoped session access, durable storage object manifests, checkpoint evidence, secret-payload rejection, and hosted foundation readiness.
 - data vendor adapter registration, market-data provider contract readiness, tenant-scoped imported data packs, provenance hashes, restricted-license blocking, symbol allow-list enforcement, unsafe `data_dir` denial, and hosted import coverage.
+- external LLM provider adapter registration, LLM provider contract readiness, provider-specific eval suite, evidence-only replay contexts, hosted replay analysis, unsafe `data_dir` denial, secret-payload rejection, and model-network disablement.
 
 The suite exposed and fixed two issues: past events were previously counted as future event risk, and boolean lifecycle trigger expressions were not evaluated correctly.
 
@@ -152,7 +156,7 @@ The suite exposed and fixed two issues: past events were previously counted as f
 - No direct live broker integration.
 - Partner production adapter is locked by default and requires a separately approved regulated partner implementation.
 - No live external market data vendor network call yet; Phase 2 supports local licensed data packs, Phase 9 records external vendor manifests, Phase 12 adds identity/storage contracts, and Phase 13 imports vendor-shaped local replay packs under strict license/provenance gates.
-- No external LLM API integration yet; the current LLM path is a deterministic local harness, while Phase 12 validates external model-provider manifests locally.
+- No live external LLM API call yet; Phase 3 has a deterministic local harness, Phase 12 validates model-provider manifests, and Phase 14 adds replay-only external-model adapter contracts plus eval gates before any real model networking.
 - No cloud workspace yet; Phase 8 provides a local beta API/deployment scaffold, Phase 9 provides a local managed SaaS control-plane scaffold, Phase 10 provides a static hosted console foundation, Phase 11 provides a local hosted multi-tenant API, and Phase 12 provides local identity/storage contracts.
 - No external SSO provider yet; beta and hosted APIs use bearer tokens and store only token hashes, while Phase 12 adds local identity sessions and validates identity-provider manifests locally.
 - No legal/compliance claim beyond prototype controls.
@@ -166,4 +170,4 @@ Within a local prototype scope, the current implementation reaches the intended 
 
 > I do not know a better architecture for this agent, and I do not know what is structurally wrong with the current one.
 
-The remaining improvements are productization choices: external data vendors, richer analytics, external validated model adapters, a richer hosted UI, real cloud identity/SSO, managed cloud storage, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).
+The remaining improvements are productization choices: live external data vendors, richer analytics, live external validated model adapters, a richer hosted UI, real cloud identity/SSO, managed cloud storage, and real regulated partner integration. The product path is documented in [PRODUCTIZATION_PLAN.md](PRODUCTIZATION_PLAN.md).

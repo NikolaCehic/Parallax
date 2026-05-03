@@ -1,0 +1,56 @@
+{
+  "http_status": 201,
+  "body": {
+    "tenant_slug": "alpha",
+    "run": {
+      "id": "llm_provider_run_00cbc612aa2d",
+      "adapter_id": "model-gateway-replay",
+      "tenant_slug": "alpha",
+      "dossier_id": "dos_e5ccea2083ff",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "scenario": "safe",
+      "model_registry_ref": "model_gateway_replay_v0",
+      "prompt_ids": [
+        "claim_packet_v0",
+        "critique_packet_v0"
+      ],
+      "context_hashes": [
+        "31cc8c01b5f10c96e6cd26c0261bdc67a624535cf17f65751643bc6af4ced343",
+        "510142b1cc509cf05ca15579c0f6ac1a30c89b62bef96744a7c058480a04e698",
+        "1b2449695a3520e69fcd690861b5300d0f59602c7a00c4e888d1d077fee55150",
+        "cb06ab822c74f610d40096549f80b8124f9e1163c95753ed06a6645544fdbfc7"
+      ],
+      "evidence_snapshot_hash": "d0e64845b9c47df7f5f31d7c6bfb52deaf13394a409846d0e09ec462bad49624",
+      "council_eval_id": "ceval_b7e7c0b39d16",
+      "council_eval_passed": true,
+      "council_eval_problem_count": 0,
+      "action_class": "watchlist",
+      "usage": {
+        "provider_id": "model-gateway-replay",
+        "prompt_ids": [
+          "claim_packet_v0",
+          "critique_packet_v0"
+        ],
+        "context_count": 4,
+        "context_tokens": 8637,
+        "prompt_tokens": 10,
+        "estimated_cost_usd": 0.004324,
+        "max_context_tokens": 50000,
+        "max_estimated_cost_usd": 0.2,
+        "budget_exceeded": false,
+        "direct_model_network_connection": false
+      },
+      "direct_model_network_connection": false,
+      "raw_secret_stored": false,
+      "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_e5ccea2083ff.json",
+      "created_at": "2026-05-03T10:00:00Z",
+      "created_by": "hosted_api"
+    },
+    "dossier_id": "dos_e5ccea2083ff",
+    "action_class": "watchlist",
+    "council_eval_passed": true,
+    "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_e5ccea2083ff.json",
+    "markdown_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_e5ccea2083ff.md"
+  }
+}

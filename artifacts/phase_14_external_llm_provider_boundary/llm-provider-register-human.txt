@@ -1,0 +1,17 @@
+Parallax LLM Provider Adapter
+=============================
+
+Adapter: model-gateway-replay
+Name: Model Gateway Replay
+Tenant: alpha
+Provider: model_gateway
+Model: model_gateway_replay_v0
+Prompts: claim_packet_v0, critique_packet_v0
+Personas: 4
+Eval suite: phase_14_external_llm_provider_boundary
+Eval passed: yes
+Max context tokens: 50000
+Max estimated cost: $0.2
+Direct model network connection: no
+Raw secret stored: no
+Registry: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/llm-provider-adapters.json

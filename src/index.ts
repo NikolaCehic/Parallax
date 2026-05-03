@@ -109,6 +109,10 @@ export { promptRegistrySnapshot } from "./llm/registry.js";
 export { runLLMEvalSuite } from "./llm/evals.js";
 export { buildEvidenceOnlyContext } from "./llm/context.js";
 export {
+  runExternalLLMProviderEvalSuite,
+  runExternalLLMReplayCouncil
+} from "./llm/external.js";
+export {
   addLifecycleTrigger,
   applyLifecycleOverrides,
   readAlertPreferences,
@@ -221,3 +225,8 @@ export {
   importDataVendorPack,
   registerDataVendorAdapter
 } from "./saas/data_vendor.js";
+export {
+  llmProviderStatus,
+  registerLLMProviderAdapter,
+  runLLMProviderReplayAnalysis
+} from "./saas/llm_provider.js";

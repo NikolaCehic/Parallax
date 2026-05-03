@@ -1,0 +1,7 @@
+{
+  "http_status": 403,
+  "body": {
+    "error": "forbidden",
+    "message": "Tenant analysis data_dir must stay inside the tenant workspace."
+  }
+}

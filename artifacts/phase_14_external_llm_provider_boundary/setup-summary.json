@@ -1,0 +1,12 @@
+{
+  "generated_at": "2026-05-03T10:00:00Z",
+  "phase": 14,
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas",
+  "tenants": [
+    "alpha",
+    "beta"
+  ],
+  "raw_secret_stored": false,
+  "direct_model_network_connection": false,
+  "replay_only": true
+}

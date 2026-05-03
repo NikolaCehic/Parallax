@@ -1,0 +1,18 @@
+Parallax LLM Provider Replay
+============================
+
+Run ID: llm_provider_run_5ff9e6d6927f
+Adapter: model-gateway-replay
+Tenant: alpha
+Symbol: NVDA
+Model: model_gateway_replay_v0
+Scenario: safe
+Council eval: passed
+Eval problems: 0
+Action class: watchlist
+Context tokens: 8641
+Estimated cost: $0.004326
+Budget exceeded: no
+Direct model network connection: no
+Raw secret stored: no
+Audit path: /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_08eaa86079ff.json

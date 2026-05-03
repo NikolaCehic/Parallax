@@ -1,0 +1,12 @@
+{
+  "dossier_id": "dos_08eaa86079ff",
+  "provider_id": "model-gateway-replay",
+  "provider_kind": "llm_external_replay",
+  "context_count": 4,
+  "evidence_only_contexts": true,
+  "council_eval_passed": true,
+  "action_class": "watchlist",
+  "budget_exceeded": false,
+  "direct_model_network_connection": false,
+  "raw_secret_stored": false
+}

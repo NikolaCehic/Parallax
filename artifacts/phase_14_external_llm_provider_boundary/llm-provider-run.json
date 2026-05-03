@@ -1,0 +1,78 @@
+{
+  "run": {
+    "id": "llm_provider_run_5ff9e6d6927f",
+    "adapter_id": "model-gateway-replay",
+    "tenant_slug": "alpha",
+    "dossier_id": "dos_08eaa86079ff",
+    "symbol": "NVDA",
+    "horizon": "swing",
+    "scenario": "safe",
+    "model_registry_ref": "model_gateway_replay_v0",
+    "prompt_ids": [
+      "claim_packet_v0",
+      "critique_packet_v0"
+    ],
+    "context_hashes": [
+      "9d3428df36bd8d41fa935bd29fa829f7a48f1d1453d7a501514f449046d38fec",
+      "a300b038392c482e04596405c12409af3e36c5f21703e3912809f5898794c48e",
+      "4f1f53c6b4509c3c9589b48e312cc018c40f2c22bc9a907496ff6e20dce085e6",
+      "506be30fad2c3d7422ef78b5d750eeb3d15cfe1fa4402518576a574f5bcf72d5"
+    ],
+    "evidence_snapshot_hash": "718a6049622d903e9395fa8df8d89374b222425c0e9957db34b26ff836b1b8fe",
+    "council_eval_id": "ceval_b7e7c0b39d16",
+    "council_eval_passed": true,
+    "council_eval_problem_count": 0,
+    "action_class": "watchlist",
+    "usage": {
+      "provider_id": "model-gateway-replay",
+      "prompt_ids": [
+        "claim_packet_v0",
+        "critique_packet_v0"
+      ],
+      "context_count": 4,
+      "context_tokens": 8641,
+      "prompt_tokens": 10,
+      "estimated_cost_usd": 0.004326,
+      "max_context_tokens": 50000,
+      "max_estimated_cost_usd": 0.2,
+      "budget_exceeded": false,
+      "direct_model_network_connection": false
+    },
+    "direct_model_network_connection": false,
+    "raw_secret_stored": false,
+    "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_14_external_llm_provider_boundary/managed-saas/tenants/alpha/audits/dos_08eaa86079ff.json",
+    "created_at": "2026-05-03T10:00:00Z",
+    "created_by": "llm_provider_replay"
+  },
+  "dossier_id": "dos_08eaa86079ff",
+  "action_class": "watchlist",
+  "council_eval": {
+    "id": "ceval_b7e7c0b39d16",
+    "provider_id": "model-gateway-replay",
+    "provider_kind": "llm_external_replay",
+    "model_registry_ref": "model_gateway_replay_v0",
+    "provider_version": "0.1.0",
+    "claim_packet_count": 4,
+    "passed": true,
+    "problems": [],
+    "warnings": [],
+    "context_warning_count": 0,
+    "context_warnings": [],
+    "evaluated_refs": 17
+  },
+  "usage": {
+    "provider_id": "model-gateway-replay",
+    "prompt_ids": [
+      "claim_packet_v0",
+      "critique_packet_v0"
+    ],
+    "context_count": 4,
+    "context_tokens": 8641,
+    "prompt_tokens": 10,
+    "estimated_cost_usd": 0.004326,
+    "max_context_tokens": 50000,
+    "max_estimated_cost_usd": 0.2,
+    "budget_exceeded": false,
+    "direct_model_network_connection": false
+  }
+}
