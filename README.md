@@ -36,6 +36,7 @@ Parallax tries to sit in the middle:
 - Phase 15 hosted research console turns readiness, onboarding, tenant analysis, provider/data/model boundaries, and tenant libraries into one usable product shell.
 - Phase 16 guided connector repair turns blocked readiness into previewable and actionable local setup actions for control-plane, identity, storage, data-vendor, and LLM-provider readiness.
 - Phase 17 workspace onboarding adds hash-only invitations, public invite acceptance, scoped identity-session issuance, console onboarding controls, and CLI invite workflows.
+- Phase 18 account onboarding adds public invite-link and tenant-console shells, account profile self-service, role management, and active-session scope updates.
 
 Instead of asking:
 
@@ -129,6 +130,7 @@ TypeScript owns:
 - external data vendor boundary and tenant-scoped imported data packs.
 - external LLM provider boundary and replay analysis records.
 - workspace invitation and user-account onboarding.
+- public invite links, tenant console, account settings, and membership role management.
 
 Python owns:
 
@@ -636,6 +638,37 @@ npm run invite-accept -- \
 npm run onboarding-status -- --root-dir managed-saas
 ```
 
+Open the public invite and tenant-user surfaces:
+
+```bash
+npm run hosted-serve -- \
+  --root-dir managed-saas \
+  --api-token "$PARALLAX_HOSTED_API_TOKEN"
+
+open "http://127.0.0.1:8888/join?token=$PARALLAX_INVITE_TOKEN"
+open "http://127.0.0.1:8888/tenant-console?tenant=alpha"
+```
+
+Inspect or update an invited user account:
+
+```bash
+npm run account-me -- \
+  --root-dir managed-saas \
+  --session-token "$PARALLAX_SESSION_TOKEN"
+
+npm run account-profile-update -- \
+  --root-dir managed-saas \
+  --session-token "$PARALLAX_SESSION_TOKEN" \
+  --name "Analyst" \
+  --default-tenant alpha
+
+npm run membership-role-set -- \
+  --root-dir managed-saas \
+  --email analyst@example.com \
+  --tenant alpha \
+  --role reviewer
+```
+
 Tenant-scoped API calls must include both bearer auth and the matching tenant header:
 
 ```bash
@@ -893,7 +926,7 @@ Run:
 npm test
 ```
 
-The suite currently includes 68 tests:
+The suite currently includes 70 tests:
 
 - CLI human-output tests;
 - JSON output tests;
@@ -917,6 +950,7 @@ The suite currently includes 68 tests:
 - Phase 15 hosted-research-console onboarding, readiness rail, analysis form, tenant library, control-plane overview, redaction, and hosted route tests;
 - Phase 16 guided connector repair planner, hosted API repair application, console repair controls, convergence, redaction, and CLI tests;
 - Phase 17 workspace invitation creation, public invite acceptance, identity-session issuance, tenant access, console onboarding UI, redaction, and CLI tests;
+- Phase 18 public join page, tenant console shell, account profile self-service, membership role management, active-session role updates, scoped denial, redaction, and CLI tests;
 - synthetic end-to-end scenarios;
 - stale-data veto tests;
 - restricted-symbol veto tests;
@@ -954,7 +988,7 @@ src/
                   and persistent paper lab ledger
   product/        Product boundary and prohibited-claim policy
   providers/      External provider contract validation and sanitized reports
-  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, durable storage, data-vendor boundary, LLM-provider boundary, workspace onboarding, hosted API, provider manifests, and readiness scaffold
+  saas/           Managed SaaS tenancy, tenant persistence, identity foundation, account self-service, durable storage, data-vendor boundary, LLM-provider boundary, workspace onboarding, hosted API, provider manifests, and readiness scaffold
   team/           Team governance ledger, approvals, release controls, SOC 2 readiness
 
 python/
@@ -966,7 +1000,7 @@ fixtures/
   portfolio/
 
 tests/
-  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, onboarding, and pipeline tests
+  CLI, E2E, lifecycle, governance, product, workspace, paper, partner, beta, SaaS, provider, hosted API, hosted console, identity/storage, data-vendor, LLM-provider, guided repair, onboarding, account console, and pipeline tests
 
 TradeAgent/
   design specs, iteration logs, and phased implementation plans
@@ -1001,8 +1035,8 @@ Current intentional limits:
 - partner production adapter is locked by default;
 - no live external market data vendor network call yet; Phase 13 imports licensed vendor-shaped local replay packs and blocks unsafe licenses/paths first;
 - no live external LLM API call yet; Phase 14 registers replay-only external-model adapter contracts, runs provider-specific evals, and blocks raw secrets/model networking first;
-- no external SSO provider yet; Phase 17 has local hash-only invitations and identity sessions, but does not connect a real SSO provider;
-- no hosted cloud tenancy yet; Phase 17 provides local multi-tenant API, identity/storage, repair, and invitation onboarding contracts, not cloud infrastructure;
+- no external SSO provider yet; Phase 18 has local hash-only invitations, identity sessions, account settings, and role management, but does not connect a real SSO provider;
+- no hosted cloud tenancy yet; Phase 18 provides local multi-tenant API, identity/storage, repair, invitation onboarding, account settings, and tenant-console contracts, not cloud infrastructure;
 - no tax/legal/compliance advice;
 - no claim of trading profitability.
 
@@ -1076,7 +1110,9 @@ Current state:
 - provider-specific LLM eval suite and hosted replay analysis;
 - guided connector setup repair planner and local apply workflow;
 - workspace invitation and account onboarding workflow;
-- 68 passing tests.
+- public invite-link and tenant-console shells;
+- account profile and membership role management;
+- 70 passing tests.
 
 Within the prototype scope, Parallax is designed to answer:
 

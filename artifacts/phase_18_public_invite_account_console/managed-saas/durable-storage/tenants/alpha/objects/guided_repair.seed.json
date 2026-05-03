@@ -1,0 +1,14 @@
+{
+  "schema_version": "0.1.0",
+  "tenant_slug": "alpha",
+  "key": "guided_repair.seed",
+  "value": {
+    "symbols": [
+      "NVDA"
+    ],
+    "mode": "research_console_repair"
+  },
+  "value_hash": "17c291626cc96906883ad7e5b66d85546341463e2a7b4456cab2b8de74428ff8",
+  "written_by": "setup_repair",
+  "written_at": "2026-05-03T12:00:00Z"
+}

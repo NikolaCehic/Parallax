@@ -1,0 +1,155 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T12:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/managed-saas.json",
+  "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/setup-repair-events.jsonl",
+  "status": "ready_for_guided_connector_setup",
+  "summary": {
+    "action_count": 5,
+    "complete_count": 5,
+    "needed_count": 0,
+    "blocked_count": 0,
+    "event_count": 5,
+    "tenant_slug": "alpha",
+    "symbol": "NVDA",
+    "raw_secret_stored": false,
+    "direct_external_network_connection": false
+  },
+  "statuses": {
+    "managed_saas": "ready_for_managed_beta_scaffold",
+    "provider_validation": "ready_for_provider_contract_beta",
+    "tenant_persistence": "ready_for_tenant_persistence",
+    "hosted_api": "ready_for_hosted_multi_tenant_api",
+    "foundation": "ready_for_identity_storage_foundation",
+    "identity": "ready_for_identity_foundation",
+    "storage": "ready_for_durable_storage_foundation",
+    "data_vendor": "ready_for_external_data_vendor_boundary",
+    "llm_provider": "ready_for_external_llm_provider_boundary"
+  },
+  "failed_controls": {
+    "managed_saas": [],
+    "provider_validation": [],
+    "hosted_api": [],
+    "foundation": [],
+    "identity": [],
+    "storage": [],
+    "data_vendor": [],
+    "llm_provider": []
+  },
+  "actions": [
+    {
+      "id": "control_plane_scaffold",
+      "label": "Scaffold control plane contracts",
+      "boundary": "control_plane",
+      "detail": "Create a tenant, secret-reference names, provider manifests, and one local observability event.",
+      "status": "complete",
+      "can_apply": false,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas --action control_plane_scaffold --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "identity_bootstrap",
+      "label": "Bootstrap identity directory",
+      "boundary": "identity",
+      "detail": "Initialize hash-only identity state and add a tenant-scoped analyst principal.",
+      "status": "complete",
+      "can_apply": false,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas --action identity_bootstrap --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "storage_bootstrap",
+      "label": "Bootstrap durable storage",
+      "boundary": "storage",
+      "detail": "Create local durable storage, write a tenant seed object, and capture a checkpoint.",
+      "status": "complete",
+      "can_apply": false,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas --action storage_bootstrap --tenant alpha",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "data_vendor_bootstrap",
+      "label": "Bootstrap data vendor replay",
+      "boundary": "data_vendor",
+      "detail": "Register a tenant-scoped local vendor adapter and import a licensed synthetic data pack.",
+      "status": "complete",
+      "can_apply": false,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas --action data_vendor_bootstrap --tenant alpha --symbol NVDA",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    },
+    {
+      "id": "llm_provider_bootstrap",
+      "label": "Bootstrap LLM replay provider",
+      "boundary": "llm_provider",
+      "detail": "Register a replay model adapter, run evals, and record one evidence-only replay analysis.",
+      "status": "complete",
+      "can_apply": false,
+      "block_reason": "",
+      "command": "setup-repair-apply --root-dir /Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas --action llm_provider_bootstrap --tenant alpha --symbol NVDA",
+      "raw_secret_stored": false,
+      "direct_external_network_connection": false
+    }
+  ],
+  "next_action": null,
+  "latest_events": [
+    {
+      "id": "setup_repair_evt_be7f84ada25e",
+      "event_type": "connector_setup_repair_applied",
+      "action_id": "llm_provider_bootstrap",
+      "status": "applied",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "actor": "setup_repair",
+      "created_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "setup_repair_evt_c6287ade8dec",
+      "event_type": "connector_setup_repair_applied",
+      "action_id": "data_vendor_bootstrap",
+      "status": "applied",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "actor": "setup_repair",
+      "created_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "setup_repair_evt_5c9795c9a583",
+      "event_type": "connector_setup_repair_applied",
+      "action_id": "storage_bootstrap",
+      "status": "applied",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "actor": "setup_repair",
+      "created_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "setup_repair_evt_611566bfe9a4",
+      "event_type": "connector_setup_repair_applied",
+      "action_id": "identity_bootstrap",
+      "status": "applied",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "actor": "setup_repair",
+      "created_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "setup_repair_evt_ce03232e5261",
+      "event_type": "connector_setup_repair_applied",
+      "action_id": "control_plane_scaffold",
+      "status": "applied",
+      "tenant_slug": "alpha",
+      "symbol": "NVDA",
+      "actor": "setup_repair",
+      "created_at": "2026-05-03T12:00:00Z"
+    }
+  ]
+}

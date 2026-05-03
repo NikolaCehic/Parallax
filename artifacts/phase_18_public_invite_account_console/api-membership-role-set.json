@@ -1,0 +1,36 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T12:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas",
+  "status": "membership_role_updated",
+  "principal": {
+    "id": "principal_7b1c2c1a0d8a",
+    "email": "phase18.artifact@example.com",
+    "name": "Phase 18 Renamed",
+    "status": "active",
+    "platform_admin": false,
+    "memberships": [
+      {
+        "tenant_slug": "alpha",
+        "role": "reviewer",
+        "scopes": [
+          "tenant:read",
+          "storage:read"
+        ]
+      }
+    ],
+    "preferences": {
+      "default_tenant_slug": "alpha"
+    }
+  },
+  "membership": {
+    "tenant_slug": "alpha",
+    "role": "reviewer",
+    "scopes": [
+      "tenant:read",
+      "storage:read"
+    ]
+  },
+  "updated_session_count": 1,
+  "raw_session_token_stored": false
+}

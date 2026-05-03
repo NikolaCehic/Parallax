@@ -1,0 +1,82 @@
+{
+  "schema_version": "0.1.0",
+  "issuer": "parallax-local-identity",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas",
+  "created_at": "2026-05-03T12:00:00Z",
+  "token_policy": {
+    "default_ttl_minutes": 60,
+    "max_ttl_minutes": 240,
+    "raw_session_token_storage_allowed": false,
+    "bearer_tokens_are_hash_only": true
+  },
+  "principals": [
+    {
+      "id": "principal_80641badba8a",
+      "email": "guided.repair.analyst@example.com",
+      "name": "Guided Repair Analyst",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "tenant_admin",
+          "scopes": [
+            "tenant:read",
+            "tenant:write",
+            "analysis:create",
+            "storage:read",
+            "storage:write",
+            "console:read"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T12:00:00Z",
+      "updated_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "principal_7b1c2c1a0d8a",
+      "email": "phase18.artifact@example.com",
+      "name": "Phase 18 CLI Renamed",
+      "status": "active",
+      "platform_admin": false,
+      "memberships": [
+        {
+          "tenant_slug": "alpha",
+          "role": "analyst",
+          "scopes": [
+            "tenant:read",
+            "analysis:create",
+            "storage:read",
+            "storage:write"
+          ]
+        }
+      ],
+      "created_at": "2026-05-03T12:00:00Z",
+      "updated_at": "2026-05-03T12:00:00Z",
+      "preferences": {
+        "default_tenant_slug": "alpha"
+      }
+    }
+  ],
+  "sessions": [
+    {
+      "id": "session_0b6c839531c4",
+      "principal_id": "principal_7b1c2c1a0d8a",
+      "email": "phase18.artifact@example.com",
+      "tenant_slug": "alpha",
+      "role": "analyst",
+      "scopes": [
+        "tenant:read",
+        "analysis:create",
+        "storage:read",
+        "storage:write"
+      ],
+      "token_hash": "900c572a736d01ed11bdbb46fae8620aadee0d0742363da901d9d78a8bdb4884",
+      "issued_at": "2026-05-03T12:00:00Z",
+      "expires_at": "2026-05-03T16:00:00.000Z",
+      "revoked_at": "",
+      "raw_session_token_stored": false
+    }
+  ],
+  "updated_at": "2026-05-03T17:12:01.974Z"
+}

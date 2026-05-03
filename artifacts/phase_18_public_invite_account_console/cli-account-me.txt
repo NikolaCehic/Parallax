@@ -1,0 +1,13 @@
+Parallax Account
+================
+
+Status: ready_for_account_self_service
+Email: phase18.artifact@example.com
+Name: Phase 18 Renamed
+Active tenant: alpha
+Active role: reviewer
+Session expires: 2026-05-03T16:00:00.000Z
+Raw session token stored: no
+
+Memberships
+  - alpha | reviewer | scopes=tenant:read,storage:read

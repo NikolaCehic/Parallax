@@ -1385,6 +1385,59 @@ export function inviteAcceptToHumanReport(result: any) {
   ]);
 }
 
+export function accountProfileToHumanReport(result: any) {
+  const memberships = (result.profile.memberships ?? []).map((membership: any) =>
+    [
+      `  - ${membership.tenant_slug}`,
+      membership.role,
+      `scopes=${(membership.scopes ?? []).join(",")}`
+    ].join(" | ")
+  );
+  return lines([
+    "Parallax Account",
+    "================",
+    "",
+    `Status: ${result.status}`,
+    `Email: ${result.profile.email}`,
+    `Name: ${result.profile.name}`,
+    `Active tenant: ${compact(result.session.tenant_slug)}`,
+    `Active role: ${result.session.role}`,
+    `Session expires: ${result.session.expires_at}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`,
+    "",
+    "Memberships",
+    memberships.length ? memberships.join("\n") : "No memberships."
+  ]);
+}
+
+export function accountProfileUpdateToHumanReport(result: any) {
+  return lines([
+    "Parallax Account Updated",
+    "========================",
+    "",
+    `Status: ${result.status}`,
+    `Email: ${result.profile.email}`,
+    `Name: ${result.profile.name}`,
+    `Default tenant: ${compact(result.profile.preferences?.default_tenant_slug)}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`
+  ]);
+}
+
+export function membershipRoleToHumanReport(result: any) {
+  return lines([
+    "Parallax Membership Role",
+    "========================",
+    "",
+    `Status: ${result.status}`,
+    `Principal: ${result.principal.email}`,
+    `Tenant: ${result.membership.tenant_slug}`,
+    `Role: ${result.membership.role}`,
+    `Scopes: ${result.membership.scopes.join(", ")}`,
+    `Updated sessions: ${result.updated_session_count}`,
+    `Raw session token stored: ${result.raw_session_token_stored ? "yes" : "no"}`
+  ]);
+}
+
 export function durableStorageStatusToHumanReport(status: any) {
   const controls = status.controls.map((control: any) =>
     `  - ${control.id} | ${control.passed ? "passed" : "failed"} | ${control.detail}`

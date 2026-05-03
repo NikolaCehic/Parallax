@@ -28,6 +28,8 @@ const ROLE_SCOPES: Record<string, string[]> = {
   reviewer: ["tenant:read", "storage:read"]
 };
 
+export const TENANT_IDENTITY_ROLES = ["tenant_admin", "analyst", "reviewer"];
+
 async function readJsonIfExists(filePath: string, fallback: any) {
   try {
     return JSON.parse(await readFile(filePath, "utf8"));
@@ -456,6 +458,174 @@ export async function revokeIdentitySession({
   };
 }
 
+export async function updateIdentityPrincipalProfile({
+  rootDir = "managed-saas",
+  configPath = managedSaasConfigPath(rootDir),
+  directoryPath = identityDirectoryPath(rootDir),
+  email,
+  name,
+  defaultTenantSlug = "",
+  actor = "account",
+  now = isoNow()
+}: {
+  rootDir?: string;
+  configPath?: string;
+  directoryPath?: string;
+  email: string;
+  name?: string;
+  defaultTenantSlug?: string;
+  actor?: string;
+  now?: string;
+}) {
+  const normalizedEmail = normalizeEmail(email);
+  const config = await loadManagedSaasConfig({ rootDir, configPath });
+  const normalizedTenant = defaultTenantSlug ? normalizeTenantSlug(defaultTenantSlug) : "";
+  if (normalizedTenant && !config.tenants.some((tenant: any) => tenant.slug === normalizedTenant)) {
+    throw new Error(`Unknown tenant ${normalizedTenant}.`);
+  }
+  const directory = await loadIdentityDirectory({ rootDir, directoryPath });
+  const principal = directory.principals.find((item: any) => item.email === normalizedEmail && item.status === "active");
+  if (!principal) throw new Error(`Unknown active principal ${normalizedEmail}.`);
+  const hasTenant = !normalizedTenant || principal.platform_admin === true ||
+    (principal.memberships ?? []).some((membership: any) => membership.tenant_slug === normalizedTenant);
+  if (!hasTenant) {
+    const error: any = new Error(`Principal ${normalizedEmail} cannot set default tenant ${normalizedTenant}.`);
+    error.statusCode = 403;
+    throw error;
+  }
+  const updated = {
+    ...principal,
+    name: name ? String(name) : principal.name,
+    preferences: {
+      ...(principal.preferences ?? {}),
+      default_tenant_slug: normalizedTenant || principal.preferences?.default_tenant_slug || ""
+    },
+    updated_at: now
+  };
+  const saved = await saveIdentityDirectory(rootDir, {
+    ...directory,
+    principals: directory.principals.map((item: any) => item.id === principal.id ? updated : item)
+  }, directoryPath);
+  await appendIdentityEvent({
+    rootDir,
+    eventType: "identity_principal_profile_updated",
+    actor,
+    payload: {
+      principal_id: principal.id,
+      email: normalizedEmail,
+      default_tenant_slug: updated.preferences.default_tenant_slug
+    },
+    now
+  });
+  return {
+    principal: {
+      id: updated.id,
+      email: updated.email,
+      name: updated.name,
+      status: updated.status,
+      platform_admin: updated.platform_admin === true,
+      memberships: updated.memberships ?? [],
+      preferences: updated.preferences ?? {}
+    },
+    principal_count: saved.principals.length,
+    directory_path: directoryPath
+  };
+}
+
+export async function updateIdentityMembershipRole({
+  rootDir = "managed-saas",
+  configPath = managedSaasConfigPath(rootDir),
+  directoryPath = identityDirectoryPath(rootDir),
+  email,
+  tenantSlug,
+  role,
+  scopes,
+  actor = "platform",
+  now = isoNow()
+}: {
+  rootDir?: string;
+  configPath?: string;
+  directoryPath?: string;
+  email: string;
+  tenantSlug: string;
+  role: string;
+  scopes?: string[];
+  actor?: string;
+  now?: string;
+}) {
+  const normalizedEmail = normalizeEmail(email);
+  const normalizedTenant = normalizeTenantSlug(tenantSlug);
+  const normalizedRole = String(role ?? "").trim().toLowerCase();
+  if (!TENANT_IDENTITY_ROLES.includes(normalizedRole)) {
+    throw new Error(`Membership role must be one of ${TENANT_IDENTITY_ROLES.join(", ")}.`);
+  }
+  const config = await loadManagedSaasConfig({ rootDir, configPath });
+  if (!config.tenants.some((tenant: any) => tenant.slug === normalizedTenant)) {
+    throw new Error(`Unknown tenant ${normalizedTenant}.`);
+  }
+  const directory = await loadIdentityDirectory({ rootDir, directoryPath });
+  const principal = directory.principals.find((item: any) => item.email === normalizedEmail && item.status === "active");
+  if (!principal) throw new Error(`Unknown active principal ${normalizedEmail}.`);
+  const membership = {
+    tenant_slug: normalizedTenant,
+    role: normalizedRole,
+    scopes: scopes?.length ? scopes : defaultScopes(normalizedRole)
+  };
+  const updatedPrincipal = {
+    ...principal,
+    memberships: [
+      ...(principal.memberships ?? []).filter((item: any) => item.tenant_slug !== normalizedTenant),
+      membership
+    ],
+    updated_at: now
+  };
+  let updatedSessionCount = 0;
+  const sessions = directory.sessions.map((session: any) => {
+    if (session.principal_id === principal.id && session.tenant_slug === normalizedTenant && !session.revoked_at) {
+      updatedSessionCount += 1;
+      return {
+        ...session,
+        role: membership.role,
+        scopes: membership.scopes
+      };
+    }
+    return session;
+  });
+  const saved = await saveIdentityDirectory(rootDir, {
+    ...directory,
+    principals: directory.principals.map((item: any) => item.id === principal.id ? updatedPrincipal : item),
+    sessions
+  }, directoryPath);
+  await appendIdentityEvent({
+    rootDir,
+    eventType: "identity_membership_role_updated",
+    actor,
+    payload: {
+      principal_id: principal.id,
+      email: normalizedEmail,
+      tenant_slug: normalizedTenant,
+      role: normalizedRole,
+      updated_session_count: updatedSessionCount
+    },
+    now
+  });
+  return {
+    principal: {
+      id: updatedPrincipal.id,
+      email: updatedPrincipal.email,
+      name: updatedPrincipal.name,
+      status: updatedPrincipal.status,
+      platform_admin: updatedPrincipal.platform_admin === true,
+      memberships: updatedPrincipal.memberships ?? [],
+      preferences: updatedPrincipal.preferences ?? {}
+    },
+    membership,
+    updated_session_count: updatedSessionCount,
+    principal_count: saved.principals.length,
+    directory_path: directoryPath
+  };
+}
+
 export async function identityStatus({
   rootDir = "managed-saas",
   configPath = managedSaasConfigPath(rootDir),
@@ -543,7 +713,8 @@ export async function identityStatus({
       name: principal.name,
       status: principal.status,
       platform_admin: principal.platform_admin === true,
-      memberships: principal.memberships ?? []
+      memberships: principal.memberships ?? [],
+      preferences: principal.preferences ?? {}
     })),
     sessions: directory.sessions.map((session: any) => ({
       id: session.id,

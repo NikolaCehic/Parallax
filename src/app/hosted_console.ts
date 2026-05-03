@@ -1340,6 +1340,639 @@ export async function buildHostedConsoleHtml({
   return html.replace(/[ \t]+$/gm, "");
 }
 
+function publicConsoleStyles() {
+  return `
+    :root {
+      color-scheme: light;
+      --bg: oklch(0.972 0.009 205);
+      --shell: oklch(0.947 0.012 205);
+      --surface: oklch(0.991 0.005 205);
+      --surface-2: oklch(0.963 0.008 205);
+      --text: oklch(0.228 0.018 224);
+      --muted: oklch(0.48 0.021 224);
+      --line: oklch(0.848 0.018 205);
+      --accent: oklch(0.48 0.124 187);
+      --good: oklch(0.43 0.101 154);
+      --good-bg: oklch(0.938 0.043 154);
+      --warn: oklch(0.56 0.119 78);
+      --warn-bg: oklch(0.956 0.046 78);
+      --bad: oklch(0.54 0.154 31);
+      --bad-bg: oklch(0.952 0.039 31);
+      --shadow: 0 18px 42px oklch(0.35 0.035 225 / 0.08);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif;
+      color: var(--text);
+      background: var(--bg);
+      font-size: 15px;
+      line-height: 1.45;
+    }
+    a { color: inherit; }
+    .shell {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 236px minmax(0, 1fr);
+    }
+    aside {
+      background: var(--shell);
+      border-right: 1px solid var(--line);
+      padding: 22px 18px;
+    }
+    .brand strong { display: block; font-size: 1.08rem; line-height: 1.15; }
+    .brand span, .muted, label, .note, td span { color: var(--muted); }
+    nav { display: grid; gap: 6px; margin-top: 24px; }
+    nav a {
+      min-height: 36px;
+      display: flex;
+      align-items: center;
+      border-radius: 7px;
+      padding: 7px 9px;
+      color: var(--muted);
+      text-decoration: none;
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+    nav a:hover, nav a:focus-visible {
+      color: var(--text);
+      background: var(--surface);
+      outline: none;
+      box-shadow: inset 0 0 0 1px var(--line);
+    }
+    main {
+      min-width: 0;
+      padding: 26px 30px 42px;
+      display: grid;
+      gap: 20px;
+      align-content: start;
+    }
+    header {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 16px;
+      align-items: start;
+    }
+    h1, h2, p { margin: 0; letter-spacing: 0; }
+    h1 { font-size: 1.52rem; line-height: 1.14; }
+    h2 { font-size: 1rem; }
+    .section-kicker, label {
+      color: var(--muted);
+      font-size: 0.76rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0;
+    }
+    .layout-2 {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) minmax(320px, 0.86fr);
+      gap: 20px;
+      align-items: start;
+    }
+    .panel {
+      background: var(--surface);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .panel-head {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      padding: 13px 15px;
+      background: var(--surface-2);
+      border-bottom: 1px solid var(--line);
+    }
+    .panel-body { padding: 15px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+    .field { display: grid; gap: 6px; }
+    .field.wide { grid-column: 1 / -1; }
+    input, textarea, select {
+      width: 100%;
+      border: 1px solid var(--line);
+      border-radius: 7px;
+      background: var(--surface);
+      color: var(--text);
+      padding: 9px 10px;
+      font: inherit;
+    }
+    textarea { min-height: 104px; resize: vertical; }
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 8px;
+      margin-top: 12px;
+    }
+    button, .button {
+      min-height: 34px;
+      border-radius: 7px;
+      border: 1px solid var(--line);
+      background: var(--surface);
+      color: var(--text);
+      padding: 7px 11px;
+      font: inherit;
+      font-weight: 750;
+      cursor: pointer;
+      text-decoration: none;
+    }
+    button.primary, .button.primary {
+      border-color: oklch(0.63 0.09 187);
+      background: var(--accent);
+      color: oklch(0.985 0.008 187);
+    }
+    button:hover, .button:hover { background: var(--surface-2); }
+    button.primary:hover, .button.primary:hover { background: oklch(0.43 0.13 187); }
+    button:focus-visible, input:focus-visible, textarea:focus-visible, select:focus-visible, a:focus-visible {
+      outline: 2px solid oklch(0.57 0.14 187);
+      outline-offset: 2px;
+    }
+    .result, .list { display: grid; gap: 9px; }
+    .result-line, .item {
+      display: grid;
+      grid-template-columns: minmax(0, 1fr) auto;
+      gap: 12px;
+      align-items: start;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 11px;
+      background: oklch(0.985 0.004 205);
+      overflow-wrap: anywhere;
+    }
+    .result-line strong, .item strong { display: block; }
+    .result-line span, .item span { color: var(--muted); font-size: 0.84rem; }
+    .badge {
+      display: inline-flex;
+      min-height: 24px;
+      align-items: center;
+      padding: 3px 8px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      color: var(--muted);
+      background: oklch(0.97 0.006 205);
+      font-size: 0.76rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
+    .badge.good { color: var(--good); background: var(--good-bg); border-color: oklch(0.82 0.052 154); }
+    .badge.warn { color: var(--warn); background: var(--warn-bg); border-color: oklch(0.84 0.06 78); }
+    .badge.bad { color: var(--bad); background: var(--bad-bg); border-color: oklch(0.82 0.065 31); }
+    code {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+      font-size: 0.78rem;
+      color: oklch(0.34 0.05 225);
+      overflow-wrap: anywhere;
+    }
+    .empty { color: var(--muted); }
+    @media (max-width: 980px) {
+      .shell { grid-template-columns: 1fr; }
+      aside { border-right: 0; border-bottom: 1px solid var(--line); }
+      nav { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+      header, .layout-2 { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 680px) {
+      main { padding: 18px 14px 28px; }
+      nav, .form-grid, .result-line, .item { grid-template-columns: 1fr; }
+      .actions { justify-content: stretch; }
+      .actions button, .actions .button { width: 100%; text-align: center; }
+    }
+  `;
+}
+
+export function buildPublicJoinHtml({ now = new Date().toISOString() }: { now?: string } = {}) {
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parallax Join Workspace</title>
+  <style>${publicConsoleStyles()}</style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <strong>Parallax</strong>
+        <span>Workspace access</span>
+      </div>
+      <nav aria-label="Primary">
+        <a href="#join">Join</a>
+        <a href="/tenant-console">Tenant Console</a>
+      </nav>
+    </aside>
+    <main>
+      <header id="join">
+        <div>
+          <p class="section-kicker">Workspace Invitation</p>
+          <h1>Join workspace</h1>
+        </div>
+        <span class="badge warn">invite required</span>
+      </header>
+      <section class="panel">
+        <div class="panel-head">
+          <h2>Invitation</h2>
+          <span class="section-kicker">Hash-only</span>
+        </div>
+        <div class="panel-body">
+          <form id="join-form" class="form-grid">
+            <div class="field wide">
+              <label for="invite-token">Invite token</label>
+              <input id="invite-token" autocomplete="off" placeholder="pinv_...">
+            </div>
+            <div class="field">
+              <label for="email">Email</label>
+              <input id="email" type="email" autocomplete="email">
+            </div>
+            <div class="field">
+              <label for="name">Name</label>
+              <input id="name" autocomplete="name">
+            </div>
+            <div class="field wide">
+              <div class="actions">
+                <button type="submit" class="primary">Accept invitation</button>
+              </div>
+            </div>
+          </form>
+          <div id="join-result" class="result" aria-live="polite">
+            <p class="empty">No invitation accepted in this browser session.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const tokenInput = document.getElementById("invite-token");
+    const params = new URLSearchParams(window.location.search);
+    tokenInput.value = params.get("token") || "";
+    const resultEl = document.getElementById("join-result");
+
+    function escapeText(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function badge(value, state = "neutral") {
+      return '<span class="badge ' + state + '">' + escapeText(value) + '</span>';
+    }
+
+    document.getElementById("join-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      resultEl.innerHTML = '<p class="empty">Accepting invitation...</p>';
+      try {
+        const response = await fetch("/api/onboarding/accept", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify({
+            invite_token: tokenInput.value.trim(),
+            email: document.getElementById("email").value.trim() || undefined,
+            name: document.getElementById("name").value.trim() || undefined
+          })
+        });
+        const text = await response.text();
+        const body = text ? JSON.parse(text) : {};
+        if (!response.ok) throw new Error(body.message || body.error || "Request failed");
+        sessionStorage.setItem("parallax_console_token", body.session_token);
+        const tenant = body.session?.tenant_slug || body.invitation?.tenant_slug || "";
+        if (tenant) sessionStorage.setItem("parallax_tenant", tenant);
+        resultEl.innerHTML =
+          '<div class="result-line"><strong>Invitation</strong>' + badge(body.invitation.status, "good") + '</div>' +
+          '<div class="result-line"><strong>Principal</strong><span>' + escapeText(body.principal.email) + '</span></div>' +
+          '<div class="result-line"><strong>Session token</strong><code>' + escapeText(body.session_token) + '</code></div>' +
+          '<div class="result-line"><strong>Workspace</strong><a class="button primary" href="/tenant-console?tenant=' + encodeURIComponent(tenant) + '">Open tenant console</a></div>';
+      } catch (error) {
+        resultEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      }
+    });
+  </script>
+  <script id="join-state" type="application/json">${escapeJson({ generatedAt: now, raw_token_stored: false })}</script>
+</body>
+</html>`;
+  return html.replace(/[ \t]+$/gm, "");
+}
+
+export function buildTenantConsoleHtml({ now = new Date().toISOString() }: { now?: string } = {}) {
+  const html = `<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Parallax Tenant Console</title>
+  <style>${publicConsoleStyles()}</style>
+</head>
+<body>
+  <div class="shell">
+    <aside>
+      <div class="brand">
+        <strong>Parallax</strong>
+        <span>Tenant Console</span>
+      </div>
+      <nav aria-label="Primary">
+        <a href="#account">Account</a>
+        <a href="#workspace">Workspace</a>
+        <a href="#analysis">Analysis</a>
+      </nav>
+    </aside>
+    <main>
+      <header>
+        <div>
+          <p class="section-kicker">Tenant Workspace</p>
+          <h1>Research console</h1>
+        </div>
+        <button type="button" id="refresh-account">Refresh</button>
+      </header>
+
+      <section class="panel" id="account">
+        <div class="panel-head">
+          <h2>Account</h2>
+          <span class="section-kicker">Identity session</span>
+        </div>
+        <div class="panel-body">
+          <form id="account-form" class="form-grid">
+            <div class="field wide">
+              <label for="session-token">Session token</label>
+              <input id="session-token" type="password" autocomplete="off" placeholder="psess_...">
+            </div>
+            <div class="field">
+              <label for="tenant">Tenant</label>
+              <select id="tenant"></select>
+            </div>
+            <div class="field">
+              <label for="profile-name">Name</label>
+              <input id="profile-name" autocomplete="name">
+            </div>
+            <div class="field wide">
+              <div class="actions">
+                <button type="submit">Save account</button>
+              </div>
+            </div>
+          </form>
+          <div id="account-result" class="result" aria-live="polite">
+            <p class="empty">No account loaded in this browser session.</p>
+          </div>
+        </div>
+      </section>
+
+      <div class="layout-2" id="workspace">
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Library</h2>
+            <span class="section-kicker" id="library-label">tenant</span>
+          </div>
+          <div class="panel-body">
+            <div id="library-result" class="list">
+              <p class="empty">No tenant library loaded.</p>
+            </div>
+          </div>
+        </section>
+        <section class="panel">
+          <div class="panel-head">
+            <h2>Events</h2>
+            <span class="section-kicker" id="events-label">tenant</span>
+          </div>
+          <div class="panel-body">
+            <div id="events-result" class="list">
+              <p class="empty">No tenant events loaded.</p>
+            </div>
+          </div>
+        </section>
+      </div>
+
+      <section class="panel" id="analysis">
+        <div class="panel-head">
+          <h2>Analysis</h2>
+          <span class="section-kicker">Tenant scoped</span>
+        </div>
+        <div class="panel-body">
+          <form id="analysis-form" class="form-grid">
+            <div class="field">
+              <label for="symbol">Symbol</label>
+              <input id="symbol" value="NVDA" autocomplete="off">
+            </div>
+            <div class="field">
+              <label for="horizon">Horizon</label>
+              <select id="horizon">
+                <option value="swing">swing</option>
+                <option value="intraday">intraday</option>
+                <option value="position">position</option>
+              </select>
+            </div>
+            <div class="field wide">
+              <label for="thesis">Thesis</label>
+              <textarea id="thesis">post-earnings continuation with controlled risk</textarea>
+            </div>
+            <div class="field wide">
+              <div class="actions">
+                <button type="button" id="refresh-workspace">Refresh workspace</button>
+                <button type="submit" class="primary">Run analysis</button>
+              </div>
+            </div>
+          </form>
+          <div id="analysis-result" class="result" aria-live="polite">
+            <p class="empty">No tenant analysis submitted in this browser session.</p>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+  <script>
+    const tokenInput = document.getElementById("session-token");
+    const tenantInput = document.getElementById("tenant");
+    const accountResultEl = document.getElementById("account-result");
+    const libraryEl = document.getElementById("library-result");
+    const eventsEl = document.getElementById("events-result");
+    const analysisEl = document.getElementById("analysis-result");
+    const params = new URLSearchParams(window.location.search);
+    tokenInput.value = sessionStorage.getItem("parallax_console_token") || "";
+    const initialTenant = params.get("tenant") || sessionStorage.getItem("parallax_tenant") || "";
+
+    function escapeText(value) {
+      return String(value ?? "").replace(/[&<>"']/g, (char) => ({
+        "&": "&amp;",
+        "<": "&lt;",
+        ">": "&gt;",
+        '"': "&quot;",
+        "'": "&#39;"
+      }[char]));
+    }
+
+    function statusClass(value) {
+      const text = String(value ?? "").toLowerCase();
+      if (text.includes("ready") || text === "active" || text === "accepted") return "good";
+      if (text.includes("blocked") || text === "failed" || text === "revoked") return "bad";
+      if (text.includes("pending") || text.includes("warning")) return "warn";
+      return "neutral";
+    }
+
+    function badge(value) {
+      return '<span class="badge ' + statusClass(value) + '">' + escapeText(value) + '</span>';
+    }
+
+    function authHeaders(tenant) {
+      const headers = {
+        "authorization": "Bearer " + tokenInput.value.trim(),
+        "content-type": "application/json"
+      };
+      if (tenant) headers["x-parallax-tenant"] = tenant;
+      return headers;
+    }
+
+    async function apiFetch(url, options = {}, tenant = "") {
+      if (!tokenInput.value.trim()) throw new Error("Session token is required.");
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          ...authHeaders(tenant),
+          ...(options.headers || {})
+        }
+      });
+      const text = await response.text();
+      const body = text ? JSON.parse(text) : {};
+      if (!response.ok) throw new Error(body.message || body.error || "Request failed");
+      return body;
+    }
+
+    function renderList(target, rows, emptyText) {
+      if (!rows.length) {
+        target.innerHTML = '<p class="empty">' + escapeText(emptyText) + '</p>';
+        return;
+      }
+      target.innerHTML = rows.map((item) => (
+        '<div class="item">' +
+          '<div><strong>' + escapeText(item.title) + '</strong><span>' + escapeText(item.detail) + '</span></div>' +
+          badge(item.status) +
+        '</div>'
+      )).join("");
+    }
+
+    function syncTenantOptions(profile) {
+      const memberships = profile.profile?.memberships || [];
+      tenantInput.innerHTML = memberships.map((membership) =>
+        '<option value="' + escapeText(membership.tenant_slug) + '">' + escapeText(membership.tenant_slug + " | " + membership.role) + '</option>'
+      ).join("");
+      const preferred = initialTenant || profile.session?.tenant_slug || memberships[0]?.tenant_slug || "";
+      if (preferred) tenantInput.value = preferred;
+      document.getElementById("profile-name").value = profile.profile?.name || "";
+    }
+
+    async function refreshAccount() {
+      const profile = await apiFetch("/api/account/me", { method: "GET" });
+      syncTenantOptions(profile);
+      sessionStorage.setItem("parallax_console_token", tokenInput.value.trim());
+      if (tenantInput.value) sessionStorage.setItem("parallax_tenant", tenantInput.value);
+      accountResultEl.innerHTML =
+        '<div class="result-line"><strong>Account</strong><span>' + escapeText(profile.profile.email) + '</span></div>' +
+        '<div class="result-line"><strong>Name</strong><span>' + escapeText(profile.profile.name) + '</span></div>' +
+        '<div class="result-line"><strong>Active role</strong>' + badge(profile.session.role) + '</div>' +
+        '<div class="result-line"><strong>Raw session token stored</strong><span>' + escapeText(profile.raw_session_token_stored ? "yes" : "no") + '</span></div>';
+      return profile;
+    }
+
+    async function refreshWorkspace() {
+      const tenant = tenantInput.value;
+      document.getElementById("library-label").textContent = tenant || "tenant";
+      document.getElementById("events-label").textContent = tenant || "tenant";
+      const [library, events] = await Promise.all([
+        apiFetch("/api/tenants/" + encodeURIComponent(tenant) + "/library", { method: "GET" }, tenant),
+        apiFetch("/api/tenants/" + encodeURIComponent(tenant) + "/events", { method: "GET" }, tenant)
+      ]);
+      renderList(libraryEl, (library.entries || []).slice(0, 8).map((entry) => ({
+        title: entry.symbol + " | " + entry.action_class,
+        detail: entry.thesis,
+        status: entry.thesis_state
+      })), "No dossiers in this tenant library.");
+      renderList(eventsEl, (events.events || events || []).slice(-8).reverse().map((event) => ({
+        title: event.event_type,
+        detail: event.created_at,
+        status: event.payload?.action_class || "logged"
+      })), "No tenant events recorded.");
+    }
+
+    document.getElementById("refresh-account").addEventListener("click", async () => {
+      try {
+        await refreshAccount();
+        await refreshWorkspace();
+      } catch (error) {
+        accountResultEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      }
+    });
+
+    document.getElementById("refresh-workspace").addEventListener("click", async () => {
+      try {
+        await refreshWorkspace();
+      } catch (error) {
+        libraryEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+        eventsEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      }
+    });
+
+    document.getElementById("account-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      try {
+        const profile = await apiFetch("/api/account/profile", {
+          method: "POST",
+          body: JSON.stringify({
+            name: document.getElementById("profile-name").value.trim(),
+            default_tenant_slug: tenantInput.value
+          })
+        });
+        syncTenantOptions(profile);
+        accountResultEl.innerHTML =
+          '<div class="result-line"><strong>Account</strong><span>' + escapeText(profile.profile.email) + '</span></div>' +
+          '<div class="result-line"><strong>Name</strong><span>' + escapeText(profile.profile.name) + '</span></div>' +
+          '<div class="result-line"><strong>Status</strong>' + badge(profile.status) + '</div>';
+      } catch (error) {
+        accountResultEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      }
+    });
+
+    document.getElementById("analysis-form").addEventListener("submit", async (event) => {
+      event.preventDefault();
+      const tenant = tenantInput.value;
+      analysisEl.innerHTML = '<p class="empty">Submitting analysis...</p>';
+      try {
+        const response = await apiFetch("/api/tenants/" + encodeURIComponent(tenant) + "/analyze", {
+          method: "POST",
+          body: JSON.stringify({
+            symbol: document.getElementById("symbol").value.trim(),
+            horizon: document.getElementById("horizon").value,
+            thesis: document.getElementById("thesis").value.trim(),
+            ceiling: "watchlist"
+          })
+        }, tenant);
+        analysisEl.innerHTML =
+          '<div class="result-line"><strong>Dossier</strong><code>' + escapeText(response.dossier_id) + '</code></div>' +
+          '<div class="result-line"><strong>Action class</strong>' + badge(response.action_class) + '</div>' +
+          '<div class="result-line"><strong>Audit</strong><code>' + escapeText(response.audit_path) + '</code></div>';
+        await refreshWorkspace();
+      } catch (error) {
+        analysisEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      }
+    });
+
+    if (tokenInput.value) {
+      refreshAccount().then(refreshWorkspace).catch((error) => {
+        accountResultEl.innerHTML = '<p class="empty">' + escapeText(error.message) + '</p>';
+      });
+    }
+  </script>
+  <script id="tenant-console-state" type="application/json">${escapeJson({ generatedAt: now, raw_token_stored: false })}</script>
+</body>
+</html>`;
+  return html.replace(/[ \t]+$/gm, "");
+}
+
 export async function writeHostedConsole({
   rootDir = "managed-saas",
   configPath = managedSaasConfigPath(rootDir),

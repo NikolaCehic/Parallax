@@ -11,6 +11,8 @@ import {
   runLLMEvalSuite
 } from "../index.js";
 import {
+  accountProfileToHumanReport,
+  accountProfileUpdateToHumanReport,
   alertPreferencesToHumanReport,
   alertsToHumanReport,
   appToHumanReport,
@@ -47,6 +49,7 @@ import {
   llmProviderAdapterToHumanReport,
   llmProviderRunToHumanReport,
   llmProviderStatusToHumanReport,
+  membershipRoleToHumanReport,
   monitorToHumanReport,
   onboardingStatusToHumanReport,
   paperCloseToHumanReport,
@@ -207,6 +210,11 @@ import {
   createWorkspaceInvitation,
   workspaceOnboardingStatus
 } from "../saas/onboarding.js";
+import {
+  accountProfile,
+  setWorkspaceMemberRole,
+  updateAccountProfile
+} from "../saas/account.js";
 
 type CliArgs = Record<string, string | boolean>;
 
@@ -315,6 +323,9 @@ Commands:
   onboarding-status [--root-dir managed-saas]
   invite-create --root-dir managed-saas --tenant alpha --email analyst@example.com [--name "Analyst"] [--role analyst] [--ttl-minutes 10080]
   invite-accept --root-dir managed-saas --invite-token pinv_x [--email analyst@example.com] [--name "Analyst"]
+  account-me --root-dir managed-saas --session-token psess_x
+  account-profile-update --root-dir managed-saas --session-token psess_x [--name "Analyst"] [--default-tenant alpha]
+  membership-role-set --root-dir managed-saas --email analyst@example.com --tenant alpha --role reviewer
   sandbox-submit --audit audits/dos_x.json --approver "human"
 
 Common flags:
@@ -1584,6 +1595,53 @@ async function main() {
       now: args.now ? String(args.now) : undefined
     });
     printResult(args, inviteAcceptToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "account-me") {
+    if (!args["session-token"]) throw new Error("account-me requires --session-token");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await accountProfile({
+      rootDir,
+      configPath,
+      sessionToken: String(args["session-token"]),
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, accountProfileToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "account-profile-update") {
+    if (!args["session-token"]) throw new Error("account-profile-update requires --session-token");
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await updateAccountProfile({
+      rootDir,
+      configPath,
+      sessionToken: String(args["session-token"]),
+      name: args.name ? String(args.name) : undefined,
+      defaultTenantSlug: args["default-tenant"] ? String(args["default-tenant"]) : "",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, accountProfileUpdateToHumanReport(result), result);
+    return;
+  }
+
+  if (command === "membership-role-set") {
+    for (const required of ["email", "tenant", "role"]) {
+      if (!args[required]) throw new Error(`membership-role-set requires --${required}`);
+    }
+    const { rootDir, configPath } = saasPaths(args);
+    const result = await setWorkspaceMemberRole({
+      rootDir,
+      configPath,
+      email: String(args.email),
+      tenantSlug: String(args.tenant),
+      role: String(args.role),
+      scopes: parseCsvList(args.scopes),
+      actor: args.actor ? String(args.actor) : "cli",
+      now: args.now ? String(args.now) : undefined
+    });
+    printResult(args, membershipRoleToHumanReport(result), result);
     return;
   }
 

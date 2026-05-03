@@ -1,0 +1,109 @@
+{
+  "schema_version": "0.1.0",
+  "generated_at": "2026-05-03T12:00:00Z",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas",
+  "config_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/managed-saas.json",
+  "registry_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/workspace-invitations.json",
+  "events_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/workspace-onboarding-events.jsonl",
+  "status": "ready_for_workspace_user_onboarding",
+  "summary": {
+    "invite_count": 1,
+    "pending_count": 0,
+    "accepted_count": 1,
+    "expired_count": 0,
+    "revoked_count": 0,
+    "principal_count": 2,
+    "active_session_count": 1,
+    "event_count": 2,
+    "raw_invite_token_stored": false,
+    "raw_session_token_stored": false,
+    "required_failure_count": 0
+  },
+  "controls": [
+    {
+      "id": "managed_tenant_available",
+      "passed": true,
+      "severity": "required",
+      "detail": "At least one managed SaaS tenant can receive invitations."
+    },
+    {
+      "id": "identity_foundation_ready",
+      "passed": true,
+      "severity": "required",
+      "detail": "Accepted invitees become identity principals with hash-only sessions."
+    },
+    {
+      "id": "invitations_hash_only",
+      "passed": true,
+      "severity": "required",
+      "detail": "Persisted invitations contain token hashes only."
+    },
+    {
+      "id": "invitation_tenants_valid",
+      "passed": true,
+      "severity": "required",
+      "detail": "Every invitation points at a known tenant."
+    },
+    {
+      "id": "accepted_invites_bind_principals",
+      "passed": true,
+      "severity": "required",
+      "detail": "Accepted invitations record the principal and session IDs, not raw bearer values."
+    },
+    {
+      "id": "raw_invite_token_storage_blocked",
+      "passed": true,
+      "severity": "required",
+      "detail": "Workspace invite policy blocks raw invite token storage."
+    }
+  ],
+  "invitations": [
+    {
+      "id": "invite_0c31033960ab",
+      "email": "phase18.artifact@example.com",
+      "name": "Phase 18 Artifact",
+      "tenant_slug": "alpha",
+      "role": "analyst",
+      "invite_token_hash": "aeaa99ae4fc56f65c3cbe35f5c990c9d16a27378bdd5df7361a7afd5effe9baf",
+      "created_at": "2026-05-03T12:00:00Z",
+      "expires_at": "2026-05-04T12:00:00.000Z",
+      "accepted_at": "2026-05-03T12:00:00Z",
+      "accepted_principal_id": "principal_7b1c2c1a0d8a",
+      "accepted_session_id": "session_0b6c839531c4",
+      "revoked_at": "",
+      "invited_by": "phase_18_artifact",
+      "raw_invite_token_stored": false,
+      "raw_session_token_stored": false,
+      "status": "accepted"
+    }
+  ],
+  "latest_events": [
+    {
+      "id": "onboarding_evt_b708dd7e0df6",
+      "event_type": "workspace_invitation_accepted",
+      "actor": "hosted_onboarding",
+      "payload": {
+        "invitation_id": "invite_0c31033960ab",
+        "principal_id": "principal_7b1c2c1a0d8a",
+        "session_id": "session_0b6c839531c4",
+        "email": "phase18.artifact@example.com",
+        "tenant_slug": "alpha",
+        "role": "analyst"
+      },
+      "created_at": "2026-05-03T12:00:00Z"
+    },
+    {
+      "id": "onboarding_evt_c01d08bcdc80",
+      "event_type": "workspace_invitation_created",
+      "actor": "phase_18_artifact",
+      "payload": {
+        "invitation_id": "invite_0c31033960ab",
+        "email": "phase18.artifact@example.com",
+        "tenant_slug": "alpha",
+        "role": "analyst",
+        "expires_at": "2026-05-04T12:00:00.000Z"
+      },
+      "created_at": "2026-05-03T12:00:00Z"
+    }
+  ]
+}

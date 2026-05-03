@@ -1,0 +1,10 @@
+Parallax Membership Role
+========================
+
+Status: membership_role_updated
+Principal: phase18.artifact@example.com
+Tenant: alpha
+Role: analyst
+Scopes: tenant:read, analysis:create, storage:read, storage:write
+Updated sessions: 1
+Raw session token stored: no

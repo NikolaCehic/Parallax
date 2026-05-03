@@ -117,7 +117,8 @@ The current repo already has the right skeleton:
 - hosted research console UX and onboarding shell;
 - guided connector repair planner and apply workflow;
 - workspace invitation/account onboarding workflow;
-- 68 tests;
+- public invite-link/account-console workflow;
+- 70 tests;
 - 10 synthetic E2E scenarios.
 
 This foundation should be kept. The next work is not a rewrite. It is product hardening.
@@ -217,7 +218,9 @@ Implemented on 2026-05-02:
 - Phase 16 artifact bundle;
 - workspace invitation/account onboarding workflow;
 - Phase 17 artifact bundle;
-- 68 passing tests.
+- public invite-link/account-console workflow;
+- Phase 18 artifact bundle;
+- 70 passing tests.
 
 ## Knowledge Gathered
 
@@ -1276,6 +1279,36 @@ Exit criteria:
 - accepted sessions can access only scoped tenant routes;
 - duplicate acceptance is blocked;
 - console and CLI expose human-readable onboarding workflows;
+- generated public/status artifacts contain no raw invite/session/service tokens.
+
+### Phase 18: Public Invite Links, Account Settings, And Tenant Console
+
+Status: Complete for local account-console scope.
+
+Goal:
+
+Turn invitation acceptance into a usable account path by adding a public join shell, a tenant-scoped console shell, account profile self-service, and role management that updates active sessions.
+
+Deliverables:
+
+- public `/join` page that accepts invite-link tokens client-side without embedding them in server-rendered HTML;
+- public `/tenant-console` shell that fetches data only through scoped identity-session bearer calls;
+- `/api/account/me` account profile route;
+- `/api/account/profile` self-service profile update route;
+- `/api/account/memberships` role-management route behind identity-write scope;
+- active-session role/scope updates when membership roles change;
+- CLI `account-me`, `account-profile-update`, and `membership-role-set` commands;
+- hosted API, public shell, account, role, redaction, scoped denial, and CLI tests;
+- Phase 18 artifact bundle.
+
+Exit criteria:
+
+- public join page does not embed raw invite query tokens;
+- tenant console does not call the control-plane API or embed raw session values;
+- account profile responses never include raw bearer tokens;
+- role changes update active sessions immediately;
+- reviewer sessions cannot create analysis;
+- CLI exposes human-readable account and role workflows;
 - generated public/status artifacts contain no raw invite/session/service tokens.
 
 ## Team Needed

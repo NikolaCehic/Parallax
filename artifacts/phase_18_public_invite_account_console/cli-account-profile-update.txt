@@ -1,0 +1,8 @@
+Parallax Account Updated
+========================
+
+Status: ready_for_account_self_service
+Email: phase18.artifact@example.com
+Name: Phase 18 CLI Renamed
+Default tenant: alpha
+Raw session token stored: no

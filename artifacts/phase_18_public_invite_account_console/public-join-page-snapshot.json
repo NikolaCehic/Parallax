@@ -1,0 +1,9 @@
+{
+  "status": 200,
+  "has_join_workspace": true,
+  "calls_accept_api": true,
+  "links_tenant_console": true,
+  "raw_service_token_present": false,
+  "raw_invite_token_present": false,
+  "secret_ref_present": false
+}

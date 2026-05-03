@@ -6,7 +6,7 @@ Scope: analysis-first trading thesis council with lifecycle monitoring
 
 Implementation language split:
 
-- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, durable storage manifests, external data vendor import contracts, external LLM provider replay contracts, and workspace invitation/account onboarding.
+- TypeScript owns orchestration, contracts, schemas, CLI, council logic, decision gates, lifecycle state, governance, paper trading, sandbox/partner execution controls, beta APIs, managed SaaS scaffolding, provider validation, tenant persistence, hosted API serving, local identity sessions, account self-service, durable storage manifests, external data vendor import contracts, external LLM provider replay contracts, and workspace invitation/account onboarding.
 - Python owns deterministic quant-style analytics.
 
 ## 1. Product Definition
@@ -457,6 +457,7 @@ Later phases add:
 - hosted research console readiness with onboarding, tenant analysis, readiness rails, and redacted boundary status;
 - guided connector repair readiness with previewable setup actions, apply-next convergence, and redacted repair artifacts;
 - workspace invitation readiness with hash-only invites, public invite acceptance, scoped identity sessions, and duplicate-accept protection;
+- account-console readiness with public invite links, tenant-scoped console shell, profile self-service, membership role management, active-session scope updates, and reviewer denial for analysis creation;
 - broker or regulated-partner integration behind approval gates;
 - live execution controls only after validation.
 

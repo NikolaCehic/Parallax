@@ -1,0 +1,25 @@
+{
+  "public_files_checked": [
+    "public-join-page.html",
+    "public-join-page-snapshot.json",
+    "tenant-console.html",
+    "tenant-console-snapshot.json",
+    "api-account-me.json",
+    "api-account-profile-update.json",
+    "api-membership-role-set.json",
+    "api-account-final.json",
+    "api-reviewer-analysis-denied.json",
+    "onboarding-status-final.json",
+    "cli-account-me.txt",
+    "cli-account-profile-update.txt",
+    "cli-membership-role-set.txt",
+    "cli-account-me.json"
+  ],
+  "public_files_raw_service_token_present": false,
+  "public_files_raw_invite_token_present": false,
+  "public_files_raw_session_token_present": false,
+  "public_files_secret_ref_present": false,
+  "join_page_does_not_embed_invite_query_token": true,
+  "tenant_console_does_not_embed_session_token": true,
+  "managed_config_uses_external_secret_references": true
+}

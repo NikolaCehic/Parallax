@@ -1,0 +1,9 @@
+{
+  "join_lang_attribute": true,
+  "tenant_lang_attribute": true,
+  "viewport_meta": true,
+  "nav_labels": true,
+  "join_live_region": true,
+  "tenant_live_regions": true,
+  "focus_visible_styles": true
+}

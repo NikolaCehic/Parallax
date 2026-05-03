@@ -1,0 +1,100 @@
+{
+  "schema_version": "0.1.0",
+  "root_dir": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas",
+  "created_at": "2026-05-03T17:12:01.498Z",
+  "boundary": {
+    "mode": "local_llm_replay_contract",
+    "direct_model_network_connection": false,
+    "raw_model_secret_storage_allowed": false,
+    "evidence_only_context_required": true,
+    "claim_packet_eval_required": true,
+    "prompt_registry_required": true,
+    "budget_gate_required": true
+  },
+  "adapters": [
+    {
+      "id": "llm_provider_adapter_50cb7f470151",
+      "adapter_id": "guided-model",
+      "name": "Guided Model Replay",
+      "provider": "guided_repair_model_gateway",
+      "tenant_slug": "alpha",
+      "secret_ref_name": "LLM_PROVIDER",
+      "endpoint": "",
+      "model_registry_ref": "guided_repair_replay_v0",
+      "version": "0.1.0",
+      "prompt_ids": [
+        "claim_packet_v0",
+        "critique_packet_v0"
+      ],
+      "allowed_personas": [
+        "quant_researcher",
+        "data_quality_officer",
+        "model_validator",
+        "red_team_skeptic"
+      ],
+      "max_context_tokens": 50000,
+      "max_estimated_cost_usd": 0.2,
+      "cost_per_1k_context_tokens_usd": 0.0005,
+      "mode": "local_llm_replay_contract",
+      "direct_model_network_connection": false,
+      "raw_secret_stored": false,
+      "created_at": "2026-05-03T12:00:00Z",
+      "eval_suite": {
+        "id": "llm_provider_eval_c5ac839fbb7b",
+        "suite": "phase_14_external_llm_provider_boundary",
+        "passed": true,
+        "case_count": 6,
+        "prompt_registry_hash": "e54769c56702a6fdfcffbc5d41a26dce536f9da5319961913fe8dc401a2bc11d",
+        "created_at": "2026-05-03T12:00:00Z"
+      }
+    }
+  ],
+  "runs": [
+    {
+      "id": "llm_provider_run_da86ba50796a",
+      "adapter_id": "guided-model",
+      "tenant_slug": "alpha",
+      "dossier_id": "dos_a7d506b944f0",
+      "symbol": "NVDA",
+      "horizon": "swing",
+      "scenario": "safe",
+      "model_registry_ref": "guided_repair_replay_v0",
+      "prompt_ids": [
+        "claim_packet_v0",
+        "critique_packet_v0"
+      ],
+      "context_hashes": [
+        "2410e0de3c400617afb1eaeb551d0f30ae5fdc136baa61d2bb55d6fa83386f85",
+        "50f287aea703d8c33fe466abda6a456925a44fdda359df88359be6fb781d31ad",
+        "397dfade368876db8053513ee0136f26deba569fc171cf5c037d45e91adcc8ae",
+        "b525b39130de716a3d2d9ad9bdca97c33e09ce6447fbc2481f0e9ea5aeb3cfd9"
+      ],
+      "evidence_snapshot_hash": "07bc7d8e948e0cc11c361486cb79db02ad46862d1c8f048ae52beb575f73bfc4",
+      "council_eval_id": "ceval_57d98a32a9d0",
+      "council_eval_passed": true,
+      "council_eval_problem_count": 0,
+      "action_class": "watchlist",
+      "usage": {
+        "provider_id": "guided-model",
+        "prompt_ids": [
+          "claim_packet_v0",
+          "critique_packet_v0"
+        ],
+        "context_count": 4,
+        "context_tokens": 6545,
+        "prompt_tokens": 10,
+        "estimated_cost_usd": 0.003278,
+        "max_context_tokens": 50000,
+        "max_estimated_cost_usd": 0.2,
+        "budget_exceeded": false,
+        "direct_model_network_connection": false
+      },
+      "direct_model_network_connection": false,
+      "raw_secret_stored": false,
+      "audit_path": "/Users/nikolacehic/Documents/Codex/2026-04-30/we-need-to-itterate-on-the/artifacts/phase_18_public_invite_account_console/managed-saas/tenants/alpha/audits/dos_a7d506b944f0.json",
+      "created_at": "2026-05-03T12:00:00Z",
+      "created_by": "setup_repair"
+    }
+  ],
+  "updated_at": "2026-05-03T17:12:01.556Z"
+}

@@ -1,0 +1,32 @@
+{
+  "provider": "guided_repair_market_data",
+  "license": "internal",
+  "generated_at": "2026-05-03T12:00:00Z",
+  "data_vendor": {
+    "adapter_id": "guided-local",
+    "tenant_slug": "alpha",
+    "source_provider": "guided_repair_local_vendor",
+    "source_license": "licensed_for_internal_research",
+    "contract_license": "licensed_for_internal_research",
+    "direct_vendor_network_connection": false,
+    "raw_secret_stored": false
+  },
+  "sources": {
+    "market:NVDA": {
+      "source": "vendor:guided-local:market/NVDA.csv",
+      "license": "internal"
+    },
+    "events:NVDA": {
+      "source": "vendor:guided-local:events/NVDA.json",
+      "license": "internal"
+    },
+    "actions:NVDA": {
+      "source": "vendor:guided-local:actions/NVDA.json",
+      "license": "internal"
+    },
+    "portfolio:default": {
+      "source": "vendor:guided-local:portfolio/default.json",
+      "license": "internal"
+    }
+  }
+}

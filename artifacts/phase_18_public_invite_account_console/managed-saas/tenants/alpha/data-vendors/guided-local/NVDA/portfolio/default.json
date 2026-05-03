@@ -1,0 +1,14 @@
+{
+  "account_id": "guided_repair_portfolio",
+  "as_of": "2026-05-03T12:00:00Z",
+  "cash": 100000,
+  "total_equity": 100000,
+  "positions": [],
+  "constraints": {
+    "max_single_name_pct": 0.12,
+    "max_sector_pct": 0.35,
+    "max_gross_exposure_pct": 1,
+    "paper_risk_budget_pct": 0.02
+  },
+  "restricted_symbols": []
+}

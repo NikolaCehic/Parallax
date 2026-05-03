@@ -1,0 +1,12 @@
+{
+  "status": 200,
+  "has_tenant_console": true,
+  "calls_account_me": true,
+  "calls_account_profile": true,
+  "calls_tenant_routes": true,
+  "calls_control_plane": false,
+  "raw_service_token_present": false,
+  "raw_invite_token_present": false,
+  "raw_session_token_present": false,
+  "secret_ref_present": false
+}

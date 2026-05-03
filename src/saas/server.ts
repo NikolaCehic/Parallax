@@ -2,7 +2,11 @@ import http from "node:http";
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { analyzeThesis } from "../index.js";
-import { buildHostedConsoleHtml } from "../app/hosted_console.js";
+import {
+  buildHostedConsoleHtml,
+  buildPublicJoinHtml,
+  buildTenantConsoleHtml
+} from "../app/hosted_console.js";
 import { stableHash, isoNow } from "../core/ids.js";
 import { listLibraryEntries, upsertLibraryEntry } from "../library/store.js";
 import { dossierToMarkdown } from "../render.js";
@@ -46,6 +50,11 @@ import {
   revokeWorkspaceInvitation,
   workspaceOnboardingStatus
 } from "./onboarding.js";
+import {
+  accountProfile,
+  setWorkspaceMemberRole,
+  updateAccountProfile
+} from "./account.js";
 
 function jsonResponse(res: http.ServerResponse, status: number, body: any, extraHeaders: Record<string, string> = {}) {
   const text = JSON.stringify(body, null, 2);
@@ -436,6 +445,16 @@ export function createHostedRequestHandler({
         return;
       }
 
+      if (req.method === "GET" && url.pathname === "/join") {
+        textResponse(res, 200, buildPublicJoinHtml({ now }));
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/tenant-console") {
+        textResponse(res, 200, buildTenantConsoleHtml({ now }));
+        return;
+      }
+
       const auth = await authenticateRequest({ req, rootDir, apiTokenHash, now });
       if (!auth) {
         jsonResponse(res, 401, {
@@ -463,6 +482,72 @@ export function createHostedRequestHandler({
       if (req.method === "GET" && url.pathname === "/api/onboarding/status") {
         await requireAuthScope({ auth, rootDir, now, scope: "control_plane:read" });
         jsonResponse(res, 200, await workspaceOnboardingStatus({ rootDir, configPath, now }));
+        return;
+      }
+
+      if (req.method === "GET" && url.pathname === "/api/account/me") {
+        if (auth.kind === "api_token") {
+          jsonResponse(res, 200, {
+            schema_version: "0.1.0",
+            generated_at: now ?? isoNow(),
+            status: "service_account",
+            profile: {
+              id: auth.principal.id,
+              email: auth.principal.email,
+              name: "Hosted API token",
+              platform_admin: true,
+              memberships: []
+            },
+            raw_session_token_stored: false
+          });
+          return;
+        }
+        jsonResponse(res, 200, await accountProfile({
+          rootDir,
+          configPath,
+          sessionToken: auth.token,
+          now
+        }));
+        return;
+      }
+
+      if (req.method === "POST" && url.pathname === "/api/account/profile") {
+        if (auth.kind !== "identity_session") {
+          throw requestError(403, "Account profile updates require an identity session.");
+        }
+        const body = await readJsonBody(req);
+        const result = await updateAccountProfile({
+          rootDir,
+          configPath,
+          sessionToken: auth.token,
+          name: body.name ? String(body.name) : undefined,
+          defaultTenantSlug: body.default_tenant_slug ? String(body.default_tenant_slug) : "",
+          now: body.now ? String(body.now) : now
+        });
+        jsonResponse(res, 200, result);
+        return;
+      }
+
+      if (req.method === "POST" && url.pathname === "/api/account/memberships") {
+        await requireAuthScope({ auth, rootDir, now, scope: "identity:write" });
+        const body = await readJsonBody(req);
+        for (const required of ["email", "tenant_slug", "role"]) {
+          if (!body[required]) {
+            jsonResponse(res, 400, { error: "bad_request", message: `${required} is required.` });
+            return;
+          }
+        }
+        const result = await setWorkspaceMemberRole({
+          rootDir,
+          configPath,
+          email: String(body.email),
+          tenantSlug: String(body.tenant_slug),
+          role: String(body.role),
+          scopes: Array.isArray(body.scopes) ? body.scopes.map(String) : undefined,
+          actor: auth.principal?.email ?? "hosted_api",
+          now: body.now ? String(body.now) : now
+        });
+        jsonResponse(res, 200, result);
         return;
       }
 
